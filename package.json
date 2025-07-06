@@ -1,0 +1,21 @@
+{
+	"name": "backend",
+	"version": "1.0.0",
+	"main": "index.js",
+	"type": "module",
+	"license": "MIT",
+	"scripts": {
+		"dev": "tsx watch src/server.ts",
+		"build": "tsc"
+	},
+	"dependencies": {
+		"drizzle-orm": "^0.44.2",
+		"fastify": "^5.4.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.0.6",
+		"@types/node": "^24.0.10",
+		"tsx": "^4.20.3",
+		"typescript": "^5.8.3"
+	}
+}
