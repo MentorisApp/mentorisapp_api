@@ -7,8 +7,10 @@
 	"scripts": {
 		"dev": "tsx --watch --env-file .env.development ./src/server.ts",
 		"typecheck": "tsc --noEmit",
+		"lint": "biome check --files-ignore-unknown=true",
 		"build": "tsc",
-		"prepare": "husky install"
+		"prepare": "husky install",
+		"pre-commit": "lint-staged"
 	},
 	"dependencies": {
 		"bcrypt": "^6.0.0",
@@ -31,7 +33,7 @@
 	},
 	"lint-staged": {
 		"*.{js,ts,json,md}": [
-			"biome check"
+			"biome check --files-ignore-unknown=true"
 		]
 	}
 }
