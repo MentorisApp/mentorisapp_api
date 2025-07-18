@@ -1,19 +1,18 @@
 import Fastify from "fastify";
+import env from "./env.js";
 
-const fastify = Fastify({
-	logger: true,
-});
+const fastify = Fastify();
 
-// Declare a route
 fastify.get("/", (request, reply) => {
 	reply.send({ hello: "world" });
 });
 
-// Run the server!
-fastify.listen({ port: 3000 }, (err, address) => {
+fastify.listen({ port: env.PORT }, (err) => {
 	if (err) {
 		fastify.log.error(err);
 		process.exit(1);
 	}
-	// Server is now listening on ${address}
+
+	console.info("ENVIRONMENT =", env.NODE_ENV);
+	console.info("PORT =", env.PORT);
 });

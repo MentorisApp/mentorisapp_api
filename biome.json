@@ -1,9 +1,12 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
-	"vcs": {
-		"enabled": false,
-		"clientKind": "git",
-		"useIgnoreFile": false
+	"$schema": "https://biomejs.dev/schemas/2.1.2/schema.json",
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		},
+		"enabled": true
 	},
 	"files": {
 		"ignoreUnknown": false
@@ -12,41 +15,49 @@
 		"enabled": true,
 		"indentStyle": "tab"
 	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "double",
+			"semicolons": null
+		}
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {
+			"correctness": {
+				"noUnusedFunctionParameters": {
+					"fix": "none",
+					"level": "warn",
+					"options": {}
+				},
+				"noUnusedVariables": {
+					"fix": "none",
+					"level": "warn",
+					"options": {}
+				},
+				"useImportExtensions": {
+					"fix": "safe",
+					"level": "error",
+					"options": {
+						"forceJsExtensions": true
+					}
+				}
+			},
 			"recommended": false,
 			"suspicious": {
 				"noConsole": {
-					"options": { "allow": [] },
+					"fix": "none",
 					"level": "info",
-					"fix": "none"
-				}
-			},
-			"correctness": {
-				"noUnusedFunctionParameters": {
-					"level": "info",
-					"fix": "none"
-				},
-				"noUnusedVariables": {
-					"options": {},
-					"level": "info",
-					"fix": "none"
+					"options": {
+						"allow": ["info"]
+					}
 				}
 			}
 		}
 	},
-	"javascript": {
-		"formatter": {
-			"quoteStyle": "double"
-		}
-	},
-	"assist": {
-		"enabled": true,
-		"actions": {
-			"source": {
-				"organizeImports": "on"
-			}
-		}
+	"vcs": {
+		"clientKind": "git",
+		"enabled": false,
+		"useIgnoreFile": false
 	}
 }

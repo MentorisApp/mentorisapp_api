@@ -5,10 +5,13 @@
 	"type": "module",
 	"license": "MIT",
 	"scripts": {
+		"build": "tsc",
 		"dev": "tsx --watch --env-file .env.development ./src/server.ts",
+		"prod": "tsx --watch --env-file .env.production ./src/server.ts",
+		"start:dev": "node --env-file .env.development dist/server.js",
+		"start:prod": "node --env-file .env.production dist/server.js",
 		"typecheck": "tsc --noEmit",
 		"lint": "biome check --files-ignore-unknown=true",
-		"build": "tsc",
 		"prepare": "husky install",
 		"pre-commit": "lint-staged"
 	},
@@ -23,7 +26,7 @@
 		"zod": "^4.0.5"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.0.6",
+		"@biomejs/biome": "2.1.2",
 		"@types/bcrypt": "^5.0.2",
 		"@types/jsonwebtoken": "^9.0.10",
 		"@types/node": "^24.0.10",

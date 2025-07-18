@@ -1,7 +1,8 @@
 {
 	"editor.codeActionsOnSave": {
+		"source.fixAll.biome": "never",
 		"source.organizeImports": "always",
-		"source.fixAll.biome": "never"
+		"source.sort.json": "never"
 	},
 	"editor.defaultFormatter": "biomejs.biome",
 	"editor.formatOnSave": true
