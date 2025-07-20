@@ -8,12 +8,26 @@
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,
 		"skipLibCheck": true,
-		"baseUrl": ".",
-		"outDir": "dist",
-		"rootDir": "src",
 		"allowSyntheticDefaultImports": true,
 		"resolveJsonModule": true,
-		"moduleDetection": "force"
+		"moduleDetection": "force",
+		"baseUrl": "./src",
+		"rootDir": "./src",
+		"outDir": "./dist",
+		"paths": {
+			"@config/*": ["config/*"],
+			"@controllers/*": ["controllers/*"],
+			"@models/*": ["models/*"],
+			"@plugins/*": ["plugins/*"],
+			"@routes/*": ["routes/*"],
+			"@schemas/*": ["schemas/*"],
+			"@services/*": ["services/*"],
+			"@utils/*": ["utils/*"]
+		}
+	},
+	"tsc-alias": {
+		"verbose": false,
+		"resolveFullPaths": true
 	},
 	"include": ["src"],
 	"exclude": ["node_modules", "dist"]

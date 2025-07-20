@@ -9,7 +9,8 @@
 		"enabled": true
 	},
 	"files": {
-		"ignoreUnknown": false
+		"ignoreUnknown": true,
+		"includes": ["src/**/*.ts", "./**/*.json"]
 	},
 	"formatter": {
 		"enabled": true,
@@ -30,7 +31,6 @@
 					"level": "warn",
 					"options": {}
 				},
-
 				"noUnusedVariables": {
 					"fix": "none",
 					"level": "warn",

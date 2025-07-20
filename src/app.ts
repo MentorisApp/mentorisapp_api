@@ -1,7 +1,10 @@
+import { env } from "@config/env";
+import { appRouter } from "@routes/appRouter";
 import Fastify from "fastify";
-import { env } from "./config/env.js";
 
 const app = Fastify({ logger: true });
+
+app.register(appRouter, { prefix: "/api/v1" });
 
 app.setErrorHandler((error, request, reply) => {
 	request.log.error(error, "Unhandled error occurred");
