@@ -30,6 +30,7 @@
 					"level": "warn",
 					"options": {}
 				},
+
 				"noUnusedVariables": {
 					"fix": "none",
 					"level": "warn",
@@ -42,6 +43,9 @@
 						"forceJsExtensions": true
 					}
 				}
+			},
+			"style": {
+				"noDefaultExport": "error"
 			},
 			"recommended": false,
 			"suspicious": {
