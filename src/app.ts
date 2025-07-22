@@ -1,13 +1,13 @@
 import { env } from "@config/env";
-import { appRouter } from "@routes/appRouter";
+import { appRouter } from "@routes/app.router";
 import Fastify from "fastify";
 
-const app = Fastify({ logger: true });
+const app = Fastify();
 
 app.register(appRouter, { prefix: "/api/v1" });
 
-app.setErrorHandler((error, request, reply) => {
-	request.log.error(error, "Unhandled error occurred");
+// TODO
+app.setErrorHandler((_error, _request, reply) => {
 	reply.code(500).send({ message: "Internal server error" });
 });
 
