@@ -10,7 +10,13 @@
 	},
 	"files": {
 		"ignoreUnknown": true,
-		"includes": ["src/**/*.ts", "./**/*.json"]
+		"includes": [
+			"src/**/*.ts",
+			"src/**/*.js",
+			"src/**/*.json",
+			"src/**/*.md",
+			"!src/db/migrations/**"
+		]
 	},
 	"formatter": {
 		"enabled": true,
@@ -35,13 +41,6 @@
 					"fix": "none",
 					"level": "warn",
 					"options": {}
-				},
-				"useImportExtensions": {
-					"fix": "safe",
-					"level": "error",
-					"options": {
-						"forceJsExtensions": true
-					}
 				}
 			},
 			"style": {

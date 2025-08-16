@@ -1,4 +1,4 @@
-import { env } from "@config/env";
+import { env } from "@env";
 import { appRouter } from "app.router";
 import Fastify from "fastify";
 

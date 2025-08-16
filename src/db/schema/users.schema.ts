@@ -5,7 +5,7 @@ import {
 	timestamp,
 	varchar,
 } from "drizzle-orm/pg-core";
-import { roles } from "modules/roles/role.schema";
+import { roles } from "./roles.schema";
 
 export const users = pgTable("users", {
 	id: serial("id").primaryKey(),
@@ -16,6 +16,3 @@ export const users = pgTable("users", {
 		.references(() => roles.id, { onDelete: "restrict", onUpdate: "cascade" }),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 });
-
-// export type User = typeof users.$inferSelect;
-// export type NewUser = typeof users.$inferInsert;

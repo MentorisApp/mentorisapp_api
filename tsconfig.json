@@ -12,24 +12,23 @@
 		"resolveJsonModule": true,
 		"allowArbitraryExtensions": true,
 		"moduleDetection": "force",
-		"baseUrl": "./src",
 		"rootDir": "./src",
+		"baseUrl": "./src",
 		"outDir": "./dist",
 		"paths": {
-			"@config/*": ["config/*"],
 			"@controllers/*": ["controllers/*"],
 			"@models/*": ["models/*"],
-			"@plugins/*": ["plugins/*"],
 			"@routes/*": ["routes/*"],
-			"@schemas/*": ["schemas/*"],
 			"@services/*": ["services/*"],
-			"@utils/*": ["utils/*"]
+			"@utils/*": ["utils/*"],
+			"@env": ["env.ts"]
 		}
 	},
 	"tsc-alias": {
 		"verbose": false,
-		"resolveFullPaths": true
+		"resolveFullPaths": true,
+		"resolveFullExtension": ".js"
 	},
 	"include": ["src"],
-	"exclude": ["node_modules", "dist"]
+	"exclude": ["node_modules", "dist", "src/db/migrations"]
 }
