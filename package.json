@@ -11,7 +11,7 @@
 		"start:dev": "node --env-file .env.development dist/app.js",
 		"start:prod": "node --env-file .env.production dist/app.js",
 		"typecheck": "tsc --noEmit",
-		"lint": "biome check --files-ignore-unknown=true",
+		"lint": "biome check --no-errors-on-unmatched --files-ignore-unknown=true",
 		"pre-commit": "lint-staged",
 		"prepare": "husky install"
 	},
@@ -37,9 +37,8 @@
 		"typescript": "^5.8.3"
 	},
 	"lint-staged": {
-		"*.{ts,js,json,md}": [
-			"biome check --no-errors-on-unmatched --files-ignore-unknown=true"
-		],
-		 "!src/db/migrations/**": []
+	"*.{ts,js,json,md}": ["yarn lint"],
+  	"*.ts": ["yarn typecheck"],
+	"!src/db/migrations/**": []
 	}
 }
