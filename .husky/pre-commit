@@ -2,3 +2,6 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 yarn pre-commit
+
+# Cannot typecheck only staged files, configuration gets hacky and messy, hence we typecheck all files based on tsconfig.json
+yarn typecheck 

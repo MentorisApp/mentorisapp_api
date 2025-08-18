@@ -17,10 +17,10 @@
 		"outDir": "./dist",
 		"paths": {
 			"@controllers/*": ["controllers/*"],
-			"@models/*": ["models/*"],
 			"@routes/*": ["routes/*"],
 			"@services/*": ["services/*"],
 			"@utils/*": ["utils/*"],
+			"@schema/*": ["db/schema/*.schema.ts"],
 			"@env": ["env.ts"]
 		}
 	},

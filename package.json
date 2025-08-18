@@ -6,14 +6,21 @@
 	"license": "MIT",
 	"scripts": {
 		"build": "tsc && tsc-alias -p tsconfig.json",
+		
 		"dev": "tsx --watch --env-file .env.development ./src/app.ts",
 		"prod": "tsx --watch --env-file .env.production ./src/app.ts",
+
 		"start:dev": "node --env-file .env.development dist/app.js",
 		"start:prod": "node --env-file .env.production dist/app.js",
+
 		"typecheck": "tsc --noEmit",
 		"lint": "biome check --no-errors-on-unmatched --files-ignore-unknown=true",
+
 		"pre-commit": "lint-staged",
-		"prepare": "husky install"
+		"pre-push": "yarn typecheck && yarn lint",
+
+		"prepare": "husky install",
+		"migrate:generate": "drizzle-kit generate --name"
 	},
 	"dependencies": {
 		"bcrypt": "^6.0.0",
@@ -37,8 +44,8 @@
 		"typescript": "^5.8.3"
 	},
 	"lint-staged": {
-	"*.{ts,js,json,md}": ["yarn lint"],
-  	"*.ts": ["yarn typecheck"],
-	"!src/db/migrations/**": []
+		"*.{ts,js,json,md}": [
+			"yarn lint"
+		]
 	}
 }

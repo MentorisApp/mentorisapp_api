@@ -1,10 +1,10 @@
 import { env } from "@env";
-import { appRouter } from "app.router";
+import { router } from "@routes/router";
 import Fastify from "fastify";
 
 const app = Fastify();
 
-app.register(appRouter, { prefix: "/api/v1" });
+app.register(router, { prefix: "/api/v1" });
 
 app.setErrorHandler((_error, _request, reply) => {
 	reply.code(500).send({ message: "Internal server error" });
