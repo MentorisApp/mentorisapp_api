@@ -3,6 +3,10 @@ import { db } from "@plugins/db";
 import { router } from "app.router";
 import Fastify from "fastify";
 
+// TODO Set error handler global define callback function
+// TODO prefix for api could be in env or defined as constant
+// TODO Check if fastify has a hook for wrapping responds in wrapper DTO to have uniform responses
+
 async function buildApp() {
 	const app = Fastify();
 
