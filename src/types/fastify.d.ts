@@ -1,5 +1,5 @@
-import { AppDb } from "@plugins/db";
 import "fastify";
+import { AppDb } from "./db.types";
 
 declare module "fastify" {
 	interface FastifyInstance {
