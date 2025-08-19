@@ -16,6 +16,7 @@
 		"pre-push": "yarn typecheck && yarn lint",
 		"db:generate": "drizzle-kit generate --name",
 		"db:push": "drizzle-kit push",
+		"db:studio": "drizzle-kit studio",
 		"prepare": "husky install"
 	},
 	"dependencies": {
