@@ -1,5 +1,5 @@
 import { env } from "@env";
-import { router } from "@routes/router";
+import { router } from "app.router";
 import Fastify from "fastify";
 
 const app = Fastify();
