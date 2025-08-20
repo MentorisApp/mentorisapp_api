@@ -4,10 +4,10 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 import { Pool } from "pg";
-import { AppDb } from "types/db.types";
 import * as schema from "../db/schema/index";
+import { AppDb } from "../types/db.type";
 
-async function dbPlugin(fastify: FastifyInstance) {
+const dbPlugin = async (fastify: FastifyInstance) => {
 	// Create a Pool from connection string
 	const pool = new Pool({ connectionString: env.DATABASE_URL });
 
@@ -24,6 +24,6 @@ async function dbPlugin(fastify: FastifyInstance) {
 	fastify.addHook("onClose", async () => {
 		await pool.end();
 	});
-}
+};
 
 export const db = fp(dbPlugin, { name: "db-plugin" });

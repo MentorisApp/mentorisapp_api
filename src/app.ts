@@ -1,25 +1,17 @@
 import { env } from "@env";
-import { db } from "@plugins/db";
+import { apiErrorWrapper } from "@plugins/apiError.plugin";
+import { apiResponseWrapper } from "@plugins/apiResponse.plugin";
+import { db } from "@plugins/db.plugin";
 import { router } from "app.router";
 import Fastify from "fastify";
-
-// TODO Set error handler global define callback function
-// TODO prefix for api could be in env or defined as constant
-// TODO Check if fastify has a hook for wrapping responds in wrapper DTO to have uniform responses
 
 async function buildApp() {
 	const app = Fastify();
 
-	/* --------------------------- Database connection -------------------------- */
 	app.register(db);
-
-	/* ------------------------------- App router ------------------------------- */
+	app.register(apiErrorWrapper);
+	app.register(apiResponseWrapper);
 	app.register(router, { prefix: "/api/v1" });
-
-	/* ------------------------ Global exception handler ------------------------ */
-	app.setErrorHandler((_error, _request, reply) => {
-		reply.code(500).send({ message: "Internal server error" });
-	});
 
 	return app;
 }
@@ -37,11 +29,11 @@ async function startAppServer() {
 		console.info("PORT =", env.PORT);
 	});
 
-	// Graceful shutdown
 	const shutdown = async () => {
 		console.info("Shutting down...");
 		await app.close();
-		process.exit(0);
+		// TODO
+		// process.exit(0);
 	};
 
 	process.on("SIGINT", shutdown);
