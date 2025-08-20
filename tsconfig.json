@@ -20,7 +20,7 @@
 			"@utils/*": ["utils/*"],
 			"@plugins/*": ["plugins/*"],
 			"@types/*": ["types/*"],
-			"@schema/*": ["db/schema/*.schema.ts"],
+			"@schema/*": ["db/schema/*"],
 			"@env": ["env.ts"]
 		}
 	},
