@@ -15,7 +15,7 @@ export function createUserService(app: FastifyInstance) {
 			.from(db.users)
 			.where(eq(db.users.id, id))
 			.limit(1);
-		console.log(users[0]);
+
 		return users[0];
 	};
 

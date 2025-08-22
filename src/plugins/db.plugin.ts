@@ -1,4 +1,3 @@
-// plugins/db.ts
 import { env } from "@env";
 import * as schema from "@schema/index";
 import { drizzle } from "drizzle-orm/node-postgres";
@@ -7,7 +6,7 @@ import fp from "fastify-plugin";
 import { Pool } from "pg";
 import { AppDb } from "../types/db.type";
 
-const dbPlugin = async (fastify: FastifyInstance) => {
+const databaseClient = async (fastify: FastifyInstance) => {
 	// Create a Pool from connection string
 	const pool = new Pool({ connectionString: env.DATABASE_URL });
 
@@ -26,4 +25,4 @@ const dbPlugin = async (fastify: FastifyInstance) => {
 	});
 };
 
-export const db = fp(dbPlugin, { name: "db-plugin" });
+export const dbClientPlugin = fp(databaseClient, { name: "db-client-plugin" });

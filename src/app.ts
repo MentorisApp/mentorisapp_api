@@ -1,16 +1,20 @@
 import { env } from "@env";
-import { apiErrorWrapper } from "@plugins/apiError.plugin";
-import { apiResponseWrapper } from "@plugins/apiResponse.plugin";
-import { db } from "@plugins/db.plugin";
+import { dbClientPlugin } from "@plugins/db.plugin";
+
+import { globalExceptionPlugin } from "@plugins/globalException.plugin";
+import { globalResponsePlugin } from "@plugins/globalResponse.plugin";
 import { router } from "app.router";
 import Fastify from "fastify";
 
 async function buildApp() {
 	const app = Fastify();
 
-	app.register(db);
-	app.register(apiErrorWrapper);
-	app.register(apiResponseWrapper);
+	// Plugins
+	app.register(dbClientPlugin);
+	app.register(globalResponsePlugin);
+	app.register(globalExceptionPlugin);
+
+	// Router
 	app.register(router, { prefix: "/api/v1" });
 
 	return app;
