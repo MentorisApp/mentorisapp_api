@@ -16,13 +16,8 @@
 		"baseUrl": "./src",
 		"outDir": "./dist",
 		"paths": {
-			"@modules/*": ["modules/*"],
-			"@utils/*": ["utils/*"],
-			"@plugins/*": ["plugins/*"],
-			"@types/*": ["types/*"],
-			"@schema/*": ["db/schema/*"],
-			"@env": ["env.ts"]
-		}
+      		"~/*": ["*"]
+    }
 	},
 	"tsc-alias": {
 		"verbose": false,

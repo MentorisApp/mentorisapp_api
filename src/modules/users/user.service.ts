@@ -1,38 +1,46 @@
 import { eq } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
+import { unwrapResult } from "~/utils/db.util";
 import { UserCreate, UserUpdate } from "./user.validator";
 
 export function createUserService(app: FastifyInstance) {
 	const { db } = app;
 
 	const getAllUsers = async () => {
-		return db.select().from(db.users);
+		const result = db.select().from(db.users);
+		return result;
 	};
 
 	const getUserById = async (id: number) => {
-		const users = await db
+		const result = await db
 			.select()
 			.from(db.users)
 			.where(eq(db.users.id, id))
 			.limit(1);
-
-		return users[0];
+		// TODO unwrapResult message tailored to this entity USER
+		return unwrapResult(result, "UNWRAP RESULT ERROR PLACEHOLDER");
 	};
 
 	const createUser = async (user: UserCreate) => {
-		return db.insert(db.users).values(user).returning();
+		const result = await db.insert(db.users).values(user).returning();
+		return unwrapResult(result, "UNWRAP RESULT ERROR PLACEHOLDER");
 	};
 
 	const updateUser = async (user: UserUpdate) => {
-		return db
+		const result = await db
 			.update(db.users)
 			.set(user)
 			.where(eq(db.users.id, user.id))
 			.returning();
+		return unwrapResult(result, "UNWRAP RESULT ERROR PLACEHOLDER");
 	};
 
 	const deleteUser = async (id: number) => {
-		return db.delete(db.users).where(eq(db.users.id, id)).returning();
+		const result = await db
+			.delete(db.users)
+			.where(eq(db.users.id, id))
+			.returning();
+		return unwrapResult(result, "UNWRAP RESULT ERROR PLACEHOLDER");
 	};
 
 	return {

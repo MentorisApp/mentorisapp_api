@@ -1,10 +1,9 @@
-import { env } from "@env";
-import { dbClientPlugin } from "@plugins/db.plugin";
-
-import { globalExceptionPlugin } from "@plugins/globalException.plugin";
-import { globalResponsePlugin } from "@plugins/globalResponse.plugin";
 import { router } from "app.router";
 import Fastify from "fastify";
+import { env } from "~/env";
+import { dbClientPlugin } from "~/plugins/db.plugin";
+import { globalExceptionPlugin } from "~/plugins/globalException.plugin";
+import { globalResponsePlugin } from "~/plugins/globalResponse.plugin";
 
 async function buildApp() {
 	const app = Fastify();
@@ -36,8 +35,7 @@ async function startAppServer() {
 	const shutdown = async () => {
 		console.info("Shutting down...");
 		await app.close();
-		// TODO
-		// process.exit(0);
+		process.exit(0);
 	};
 
 	process.on("SIGINT", shutdown);

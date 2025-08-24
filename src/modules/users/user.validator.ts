@@ -1,6 +1,6 @@
-import { users } from "@schema/users.schema";
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z from "zod";
+import { users } from "~/db/schema/users.schema";
 
 export const userCreateSchema = createInsertSchema(users)
 	.omit({ id: true, createdAt: true })
@@ -12,6 +12,8 @@ export const userUpdateSchema = createUpdateSchema(users)
 	.required({ id: true })
 	.extend({
 		email: z.email("Email format is incorrect."),
+		// TODO password validation
+		password: z.string("Password format is incorrect."),
 	});
 
 export type UserCreate = z.infer<typeof userCreateSchema>;

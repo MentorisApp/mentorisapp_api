@@ -1,5 +1,5 @@
-import { paramNumber } from "@utils/validators.util";
 import { FastifyPluginAsync } from "fastify";
+import { paramNumber } from "~/utils/validators.util";
 import { createUserService } from "./user.service";
 import { userCreateSchema, userUpdateSchema } from "./user.validator";
 
@@ -16,7 +16,7 @@ export const userController: FastifyPluginAsync = async (app) => {
 	});
 
 	app.post("/", async (request) => {
-		const body = userCreateSchema.parse(request.body);
+		const body = userCreateSchema.parse(request.body, { reportInput: true });
 		return await userService.createUser(body);
 	});
 
