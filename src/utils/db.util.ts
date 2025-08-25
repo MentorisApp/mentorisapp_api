@@ -3,7 +3,7 @@ import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 import { PostgresErrorCode } from "~/constants/postgresErrorCodes.enum";
 import { NotFoundError } from "~/domain/errors/NotFoundError";
 
-export function unwrapResult<T>(rows: T[], message: string): T {
+export function unwrapResult<T>(rows: T[], message: string = "Resource not found"): T {
 	if (rows.length === 0) {
 		throw new NotFoundError(message);
 	}
@@ -22,6 +22,7 @@ export function handleDatabaseError(error: DatabaseError): {
 			};
 
 		case PostgresErrorCode.FOREIGN_KEY_VIOLATION:
+
 		case PostgresErrorCode.NOT_NULL_VIOLATION:
 			return {
 				status: HttpStatus.BAD_REQUEST,
@@ -29,6 +30,7 @@ export function handleDatabaseError(error: DatabaseError): {
 			};
 
 		case PostgresErrorCode.DEADLOCK_DETECTED:
+
 		case PostgresErrorCode.SERIALIZATION_FAILURE:
 			return {
 				status: HttpStatus.SERVICE_UNAVAILABLE,

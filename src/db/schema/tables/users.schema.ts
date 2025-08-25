@@ -1,10 +1,4 @@
-import {
-	integer,
-	pgTable,
-	serial,
-	timestamp,
-	varchar,
-} from "drizzle-orm/pg-core";
+import { integer, pgTable, serial, timestamp, varchar } from "drizzle-orm/pg-core";
 import { roles } from "./roles.schema";
 
 export const users = pgTable("users", {
@@ -13,6 +7,6 @@ export const users = pgTable("users", {
 	password: varchar("password", { length: 255 }).notNull(),
 	roleId: integer("role_id")
 		.notNull()
-		.references(() => roles.id, { onDelete: "restrict", onUpdate: "cascade" }),
+		.references(() => roles.id, { onDelete: "cascade" }),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 });
