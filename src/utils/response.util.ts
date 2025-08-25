@@ -21,17 +21,20 @@ export function sendErrorResponse(error: FastifyError, reply: FastifyReply) {
 	let message = "Something went wrong";
 	let detail: ApiErrorResponse["detail"] = null;
 
+	// Validation errors
 	if (error instanceof ZodError) {
 		status = HttpStatus.BAD_REQUEST;
 		message = "Validation error";
 		detail = error.issues;
 	}
 
+	// Not found entity errors
 	if (error instanceof NotFoundError) {
 		status = HttpStatus.NOT_FOUND;
 		message = error.message;
 	}
 
+	// Database errors
 	if (error instanceof DrizzleQueryError) {
 		const pgError = error.cause;
 		if (pgError instanceof DatabaseError) {
@@ -41,6 +44,7 @@ export function sendErrorResponse(error: FastifyError, reply: FastifyReply) {
 		}
 	}
 
+	// Invalid JSON in payload errors
 	if (
 		error instanceof fastify.errorCodes.FST_ERR_CTP_EMPTY_JSON_BODY ||
 		error instanceof SyntaxError
