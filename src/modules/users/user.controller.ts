@@ -6,9 +6,9 @@ import { userCreateSchema, userUpdateSchema } from "./user.validator";
 export const userController: FastifyPluginAsync = async (app) => {
 	const userService = createUserService(app);
 
-	app.get("/", async () => {
-		return await userService.getAllUsers();
-	});
+	// app.get("/", async () => {
+	// 	return await userService.getAllUsers();
+	// });
 
 	app.get("/:id", async (request) => {
 		const { id } = paramNumber("id").parse(request.params);
@@ -25,8 +25,8 @@ export const userController: FastifyPluginAsync = async (app) => {
 		return await userService.updateUser(body);
 	});
 
-	app.delete("/:id", async (request) => {
-		const { id } = paramNumber("id").parse(request.params);
-		return await userService.deleteUser(id);
-	});
+	// app.delete("/:id", async (request) => {
+	// 	const { id } = paramNumber("id").parse(request.params);
+	// 	return await userService.deleteUser(id);
+	// });
 };

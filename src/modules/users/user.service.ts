@@ -6,10 +6,10 @@ import { UserCreate, UserUpdate } from "./user.validator";
 export function createUserService(app: FastifyInstance) {
 	const { db } = app;
 
-	const getAllUsers = async () => {
-		const result = db.select().from(db.users);
-		return result;
-	};
+	// const getAllUsers = async () => {
+	// 	const result = db.select().from(db.users);
+	// 	return result;
+	// };
 
 	const getUserById = async (id: number) => {
 		const result = await db
@@ -17,7 +17,6 @@ export function createUserService(app: FastifyInstance) {
 			.from(db.users)
 			.where(eq(db.users.id, id))
 			.limit(1);
-		// TODO unwrapResult message tailored to this entity USER
 		return unwrapResult(result, "UNWRAP RESULT ERROR PLACEHOLDER");
 	};
 
@@ -35,19 +34,19 @@ export function createUserService(app: FastifyInstance) {
 		return unwrapResult(result, "UNWRAP RESULT ERROR PLACEHOLDER");
 	};
 
-	const deleteUser = async (id: number) => {
-		const result = await db
-			.delete(db.users)
-			.where(eq(db.users.id, id))
-			.returning();
-		return unwrapResult(result, "UNWRAP RESULT ERROR PLACEHOLDER");
-	};
+	// const deleteUser = async (id: number) => {
+	// 	const result = await db
+	// 		.delete(db.users)
+	// 		.where(eq(db.users.id, id))
+	// 		.returning();
+	// 	return unwrapResult(result, "UNWRAP RESULT ERROR PLACEHOLDER");
+	// };
 
 	return {
-		getAllUsers,
 		getUserById,
 		createUser,
 		updateUser,
-		deleteUser,
+		// getAllUsers,
+		// deleteUser,
 	};
 }
