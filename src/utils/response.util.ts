@@ -5,6 +5,8 @@ import { v4 as uuidV4 } from "uuid";
 import { ZodError } from "zod";
 import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 import { ErrorResponse } from "~/domain/dto/ErrorResponse.dto";
+import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
+import { InvalidCredentialsError } from "~/domain/errors/InvalidCredentialsError";
 import { NotFoundError } from "~/domain/errors/NotFoundError";
 import { ApiErrorResponse, Metadata } from "~/types/response.type";
 import { handleDatabaseError } from "./db.util";
@@ -19,7 +21,7 @@ export function createMetadata(): Metadata {
 export function sendErrorResponse(error: FastifyError, reply: FastifyReply) {
 	let status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 	let message = "Something went wrong";
-	let detail: ApiErrorResponse["detail"] = null;
+	let detail: ApiErrorResponse["detail"] = error.message || null;
 
 	// Validation errors
 	if (error instanceof ZodError) {
@@ -28,9 +30,21 @@ export function sendErrorResponse(error: FastifyError, reply: FastifyReply) {
 		detail = error.issues;
 	}
 
-	// Not found entity errors
+	// Not found entity
 	if (error instanceof NotFoundError) {
 		status = HttpStatus.NOT_FOUND;
+		message = error.message;
+	}
+
+	// Entity already exists
+	if (error instanceof AlreadyExistsError) {
+		status = HttpStatus.CONFLICT;
+		message = error.message;
+	}
+
+	// Login credentials not valid
+	if (error instanceof InvalidCredentialsError) {
+		status = HttpStatus.UNAUTHORIZED;
 		message = error.message;
 	}
 
@@ -51,6 +65,13 @@ export function sendErrorResponse(error: FastifyError, reply: FastifyReply) {
 	) {
 		status = HttpStatus.BAD_REQUEST;
 		message = "Invalid JSON in request body";
+		detail = error.message;
+	}
+
+	// Dumb object error code check (just instance of FastifyError)
+	if (error.code === "FST_JWT_NO_AUTHORIZATION_IN_HEADER") {
+		status = HttpStatus.UNAUTHORIZED;
+		message = "Unauthorized";
 		detail = error.message;
 	}
 

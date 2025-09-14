@@ -1,9 +1,9 @@
 import { integer, pgTable, primaryKey } from "drizzle-orm/pg-core";
-import { permissions } from "../permissions.schema";
-import { roles } from "../roles.schema";
+import { permissions } from "../tables/permissions.schema";
+import { roles } from "../tables/roles.schema";
 
-export const rolesPermissions = pgTable(
-	"role_permissions",
+export const roles_permissions = pgTable(
+	"roles_permissions",
 	{
 		roleId: integer("role_id")
 			.notNull()

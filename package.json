@@ -20,13 +20,15 @@
 		"prepare": "husky install"
 	},
 	"dependencies": {
+		"@fastify/cookie": "^11.0.2",
+		"@fastify/cors": "^11.1.0",
+		"@fastify/jwt": "^10.0.0",
 		"bcrypt": "^6.0.0",
 		"dotenv": "^17.2.1",
 		"drizzle-orm": "^0.44.2",
 		"drizzle-zod": "^0.8.3",
 		"fastify": "^5.4.0",
 		"fastify-plugin": "^5.0.1",
-		"jsonwebtoken": "^9.0.2",
 		"lint-staged": "12.3.2",
 		"pg": "^8.16.3",
 		"tsc-alias": "^1.8.16",

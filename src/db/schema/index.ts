@@ -1,7 +1,8 @@
 /* ------------------------------- Join tables ------------------------------ */
-export * from "./joins/roles-permissions.schema";
+export * from "./joins/roles_permissions.schema";
 
 /* --------------------------------- Tables --------------------------------- */
-export * from "./permissions.schema";
-export * from "./roles.schema";
-export * from "./users.schema";
+export * from "./tables/permissions.schema";
+export * from "./tables/refresh_tokens.schema";
+export * from "./tables/roles.schema";
+export * from "./tables/users.schema";
