@@ -4,11 +4,9 @@ import { createMetadata } from "~/utils/response.util";
 
 export class ErrorResponse implements ApiErrorResponse {
 	success: false = false;
-	requestId: string;
-	timestamp: string;
-	status: HttpStatus;
 	message: string;
 	detail: ApiErrorResponse["detail"];
+	meta: Metadata & { status: HttpStatus };
 
 	constructor({
 		status = HttpStatus.INTERNAL_SERVER_ERROR,
@@ -21,10 +19,12 @@ export class ErrorResponse implements ApiErrorResponse {
 	} = {}) {
 		const { requestId, timestamp }: Metadata = createMetadata();
 
-		this.requestId = requestId;
-		this.timestamp = timestamp;
-		this.status = status;
 		this.message = message;
 		this.detail = detail;
+		this.meta = {
+			status,
+			requestId,
+			timestamp,
+		};
 	}
 }

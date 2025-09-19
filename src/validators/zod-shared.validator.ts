@@ -1,14 +1,14 @@
 import z from "zod";
 
-export const NumberSchema = (name: string) =>
-	z
-		.object({
-			[name]: z.coerce
-				.number(`${name} must be a valid number`)
-				.int(`${name} must be an integer`)
-				.positive(`${name} must be a positive number`),
-		})
-		.required();
+// Used for checking DELETE id param
+export const NumberSchema = (name: string) => {
+	const numberSchema = z.coerce
+		.number(`${name} must be a valid number`)
+		.int(`${name} must be an integer`)
+		.positive(`${name} must be a positive number`);
+
+	return z.object({ [name]: numberSchema }).required();
+};
 
 export const PasswordSchema = z
 	.string()

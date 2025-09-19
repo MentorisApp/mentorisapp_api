@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
 import { unwrapResult } from "~/utils/db.util";
 import { UserCreate } from "~/validators/user.validator";
@@ -13,24 +13,22 @@ export function createUserService(app: FastifyInstance) {
 				.select({
 					roleId: roles.id,
 					roleName: roles.name,
-					permissionId: roles_permissions.permissionId,
+					permissionIds: sql<number[]>`ARRAY_AGG(${roles_permissions.permissionId})`,
 				})
 				.from(roles)
 				.leftJoin(roles_permissions, eq(roles_permissions.roleId, roles.id))
-				.where(eq(roles.name, "USER"));
+				.where(eq(roles.name, "USER"))
+				.groupBy(roles.id, roles.name);
 
-			const defaultRoleId = userRoleWithPermissions[0]?.roleId;
-
-			const permissionIds = userRoleWithPermissions
-				.map((r) => r.permissionId)
-				.filter((id) => id !== null);
+			const roleId = userRoleWithPermissions[0].roleId;
+			const permissionIds = userRoleWithPermissions[0].permissionIds;
 
 			const resultUserCreate = await tx
 				.insert(users)
 				.values({
 					email: user.email,
 					password: user.password,
-					roleId: defaultRoleId,
+					roleId,
 				})
 				.returning();
 
@@ -59,17 +57,17 @@ export function createUserService(app: FastifyInstance) {
 		const result = await db
 			.select({
 				roleId: users.roleId,
-				permissionId: roles_permissions.permissionId,
+				permissionIds: sql<number[]>`
+      COALESCE(ARRAY_AGG(${roles_permissions.permissionId}), '{}')
+    `,
 			})
 			.from(users)
 			.leftJoin(roles, eq(users.roleId, roles.id))
 			.leftJoin(roles_permissions, eq(roles_permissions.roleId, roles.id))
-			.where(eq(users.id, userId));
+			.where(eq(users.id, userId))
+			.groupBy(users.roleId);
 
-		const roleId = result[0].roleId;
-		const permissionIds = result
-			.map((r) => r.permissionId)
-			.filter((id): id is number => id !== null);
+		const { roleId, permissionIds } = unwrapResult(result);
 
 		return {
 			roleId,

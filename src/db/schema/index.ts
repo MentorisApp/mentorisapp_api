@@ -1,8 +1,10 @@
-/* ------------------------------- Join tables ------------------------------ */
-export * from "./joins/roles_permissions.schema";
-
-/* --------------------------------- Tables --------------------------------- */
+export * from "./junctions/roles_permissions.schema";
+export * from "./tables/cities.schema";
+export * from "./tables/countries.schema";
+export * from "./tables/education_levels.schema";
+export * from "./tables/genders.schema";
 export * from "./tables/permissions.schema";
+export * from "./tables/profiles.schema";
 export * from "./tables/refresh_tokens.schema";
 export * from "./tables/roles.schema";
 export * from "./tables/users.schema";
