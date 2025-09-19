@@ -1,4 +1,6 @@
 import { ZodError } from "zod";
+import { $ZodFlattenedError } from "zod/v4/core";
+import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 
 export type Metadata = {
 	requestId: string;
@@ -7,10 +9,9 @@ export type Metadata = {
 
 export type ApiErrorResponse = {
 	success: false;
-	requestId: string;
-	timestamp: string;
-	message: string;
-	detail: ZodError["issues"] | string | null;
+	message: string | null;
+	detail: ZodError["issues"] | $ZodFlattenedError<unknown> | string | null;
+	meta: Metadata & { status: HttpStatus };
 };
 
 export type ApiSuccessResponse<T> = {

@@ -8,6 +8,27 @@
       "when": 1756836530321,
       "tag": "0000_init_auth",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1757973438232,
+      "tag": "0001_profile_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1758280946784,
+      "tag": "0002_remove_email_profile_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1758281244160,
+      "tag": "0003_unique_user_id",
+      "breakpoints": true
     }
   ]
 }

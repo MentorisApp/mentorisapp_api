@@ -7,6 +7,6 @@ export const users = pgTable("users", {
 	password: varchar("password", { length: 255 }).notNull(),
 	roleId: integer("role_id")
 		.notNull()
-		.references(() => roles.id, { onDelete: "cascade" }),
+		.references(() => roles.id, { onDelete: "restrict" }),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 });

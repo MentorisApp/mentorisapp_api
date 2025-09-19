@@ -88,9 +88,9 @@ export const useAuthController = (app: FastifyInstance) => {
 		return reply.status(HttpStatus.NO_CONTENT).send();
 	};
 
+	// TODO errors handling, custom domain add
 	const refresh = async (request: FastifyRequest, reply: FastifyReply) => {
 		const oldRefreshTokenCookie = request.cookies.refreshToken;
-		// const oldAccessToken = request.headers.authorization?.split(" ")[1];
 
 		if (!oldRefreshTokenCookie) {
 			throw Error("NO REFRESH TOKEN IN COOKIE");
@@ -102,7 +102,6 @@ export const useAuthController = (app: FastifyInstance) => {
 			throw Error("REFRESH TOKEN COOKIE NOT VALID");
 		}
 
-		// Verify refresh token (not expired, not revoked, jti valid).
 		const payload = tokenService.verifyRefreshToken(oldRefreshToken);
 		const storedToken = await tokenService.getRefreshTokenByJti(payload.jti);
 
@@ -110,12 +109,10 @@ export const useAuthController = (app: FastifyInstance) => {
 			throw Error("Token has been revoked or is expired");
 		}
 
-		// // Generate new JTI for new refresh token
 		const newJti = tokenService.generateJti();
 
 		const userPermissions = await userService.getUserPermission(storedToken.userId);
 
-		// // // Issue new access & refresh tokens
 		const newAccessToken = tokenService.issueAccessToken(
 			storedToken.userId,
 			userPermissions.roleId,
@@ -130,7 +127,7 @@ export const useAuthController = (app: FastifyInstance) => {
 			maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
 		});
 
-		return { accessToken: newAccessToken };
+		return newAccessToken;
 	};
 
 	return {
