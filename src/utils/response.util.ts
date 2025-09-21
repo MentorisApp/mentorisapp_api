@@ -9,7 +9,7 @@ import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
 import { ForbiddenError } from "~/domain/errors/ForbiddenError";
 import { InvalidCredentialsError } from "~/domain/errors/InvalidCredentialsError";
 import { NotFoundError } from "~/domain/errors/NotFoundError";
-import { ApiErrorResponse, Metadata } from "~/types/response.type";
+import { ApiErrorResponse, Metadata } from "~/types/response.types";
 import { handleDatabaseError } from "./db.util";
 
 export function createMetadata(): Metadata {

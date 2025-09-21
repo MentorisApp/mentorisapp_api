@@ -13,6 +13,7 @@ const globalExceptionHandler: FastifyPluginAsync = async (app) => {
 
 	// 404 route handler
 	app.setNotFoundHandler((request, reply) => {
+		console.log(request);
 		reply.status(HttpStatus.NOT_FOUND).send(
 			new ErrorResponse({
 				status: HttpStatus.NOT_FOUND,
