@@ -6,12 +6,14 @@ import { globalResponsePlugin } from "~/plugins/globalResponse.plugin";
 import { router } from "~/routes/app.router";
 import { authPlugin } from "./plugins/auth.plugin";
 import { cookiePlugin } from "./plugins/cookie.plugin";
+import { emailPlugin } from "./plugins/email.plugin";
 
 const app = Fastify({
 	keepAliveTimeout: 30000,
 });
 
 async function buildApp() {
+	app.register(emailPlugin);
 	app.register(authPlugin);
 	app.register(cookiePlugin);
 	app.register(dbClientPlugin);

@@ -1,0 +1,7 @@
+<mj-section background-color="#f5f5f5" full-width="full-width" padding="20px">
+  <mj-column>
+    <mj-text align="center" font-size="12px" color="#999999">
+      © {{year}} Mentoris App. All rights reserved.
+    </mj-text>
+  </mj-column>
+</mj-section>

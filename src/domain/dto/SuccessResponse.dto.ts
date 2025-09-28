@@ -1,4 +1,4 @@
-import type { ApiSuccessResponse } from "~/types/response.type";
+import type { ApiSuccessResponse } from "~/types/response.types";
 
 export class SuccessResponse<T> implements ApiSuccessResponse<T> {
 	success: true = true;

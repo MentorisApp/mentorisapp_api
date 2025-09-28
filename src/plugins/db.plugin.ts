@@ -4,7 +4,7 @@ import fp from "fastify-plugin";
 import { Pool } from "pg";
 import * as schema from "~/db/schema";
 import { env } from "~/env";
-import { AppDb } from "../types/db.type";
+import { AppDb } from "../types/db.types";
 
 const databaseClient = async (fastify: FastifyInstance) => {
 	// Create pool

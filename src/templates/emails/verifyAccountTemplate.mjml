@@ -1,0 +1,21 @@
+<mjml>
+  <mj-body>
+    <mj-include path="./partials/header.mjml" />
+
+    <mj-section>
+      <mj-column>
+        <mj-text font-size="18px" font-family="Helvetica">
+          Hey there and welcome!
+        </mj-text>
+        <mj-text>
+          Thanks for registering! Please verify your email by clicking the button below:
+        </mj-text>
+        <mj-button href="{{link}}" background-color="#007bff" color="#ffffff">
+          Verify Email
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-include path="./partials/footer.mjml" />
+  </mj-body>
+</mjml>

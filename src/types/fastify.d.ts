@@ -1,8 +1,9 @@
 import "@fastify/jwt";
 import "fastify";
 
-import { AppDb } from "./db.type";
-import { JwtPayload } from "./jwt.type";
+import { AppDb } from "./db.types";
+import { EmailPlugin } from "./email.types";
+import { JwtPayload } from "./jwt.types";
 
 export interface AuthOptions {
 	all?: number[];
@@ -12,6 +13,7 @@ export interface AuthOptions {
 declare module "fastify" {
 	interface FastifyInstance {
 		db: AppDb;
+		email: EmailPlugin;
 		authorizeAccess: (
 			opts?: AuthOptions,
 		) => (request: FastifyRequest, reply: FastifyReply) => Promise<void>;

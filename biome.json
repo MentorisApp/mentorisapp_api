@@ -15,6 +15,7 @@
 			"src/**/*.js",
 			"src/**/*.json",
 			"src/**/*.md",
+			"scripts/**/*.ts",
 			"!src/db/migrations/**"
 		]
 	},

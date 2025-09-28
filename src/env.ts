@@ -8,6 +8,9 @@ const schema = z.object({
 	DATABASE_URL: z.string(),
 	JWT_SECRET: z.string(),
 	COOKIE_SECRET: z.string(),
+	EMAIL_HOST: z.string(),
+	EMAIL_AUTH_USER: z.string(),
+	EMAIL_AUTH_PASS: z.string(),
 	JWT_ACCESS_TOKEN_EXPIRES_IN: z
 		.string()
 		.regex(durationRegex, "Must be a valid duration like 15m, 1h, 7d"),

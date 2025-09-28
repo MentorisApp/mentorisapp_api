@@ -1,5 +1,5 @@
 import { HttpStatus } from "~/constants/httpStatusCodes.enum";
-import type { ApiErrorResponse, Metadata } from "~/types/response.type";
+import type { ApiErrorResponse, Metadata } from "~/types/response.types";
 import { createMetadata } from "~/utils/response.util";
 
 export class ErrorResponse implements ApiErrorResponse {
