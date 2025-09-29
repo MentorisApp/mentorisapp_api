@@ -8,7 +8,7 @@ export function createUserService(app: FastifyInstance) {
 	const { db } = app;
 	const { users, roles, roles_permissions, verification_tokens } = db;
 
-	const createUser = async (user: UserCreate) => {
+	async function createUser(user: UserCreate) {
 		return await db.transaction(async (tx) => {
 			const userRoleWithPermissions = await tx
 				.select({
@@ -40,21 +40,19 @@ export function createUserService(app: FastifyInstance) {
 				permissionIds,
 			};
 		});
-	};
+	}
 
-	const getUserByEmail = async (email: UserCreate["email"]) => {
+	async function getUserByEmail(email: UserCreate["email"]) {
 		const user = await db.select().from(users).where(eq(users.email, email)).limit(1);
-
 		return user[0];
-	};
+	}
 
-	const checkUserExistsByEmail = async (email: UserCreate["email"]): Promise<boolean> => {
+	async function checkUserExistsByEmail(email: UserCreate["email"]) {
 		const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
-
 		return result.length > 0;
-	};
+	}
 
-	const getUserPermission = async (userId: number) => {
+	async function getUserPermission(userId: number) {
 		const result = await db
 			.select({
 				roleId: users.roleId,
@@ -74,16 +72,16 @@ export function createUserService(app: FastifyInstance) {
 			roleId,
 			permissionIds,
 		};
-	};
+	}
 
-	const verifyUser = async (userId: number) => {
+	async function verifyUser(userId: number) {
 		await db
 			.update(users)
 			.set({ isVerified: true, updatedAt: new Date() })
 			.where(eq(users.id, userId));
-	};
+	}
 
-	const getUserByVerificationToken = async (token: string, context: VerificationTokenContext) => {
+	async function getUserByVerificationToken(token: string, context: VerificationTokenContext) {
 		const result = await db
 			.select({
 				user: users,
@@ -102,7 +100,7 @@ export function createUserService(app: FastifyInstance) {
 
 		// TODO weird data structure reutrn fix and flatten
 		return result[0] ?? null;
-	};
+	}
 
 	return {
 		getUserByVerificationToken,
