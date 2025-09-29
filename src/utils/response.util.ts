@@ -1,7 +1,6 @@
 import { DrizzleQueryError } from "drizzle-orm/errors";
 import fastify, { FastifyError, FastifyReply } from "fastify";
 import { DatabaseError } from "pg";
-import { v4 as uuidV4 } from "uuid";
 import z, { ZodError } from "zod";
 import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 import { ErrorResponse } from "~/domain/dto/ErrorResponse.dto";
@@ -11,10 +10,11 @@ import { InvalidCredentialsError } from "~/domain/errors/InvalidCredentialsError
 import { NotFoundError } from "~/domain/errors/NotFoundError";
 import { ApiErrorResponse, Metadata } from "~/types/response.types";
 import { handleDatabaseError } from "./db.util";
+import { generateUuid } from "./uuid.util";
 
 export function createMetadata(): Metadata {
 	return {
-		requestId: uuidV4(),
+		requestId: generateUuid(),
 		timestamp: new Date().toISOString(),
 	};
 }

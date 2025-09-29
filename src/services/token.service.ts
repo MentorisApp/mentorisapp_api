@@ -1,15 +1,15 @@
 import { eq } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
-import { v4 as uuidV4 } from "uuid";
 import { env } from "~/env";
+import { parseDurationMs } from "~/utils/datetime.util";
 import { unwrapResult } from "~/utils/db.util";
-import { parseDurationMs } from "~/utils/parseDuration.util";
+import { generateUuid } from "~/utils/uuid.util";
 
 export function createTokenService(app: FastifyInstance) {
 	const { db } = app;
 	const { refresh_tokens } = db;
 
-	const generateJti = () => uuidV4();
+	const generateJti = () => generateUuid();
 
 	const issueAccessToken = (userId: number, roleId: number, permissionIds: number[]) => {
 		const expiresIn = env.JWT_ACCESS_TOKEN_EXPIRES_IN;
