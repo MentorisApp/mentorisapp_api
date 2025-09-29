@@ -18,3 +18,9 @@ export function parseDurationMs(duration: string): number {
 			throw new Error("Unknown time unit");
 	}
 }
+
+export function minutesFromNow(minutes: number): Date {
+	const expires = new Date();
+	expires.setMinutes(expires.getMinutes() + minutes);
+	return expires;
+}

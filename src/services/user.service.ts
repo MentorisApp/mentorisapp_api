@@ -1,11 +1,12 @@
-import { eq, sql } from "drizzle-orm";
+import { and, eq, gt, sql } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
+import { VerificationTokenContext } from "~/db/schema";
 import { unwrapResult } from "~/utils/db.util";
 import { UserCreate } from "~/validators/user.validator";
 
 export function createUserService(app: FastifyInstance) {
 	const { db } = app;
-	const { users, roles, roles_permissions } = db;
+	const { users, roles, roles_permissions, verification_tokens } = db;
 
 	const createUser = async (user: UserCreate) => {
 		return await db.transaction(async (tx) => {
@@ -75,7 +76,37 @@ export function createUserService(app: FastifyInstance) {
 		};
 	};
 
+	const verifyUser = async (userId: number) => {
+		await db
+			.update(users)
+			.set({ isVerified: true, updatedAt: new Date() })
+			.where(eq(users.id, userId));
+	};
+
+	const getUserByVerificationToken = async (token: string, context: VerificationTokenContext) => {
+		const result = await db
+			.select({
+				user: users,
+			})
+			.from(verification_tokens)
+			.innerJoin(users, eq(verification_tokens.userId, users.id))
+			.where(
+				and(
+					eq(verification_tokens.token, token),
+					eq(verification_tokens.context, context),
+					eq(verification_tokens.used, false),
+					gt(verification_tokens.expiresAt, new Date()),
+				),
+			)
+			.limit(1);
+
+		// TODO weird data structure reutrn fix and flatten
+		return result[0] ?? null;
+	};
+
 	return {
+		getUserByVerificationToken,
+		verifyUser,
 		createUser,
 		getUserByEmail,
 		checkUserExistsByEmail,

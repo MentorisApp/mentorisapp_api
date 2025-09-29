@@ -11,4 +11,6 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 	app.post("/logout", authController.logout);
 
 	app.post("/refresh", authController.refresh);
+
+	app.get("/verify-account", authController.verifyAndLoginAccount);
 };

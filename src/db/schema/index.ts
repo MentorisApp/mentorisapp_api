@@ -8,3 +8,4 @@ export * from "./tables/profiles.schema";
 export * from "./tables/refresh_tokens.schema";
 export * from "./tables/roles.schema";
 export * from "./tables/users.schema";
+export * from "./tables/verification_tokens.schema";

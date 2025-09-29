@@ -4,5 +4,5 @@ import { useProfileController } from "~/controllers/profile.controller";
 export const profileRoutes: FastifyPluginAsync = async (app) => {
 	const profileController = useProfileController(app);
 
-	app.post("/create", profileController.createProfile);
+	app.post("/create", { preHandler: [app.authorizeAccess()] }, profileController.createProfile);
 };

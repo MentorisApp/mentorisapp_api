@@ -6,12 +6,46 @@ import { env } from "~/env";
 import { passwordService } from "~/services/password.service";
 import { createTokenService } from "~/services/token.service";
 import { createUserService } from "~/services/user.service";
-import { parseDurationMs } from "~/utils/parseDuration.util";
+import { createVerificationTokensService } from "~/services/verificationTokens.service";
+import { parseDurationMs } from "~/utils/datetime.util";
 import { UserCreateSchema } from "~/validators/user.validator";
+import { UuidQuerySchema } from "~/validators/zod-shared.validator";
 
 export const useAuthController = (app: FastifyInstance) => {
 	const tokenService = createTokenService(app);
 	const userService = createUserService(app);
+	const verificationTokenService = createVerificationTokensService(app);
+
+	const verifyAndLoginAccount = async (request: FastifyRequest, reply: FastifyReply) => {
+		const { token } = UuidQuerySchema("token").parse(request.query);
+
+		const result = await userService.getUserByVerificationToken(token, "email_verification");
+
+		// TODO errors handling, custom domain add
+		if (!result) {
+			throw new Error("Invalid or expired verification token.");
+		}
+
+		const user = result.user;
+
+		await verificationTokenService.markTokenUsed(token);
+
+		await userService.verifyUser(user.id);
+
+		const jti = tokenService.generateJti();
+		const { roleId, permissionIds } = await userService.getUserPermission(user.id);
+
+		const accessToken = tokenService.issueAccessToken(user.id, roleId, permissionIds);
+		const refreshToken = await tokenService.issueRefreshToken(user.id, jti);
+
+		reply.setCookie("refreshToken", refreshToken, {
+			maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
+		});
+
+		return reply.status(HttpStatus.OK).send({
+			accessToken,
+		});
+	};
 
 	const register = async (request: FastifyRequest, reply: FastifyReply) => {
 		const payload = UserCreateSchema.parse(request.body);
@@ -22,26 +56,29 @@ export const useAuthController = (app: FastifyInstance) => {
 		}
 
 		const hashedPassword = await passwordService.hash(payload.password);
-		const jti = tokenService.generateJti();
 
 		const newUser = await userService.createUser({
 			email: payload.email,
 			password: hashedPassword,
 		});
 
-		const accessToken = tokenService.issueAccessToken(
+		const token = await verificationTokenService.createVerificationToken(
 			newUser.id,
-			newUser.roleId,
-			newUser.permissionIds,
+			"email_verification",
 		);
 
-		const refreshToken = await tokenService.issueRefreshToken(newUser.id, jti);
-
-		reply.status(HttpStatus.CREATED).setCookie("refreshToken", refreshToken, {
-			maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
+		await app.email.send({
+			to: newUser.email,
+			template: {
+				name: "verifyAccountTemplate",
+				variables: {
+					// TODO environment domain/host
+					link: `http://localhost:3000/api/v1/auth/verify-account?token=${token}`,
+				},
+			},
 		});
 
-		return { accessToken };
+		return reply.status(HttpStatus.CREATED).send();
 	};
 
 	const login = async (request: FastifyRequest, reply: FastifyReply) => {
@@ -56,7 +93,7 @@ export const useAuthController = (app: FastifyInstance) => {
 		const jti = tokenService.generateJti();
 		const userPermission = await userService.getUserPermission(user.id);
 
-		const accessToken = await tokenService.issueAccessToken(
+		const accessToken = tokenService.issueAccessToken(
 			user.id,
 			userPermission.roleId,
 			userPermission.permissionIds,
@@ -135,5 +172,6 @@ export const useAuthController = (app: FastifyInstance) => {
 		logout,
 		register,
 		refresh,
+		verifyAndLoginAccount,
 	};
 };

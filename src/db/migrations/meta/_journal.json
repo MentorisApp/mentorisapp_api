@@ -29,6 +29,20 @@
       "when": 1758281244160,
       "tag": "0003_unique_user_id",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1759084508831,
+      "tag": "0004_verification_token",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1759091088613,
+      "tag": "0005_update_columns",
+      "breakpoints": true
     }
   ]
 }
