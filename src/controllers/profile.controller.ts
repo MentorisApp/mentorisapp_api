@@ -7,17 +7,18 @@ import { ProfileCreateSchema } from "~/validators/profile.validator";
 export const useProfileController = (app: FastifyInstance) => {
 	const profileService = createProfileService(app);
 
-	const createProfile = async (request: FastifyRequest, reply: FastifyReply) => {
-		const userId = getUserIdFromToken(request);
-		const payload = ProfileCreateSchema.parse(request.body);
-		const newProfile = await profileService.createProfile(payload, userId);
-
-		reply.status(HttpStatus.CREATED);
-
-		return newProfile;
-	};
-
 	return {
-		createProfile,
+		create: async (request: FastifyRequest, reply: FastifyReply) => {
+			const userId = getUserIdFromToken(request);
+			const payload = ProfileCreateSchema.parse(request.body);
+			const newProfile = await profileService.createProfile(payload, userId);
+
+			reply.status(HttpStatus.CREATED);
+			reply.send(newProfile);
+		},
+
+		update: async (request: FastifyRequest, reply: FastifyReply) => {
+			// TODO
+		},
 	};
 };

@@ -9,15 +9,17 @@ export function createTokenService(app: FastifyInstance) {
 	const { db } = app;
 	const { refresh_tokens } = db;
 
-	const generateJti = () => generateUuid();
+	function generateJti() {
+		return generateUuid();
+	}
 
-	const issueAccessToken = (userId: number, roleId: number, permissionIds: number[]) => {
+	function issueAccessToken(userId: number, roleId: number, permissionIds: number[]) {
 		const expiresIn = env.JWT_ACCESS_TOKEN_EXPIRES_IN;
 
 		return app.jwt.sign({ roleId, permissionIds, sub: userId.toString() }, { expiresIn });
-	};
+	}
 
-	const issueRefreshToken = async (userId: number, jti: string) => {
+	async function issueRefreshToken(userId: number, jti: string) {
 		const expiresInMs = parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN);
 		const expiresAt = new Date(Date.now() + expiresInMs);
 
@@ -33,19 +35,18 @@ export function createTokenService(app: FastifyInstance) {
 		});
 
 		return refreshToken;
-	};
+	}
 
-	const revokeRefreshToken = async (refreshToken: string) => {
+	async function revokeRefreshToken(refreshToken: string) {
 		const { jti } = await verifyRefreshToken(refreshToken);
-
 		await db.update(refresh_tokens).set({ revoked: true }).where(eq(refresh_tokens.jti, jti));
-	};
+	}
 
-	const verifyRefreshToken = (token: string) => {
+	function verifyRefreshToken(token: string) {
 		return app.jwt.verify<{ jti: string }>(token);
-	};
+	}
 
-	const getRefreshTokenByJti = async (jti: string) => {
+	async function getRefreshTokenByJti(jti: string) {
 		const refreshToken = await db
 			.select()
 			.from(refresh_tokens)
@@ -53,7 +54,7 @@ export function createTokenService(app: FastifyInstance) {
 			.limit(1);
 
 		return unwrapResult(refreshToken, "Refresh token not found");
-	};
+	}
 
 	return {
 		revokeRefreshToken,

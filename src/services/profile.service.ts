@@ -8,7 +8,7 @@ export function createProfileService(app: FastifyInstance) {
 	const { db } = app;
 	const { cities, genders, countries, education_levels, profiles } = db;
 
-	const createProfile = async (profilePayload: ProfileCreate, userId: number) => {
+	async function createProfile(profilePayload: ProfileCreate, userId: number) {
 		const existingProfile = await getProfileByUserId(userId);
 
 		if (existingProfile) {
@@ -46,13 +46,12 @@ export function createProfileService(app: FastifyInstance) {
 		const newProfile = unwrapResult(result);
 
 		return newProfile;
-	};
+	}
 
-	const getProfileByUserId = async (userId: number) => {
+	async function getProfileByUserId(userId: number) {
 		const result = await db.select().from(profiles).where(eq(profiles.userId, userId)).limit(1);
-
 		return result.length > 0;
-	};
+	}
 
 	return {
 		createProfile,

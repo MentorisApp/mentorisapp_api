@@ -41,6 +41,7 @@ export function sendErrorResponse(error: FastifyError, reply: FastifyReply) {
 	if (error instanceof InvalidCredentialsError) {
 		status = HttpStatus.UNAUTHORIZED;
 	}
+
 	if (error instanceof ForbiddenError) {
 		status = HttpStatus.FORBIDDEN;
 	}
