@@ -43,6 +43,13 @@
       "when": 1759091088613,
       "tag": "0005_update_columns",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1760099465061,
+      "tag": "0006_offers_table_and_enum_changes",
+      "breakpoints": true
     }
   ]
 }
