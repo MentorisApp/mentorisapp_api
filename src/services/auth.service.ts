@@ -28,7 +28,7 @@ export function createAuthService(app: FastifyInstance) {
 
 		const verificationToken = await verificationTokenService.createVerificationToken(
 			newUser.id,
-			"email_verification",
+			"EMAIL_VERIFICATION",
 		);
 
 		await app.email.send({
@@ -44,10 +44,10 @@ export function createAuthService(app: FastifyInstance) {
 	}
 
 	async function verifyUserAndLogin(token: string) {
-		const result = await userService.getUserByVerificationToken(token, "email_verification");
+		const result = await userService.getUserByVerificationToken(token, "EMAIL_VERIFICATION");
 
 		if (!result) {
-			throw new Error("Invalid or expired verification token.");
+			throw new Error("Invalid verification token.");
 		}
 
 		const user = result.user;

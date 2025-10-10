@@ -1,6 +1,6 @@
 import { and, eq, gt, sql } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
-import { VerificationTokenContext } from "~/db/schema";
+import { VerificationTokenContext } from "~/db/schema/enums/db.enum.schema";
 import { unwrapResult } from "~/utils/db.util";
 import { UserCreate } from "~/validators/user.validator";
 

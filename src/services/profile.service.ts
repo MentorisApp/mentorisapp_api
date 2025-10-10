@@ -8,8 +8,8 @@ export function createProfileService(app: FastifyInstance) {
 	const { db } = app;
 	const { cities, genders, countries, education_levels, profiles } = db;
 
-	async function createProfile(profilePayload: ProfileCreate, userId: number) {
-		const existingProfile = await getProfileByUserId(userId);
+	async function createProfile(body: ProfileCreate, userId: number) {
+		const existingProfile = await checkExistsProfileByUserId(userId);
 
 		if (existingProfile) {
 			throw new AlreadyExistsError("Profile already exists");
@@ -38,7 +38,7 @@ export function createProfileService(app: FastifyInstance) {
 		const result = await db
 			.insert(profiles)
 			.values({
-				...profilePayload,
+				...body,
 				userId: userId,
 			})
 			.returning();
@@ -48,13 +48,13 @@ export function createProfileService(app: FastifyInstance) {
 		return newProfile;
 	}
 
-	async function getProfileByUserId(userId: number) {
+	async function checkExistsProfileByUserId(userId: number) {
 		const result = await db.select().from(profiles).where(eq(profiles.userId, userId)).limit(1);
 		return result.length > 0;
 	}
 
 	return {
 		createProfile,
-		getProfileByUserId,
+		checkExistsProfileByUserId,
 	};
 }

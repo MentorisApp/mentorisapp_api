@@ -1,8 +1,13 @@
 import { FastifyPluginAsync } from "fastify";
-import { useProfileController } from "~/controllers/profile.controller";
+import { profileController } from "~/controllers/profile.controller";
 
 export const profileRoutes: FastifyPluginAsync = async (app) => {
-	const profileController = useProfileController(app);
+	const controller = profileController(app);
 
-	app.post("/create", { preHandler: [app.authorizeAccess()] }, profileController.create);
+	// biome-ignore format: line wrap
+	app.post(
+		"/create",
+		{ preHandler: [app.authorizeAccess()] },
+		controller.create
+	);
 };

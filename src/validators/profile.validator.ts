@@ -8,6 +8,7 @@ export const ProfileCreateSchema = createInsertSchema(profiles)
 	.strict();
 
 export const ProfileUpdateSchema = createUpdateSchema(profiles)
+	.omit({ profilePictureUrl: true, createdAt: true })
 	.required({
 		id: true,
 	})

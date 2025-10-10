@@ -4,7 +4,7 @@ import { createProfileService } from "~/services/profile.service";
 import { getUserIdFromToken } from "~/utils/auth.util";
 import { ProfileCreateSchema } from "~/validators/profile.validator";
 
-export const useProfileController = (app: FastifyInstance) => {
+export const profileController = (app: FastifyInstance) => {
 	const profileService = createProfileService(app);
 
 	return {
@@ -13,12 +13,11 @@ export const useProfileController = (app: FastifyInstance) => {
 			const payload = ProfileCreateSchema.parse(request.body);
 			const newProfile = await profileService.createProfile(payload, userId);
 
-			reply.status(HttpStatus.CREATED);
-			reply.send(newProfile);
+			reply.status(HttpStatus.CREATED).send(newProfile);
 		},
 
 		update: async (request: FastifyRequest, reply: FastifyReply) => {
-			// TODO
+			// TODO update profile service
 		},
 	};
 };
