@@ -50,6 +50,13 @@
       "when": 1760099465061,
       "tag": "0006_offers_table_and_enum_changes",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1760211259463,
+      "tag": "0007_profiles_updated_at",
+      "breakpoints": true
     }
   ]
 }

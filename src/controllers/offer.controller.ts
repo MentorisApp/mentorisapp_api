@@ -4,7 +4,6 @@ import { createOfferService } from "~/services/offer.service";
 import { getUserIdFromToken } from "~/utils/auth.util";
 import { OfferUserCreateSchema, OfferUserUpdateSchema } from "~/validators/offer.validator";
 
-// TODO private user routes and controllers (getByUserId should be getByUserId in query params not from token for admin and end users)
 export const offerController = (app: FastifyInstance) => {
 	const offerService = createOfferService(app);
 
@@ -28,9 +27,9 @@ export const offerController = (app: FastifyInstance) => {
 			const userId = getUserIdFromToken(request);
 			const body = OfferUserUpdateSchema.parse(request.body);
 
-			const newOffer = await offerService.updateOffer(body, userId);
+			const updatedOffer = await offerService.updateOffer(body, userId);
 
-			reply.status(HttpStatus.OK).send(newOffer);
+			reply.status(HttpStatus.OK).send(updatedOffer);
 		},
 
 		// reject: async (request: FastifyRequest, reply: FastifyReply) => {},

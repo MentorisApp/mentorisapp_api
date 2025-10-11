@@ -2,7 +2,7 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 import { createProfileService } from "~/services/profile.service";
 import { getUserIdFromToken } from "~/utils/auth.util";
-import { ProfileCreateSchema } from "~/validators/profile.validator";
+import { ProfileCreateSchema, ProfileUpdateSchema } from "~/validators/profile.validator";
 
 export const profileController = (app: FastifyInstance) => {
 	const profileService = createProfileService(app);
@@ -17,7 +17,11 @@ export const profileController = (app: FastifyInstance) => {
 		},
 
 		update: async (request: FastifyRequest, reply: FastifyReply) => {
-			// TODO update profile service
+			const userId = getUserIdFromToken(request);
+			const payload = ProfileUpdateSchema.parse(request.body);
+			const updatedProfile = await profileService.updateProfile(payload, userId);
+
+			reply.status(HttpStatus.OK).send(updatedProfile);
 		},
 	};
 };

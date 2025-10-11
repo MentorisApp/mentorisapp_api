@@ -30,4 +30,5 @@ export const profiles = pgTable("profiles", {
 		.notNull()
 		.references(() => countries.id, { onDelete: "restrict" }),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

@@ -4,14 +4,11 @@ import { profiles } from "~/db/schema";
 
 export const ProfileCreateSchema = createInsertSchema(profiles)
 	// TODO profilePictureUrl creation flow
-	.omit({ id: true, createdAt: true, profilePictureUrl: true, userId: true })
+	.omit({ id: true, createdAt: true, profilePictureUrl: true, userId: true, updatedAt: true })
 	.strict();
 
 export const ProfileUpdateSchema = createUpdateSchema(profiles)
-	.omit({ profilePictureUrl: true, createdAt: true })
-	.required({
-		id: true,
-	})
+	.omit({ profilePictureUrl: true, createdAt: true, updatedAt: true, id: true })
 	.strict();
 
 export type ProfileCreate = z.infer<typeof ProfileCreateSchema>;
