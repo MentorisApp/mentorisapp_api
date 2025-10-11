@@ -1,12 +1,13 @@
 import { eq } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
 import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
+import { NotFoundError } from "~/domain/errors/NotFoundError";
 import { unwrapResult } from "~/utils/db.util";
-import { ProfileCreate } from "~/validators/profile.validator";
+import { ProfileCreate, ProfileUpdate } from "~/validators/profile.validator";
 
 export function createProfileService(app: FastifyInstance) {
 	const { db } = app;
-	const { cities, genders, countries, education_levels, profiles } = db;
+	const { profiles } = db;
 
 	async function createProfile(body: ProfileCreate, userId: number) {
 		const existingProfile = await checkExistsProfileByUserId(userId);
@@ -14,26 +15,6 @@ export function createProfileService(app: FastifyInstance) {
 		if (existingProfile) {
 			throw new AlreadyExistsError("Profile already exists");
 		}
-
-		// TODO Implement batch querying lookup tables for existence of row to return all wrong params
-		// const [city, gender, country, educationLevel] = await Promise.allSettled([
-		// 	db.select().from(cities).where(eq(cities.id, profilePayload.cityId)),
-		// 	db.select().from(genders).where(eq(genders.id, profilePayload.genderId)),
-		// 	db.select().from(countries).where(eq(countries.id, profilePayload.countryId)),
-		// 	db
-		// 		.select()
-		// 		.from(education_levels)
-		// 		.where(eq(education_levels.id, profilePayload.educationLevelId)),
-		// ]);
-
-		// if (!city.length) errors.cityId = "Invalid cityId";
-		// if (!gender.length) errors.genderId = "Invalid genderId";
-		// if (!country.length) errors.countryId = "Invalid countryId";
-		// if (!educationLevel.length) errors.educationLevelId = "Invalid educationLevelId";
-
-		// if (Object.keys(errors).length) {
-		// 	return { success: false, errors };
-		// }
 
 		const result = await db
 			.insert(profiles)
@@ -53,8 +34,28 @@ export function createProfileService(app: FastifyInstance) {
 		return result.length > 0;
 	}
 
+	async function updateProfile(body: ProfileUpdate, userId: number) {
+		const existingProfile = await checkExistsProfileByUserId(userId);
+
+		if (!existingProfile) {
+			throw new NotFoundError("Profile you are trying to update does not exist");
+		}
+
+		const record = await db
+			.update(profiles)
+			.set({
+				...body,
+				updatedAt: new Date(),
+			})
+			.where(eq(profiles.userId, userId))
+			.returning();
+
+		return unwrapResult(record);
+	}
+
 	return {
 		createProfile,
+		updateProfile,
 		checkExistsProfileByUserId,
 	};
 }

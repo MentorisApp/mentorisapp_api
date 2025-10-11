@@ -6,8 +6,15 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
 
 	// biome-ignore format: line wrap
 	app.post(
-		"/create",
+		"/",
 		{ preHandler: [app.authorizeAccess()] },
 		controller.create
+	);
+
+	// biome-ignore format: line wrap
+	app.put(
+		"/",
+		{ preHandler: [app.authorizeAccess()] },
+		controller.update
 	);
 };
