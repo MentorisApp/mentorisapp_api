@@ -57,6 +57,13 @@
       "when": 1760211259463,
       "tag": "0007_profiles_updated_at",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1760284912378,
+      "tag": "0008_offers_categories_junction",
+      "breakpoints": true
     }
   ]
 }

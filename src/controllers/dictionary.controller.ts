@@ -25,5 +25,10 @@ export const dictionaryController = (app: FastifyInstance) => {
 			const educationLevels = await dictionaryService.getEducationLevelsDictionary();
 			reply.status(HttpStatus.OK).send(educationLevels);
 		},
+
+		getAllCategories: async (_request: FastifyRequest, reply: FastifyReply) => {
+			const categories = await dictionaryService.getCategoriesDictionary();
+			reply.status(HttpStatus.OK).send(categories);
+		},
 	};
 };

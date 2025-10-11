@@ -31,4 +31,11 @@ export const dictionaryRoutes: FastifyPluginAsync = async (app) => {
 		{ preHandler: [app.authorizeAccess()] },
 		controller.getAllGenders,
 	);
+
+	// biome-ignore format: line wrap
+	app.get(
+		"/categories",
+		{ preHandler: [app.authorizeAccess()] },
+		controller.getAllCategories,
+	);
 };

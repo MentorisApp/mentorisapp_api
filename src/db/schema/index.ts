@@ -1,4 +1,6 @@
+export * from "./junctions/offers_categories.schema";
 export * from "./junctions/roles_permissions.schema";
+export * from "./tables/categories.schema";
 export * from "./tables/cities.schema";
 export * from "./tables/countries.schema";
 export * from "./tables/education_levels.schema";

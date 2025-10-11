@@ -13,6 +13,9 @@ export const OfferUserCreateSchema = createInsertSchema(offers)
 		priceTo: true,
 		priceType: true,
 	})
+	.extend({
+		categoryIds: z.array(z.number()).min(1, "At least one category must be selected"),
+	})
 	.refine((ctx) => !(ctx.price && (ctx.priceFrom || ctx.priceTo)), {
 		message: "Cannot set fixed price and range together",
 		path: ["price", "priceFrom", "priceTo"],
@@ -38,6 +41,9 @@ export const OfferUserUpdateSchema = createUpdateSchema(offers)
 		priceTo: true,
 		priceType: true,
 		updatedAt: true,
+	})
+	.extend({
+		categoryIds: z.array(z.number()).min(1, "At least one category must be selected").optional(),
 	})
 	.refine((ctx) => !(ctx.price && (ctx.priceFrom || ctx.priceTo)), {
 		message: "Cannot set fixed price and range together",
