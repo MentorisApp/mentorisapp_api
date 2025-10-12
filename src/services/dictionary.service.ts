@@ -2,30 +2,30 @@ import { FastifyInstance } from "fastify";
 
 export function createDictionaryService(app: FastifyInstance) {
 	const { db } = app;
-	const { cities, countries, genders, education_levels } = db;
 
 	async function getCitiesDictionary() {
-		const record = await db.select().from(cities);
-		return record;
+		return await db.select().from(db.cities);
 	}
 
 	async function getGendersDictionary() {
-		const record = await db.select().from(genders);
-		return record;
+		return await db.select().from(db.genders);
 	}
 
 	async function getCountriesDictionary() {
-		const record = await db.select().from(countries);
-		return record;
+		return await db.select().from(db.countries);
 	}
 
 	async function getEducationLevelsDictionary() {
-		const record = await db.select().from(education_levels);
-		return record;
+		return await db.select().from(db.education_levels);
+	}
+
+	async function getCategoriesDictionary() {
+		return await db.select().from(db.categories);
 	}
 
 	return {
 		getCitiesDictionary,
+		getCategoriesDictionary,
 		getCountriesDictionary,
 		getEducationLevelsDictionary,
 		getGendersDictionary,

@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import {
 	boolean,
 	decimal,
@@ -14,6 +15,7 @@ import {
 	offerStatusEnum,
 	priceTypeEnum,
 } from "../enums/db.enum.schema";
+import { offers_categories } from "../junctions/offers_categories.schema";
 
 export const offers = pgTable("offers", {
 	id: serial("id").primaryKey(),
@@ -58,3 +60,7 @@ export const offers = pgTable("offers", {
 
 	// Geolocation coordinates when map feature implemented
 });
+
+export const offersRelations = relations(offers, ({ many }) => ({
+	offersCategories: many(offers_categories),
+}));

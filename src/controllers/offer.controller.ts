@@ -12,7 +12,14 @@ export const offerController = (app: FastifyInstance) => {
 			const userId = getUserIdFromToken(request);
 			const offer = await offerService.getOfferByUserId(userId);
 
-			reply.status(HttpStatus.OK).send(offer);
+			const { offersCategories, ...restOffer } = offer;
+
+			const transformedOffer = {
+				...restOffer,
+				categories: offersCategories.map((oc) => oc.category),
+			};
+
+			reply.status(HttpStatus.OK).send(transformedOffer);
 		},
 		create: async (request: FastifyRequest, reply: FastifyReply) => {
 			const userId = getUserIdFromToken(request);

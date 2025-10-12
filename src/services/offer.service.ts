@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
+import { offers_categories } from "~/db/schema/junctions/offers_categories.schema";
 import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
 import { NotFoundError } from "~/domain/errors/NotFoundError";
-import { unwrapResult } from "~/utils/db.util";
 import { OfferUserCreate, OfferUserUpdate } from "~/validators/offer.validator";
 
 export function createOfferService(app: FastifyInstance) {
@@ -16,15 +16,30 @@ export function createOfferService(app: FastifyInstance) {
 			throw new AlreadyExistsError("Offer already exists for this user");
 		}
 
-		const record = await db
-			.insert(offers)
-			.values({
-				...body,
-				userId: userId,
-			})
-			.returning();
+		const { categoryIds, ...offerData } = body;
 
-		return unwrapResult(record);
+		const newOffer = await db.transaction(async (tx) => {
+			const [offer] = await tx
+				.insert(offers)
+				.values({
+					...offerData,
+					userId,
+				})
+				.returning();
+
+			if (categoryIds?.length) {
+				await tx.insert(offers_categories).values(
+					categoryIds.map((categoryId) => ({
+						offerId: offer.id,
+						categoryId,
+					})),
+				);
+			}
+
+			return offer;
+		});
+
+		return newOffer;
 	}
 
 	async function updateOffer(body: OfferUserUpdate, userId: number) {
@@ -34,22 +49,37 @@ export function createOfferService(app: FastifyInstance) {
 			throw new NotFoundError("Offer you are trying to update does not exist");
 		}
 
-		const { priceType, price, priceFrom, priceTo, ...restBody } = body;
+		const { categoryIds, priceType, price, priceFrom, priceTo, ...restBody } = body;
 
-		const record = await db
-			.update(offers)
-			.set({
-				...restBody,
-				price: priceType === "FIXED" ? price : null,
-				priceFrom: priceType === "RANGE" ? priceFrom : null,
-				priceTo: priceType === "RANGE" ? priceTo : null,
-				priceType: priceType,
-				updatedAt: new Date(),
-			})
-			.where(eq(offers.userId, userId))
-			.returning();
+		const updatedOffer = await db.transaction(async (tx) => {
+			const [offer] = await tx
+				.update(offers)
+				.set({
+					...restBody,
+					price: priceType === "FIXED" ? price : null,
+					priceFrom: priceType === "RANGE" ? priceFrom : null,
+					priceTo: priceType === "RANGE" ? priceTo : null,
+					priceType,
+					updatedAt: new Date(),
+				})
+				.where(eq(offers.userId, userId))
+				.returning();
 
-		return unwrapResult(record);
+			if (categoryIds) {
+				await tx.delete(offers_categories).where(eq(offers_categories.offerId, offer.id));
+
+				await tx.insert(offers_categories).values(
+					categoryIds.map((categoryId) => ({
+						offerId: offer.id,
+						categoryId,
+					})),
+				);
+			}
+
+			return offer;
+		});
+
+		return updatedOffer;
 	}
 
 	async function checkOfferExistsByUserId(userId: number) {
@@ -58,8 +88,22 @@ export function createOfferService(app: FastifyInstance) {
 	}
 
 	async function getOfferByUserId(userId: number) {
-		const record = await db.select().from(offers).where(eq(offers.userId, userId)).limit(1);
-		return unwrapResult(record);
+		const offer = await db.query.offers.findFirst({
+			where: eq(offers.userId, userId),
+			with: {
+				offersCategories: {
+					with: {
+						category: true,
+					},
+				},
+			},
+		});
+
+		if (!offer) {
+			throw new NotFoundError("Offer does not exist");
+		}
+
+		return offer;
 	}
 
 	return { createOffer, updateOffer, getOfferByUserId };
