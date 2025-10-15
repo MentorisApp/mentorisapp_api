@@ -23,5 +23,12 @@ export const profileController = (app: FastifyInstance) => {
 
 			reply.status(HttpStatus.OK).send(updatedProfile);
 		},
+
+		get: async (request: FastifyRequest, reply: FastifyReply) => {
+			const userId = getUserIdFromToken(request);
+			const profile = await profileService.getProfile(userId);
+
+			reply.status(HttpStatus.OK).send(profile);
+		},
 	};
 };

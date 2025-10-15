@@ -1,44 +1,38 @@
-import { and, eq, gt, sql } from "drizzle-orm";
+import { and, eq, gt } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
 import { VerificationTokenContext } from "~/db/schema/enums/db.enum.schema";
+import { NotFoundError } from "~/domain/errors/NotFoundError";
 import { unwrapResult } from "~/utils/db.util";
 import { UserCreate } from "~/validators/user.validator";
 
 export function createUserService(app: FastifyInstance) {
 	const { db } = app;
-	const { users, roles, roles_permissions, verification_tokens } = db;
+	const { users, roles, verification_tokens } = db;
 
 	async function createUser(user: UserCreate) {
 		return await db.transaction(async (tx) => {
-			const userRoleWithPermissions = await tx
-				.select({
-					roleId: roles.id,
-					roleName: roles.name,
-					permissionIds: sql<number[]>`ARRAY_AGG(${roles_permissions.permissionId})`,
-				})
-				.from(roles)
-				.leftJoin(roles_permissions, eq(roles_permissions.roleId, roles.id))
-				.where(eq(roles.name, "USER"))
-				.groupBy(roles.id, roles.name);
+			const userRoleToAssign = "USER";
 
-			const roleId = userRoleWithPermissions[0].roleId;
-			const permissionIds = userRoleWithPermissions[0].permissionIds;
+			const role = await tx.query.roles.findFirst({
+				where: eq(roles.name, userRoleToAssign),
+			});
 
-			const resultUserCreate = await tx
+			const roleId = role?.id;
+
+			if (!roleId) {
+				throw new NotFoundError("User role assignment went wrong.");
+			}
+
+			const createdUser = await tx
 				.insert(users)
 				.values({
 					email: user.email,
 					password: user.password,
-					roleId,
+					roleId: roleId,
 				})
 				.returning();
 
-			const newUser = unwrapResult(resultUserCreate);
-
-			return {
-				...newUser,
-				permissionIds,
-			};
+			return unwrapResult(createdUser);
 		});
 	}
 
@@ -53,24 +47,37 @@ export function createUserService(app: FastifyInstance) {
 	}
 
 	async function getUserPermission(userId: number) {
-		const result = await db
-			.select({
-				roleId: users.roleId,
-				permissionIds: sql<number[]>`
-      COALESCE(ARRAY_AGG(${roles_permissions.permissionId}), '{}')
-    `,
-			})
-			.from(users)
-			.leftJoin(roles, eq(users.roleId, roles.id))
-			.leftJoin(roles_permissions, eq(roles_permissions.roleId, roles.id))
-			.where(eq(users.id, userId))
-			.groupBy(users.roleId);
+		const userWithRoleAndPermissions = await db.query.users.findFirst({
+			where: eq(users.id, userId),
+			columns: {},
+			with: {
+				role: {
+					columns: { name: true },
+					with: {
+						rolesPermissions: {
+							columns: {},
+							with: {
+								permission: true,
+							},
+						},
+					},
+				},
+			},
+		});
 
-		const { roleId, permissionIds } = unwrapResult(result);
+		if (!userWithRoleAndPermissions) {
+			throw new NotFoundError("User permissions not found");
+		}
+
+		const role = userWithRoleAndPermissions.role.name;
+
+		const permissions = userWithRoleAndPermissions.role.rolesPermissions.map(
+			(t) => t.permission.name,
+		);
 
 		return {
-			roleId,
-			permissionIds,
+			role,
+			permissions,
 		};
 	}
 

@@ -1,12 +1,37 @@
-import { FastifyPluginAsync } from "fastify";
+import { FastifyInstance, RouteOptions } from "fastify";
 import { authController } from "~/controllers/auth.controller";
 
-export const authRoutes: FastifyPluginAsync = async (app) => {
+export const authRoutes = (app: FastifyInstance) => {
 	const controller = authController(app);
 
-	app.post("/register", controller.register);
-	app.post("/login", controller.login);
-	app.post("/logout", controller.logout);
-	app.post("/refresh", controller.refresh);
-	app.get("/verify-account", controller.verifyAndLoginAccount);
+	return {
+		prefix: "/auth",
+		routes: [
+			{
+				method: "POST",
+				url: "/register",
+				handler: controller.register,
+			},
+			{
+				method: "POST",
+				url: "/login",
+				handler: controller.login,
+			},
+			{
+				method: "POST",
+				url: "/logout",
+				handler: controller.logout,
+			},
+			{
+				method: "POST",
+				url: "/refresh",
+				handler: controller.refresh,
+			},
+			{
+				method: "GET",
+				url: "/verify-account",
+				handler: controller.verifyAndLoginAccount,
+			},
+		] as RouteOptions[],
+	};
 };

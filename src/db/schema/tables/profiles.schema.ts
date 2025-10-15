@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import { integer, pgTable, serial, smallint, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { cities } from "./cities.schema";
 import { countries } from "./countries.schema";
@@ -32,3 +33,30 @@ export const profiles = pgTable("profiles", {
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 	updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
+
+export const profilesRelations = relations(profiles, ({ one }) => ({
+	user: one(users, {
+		fields: [profiles.userId],
+		references: [users.id],
+	}),
+
+	educationLevel: one(education_levels, {
+		fields: [profiles.educationLevelId],
+		references: [education_levels.id],
+	}),
+
+	city: one(cities, {
+		fields: [profiles.cityId],
+		references: [cities.id],
+	}),
+
+	country: one(countries, {
+		fields: [profiles.countryId],
+		references: [countries.id],
+	}),
+
+	gender: one(genders, {
+		fields: [profiles.genderId],
+		references: [genders.id],
+	}),
+}));

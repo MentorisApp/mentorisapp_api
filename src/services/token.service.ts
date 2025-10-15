@@ -13,10 +13,10 @@ export function createTokenService(app: FastifyInstance) {
 		return generateUuid();
 	}
 
-	function issueAccessToken(userId: number, roleId: number, permissionIds: number[]) {
+	function issueAccessToken(userId: number, role: string, permissions: string[]) {
 		const expiresIn = env.JWT_ACCESS_TOKEN_EXPIRES_IN;
 
-		return app.jwt.sign({ roleId, permissionIds, sub: userId.toString() }, { expiresIn });
+		return app.jwt.sign({ role, permissions, sub: userId.toString() }, { expiresIn });
 	}
 
 	async function issueRefreshToken(userId: number, jti: string) {
