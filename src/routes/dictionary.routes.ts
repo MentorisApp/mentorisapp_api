@@ -1,41 +1,42 @@
-import { FastifyPluginAsync } from "fastify";
+import { FastifyInstance, RouteOptions } from "fastify";
 import { dictionaryController } from "~/controllers/dictionary.controller";
 
-export const dictionaryRoutes: FastifyPluginAsync = async (app) => {
+export const dictionaryRoutes = (app: FastifyInstance) => {
 	const controller = dictionaryController(app);
 
-	// biome-ignore format: line wrap
-	app.get(
-		"/cities",
-		{ preHandler: [app.authorizeAccess()] },
-		controller.getAllCities,
-	);
-
-	// biome-ignore format: line wrap
-	app.get(
-		"/education-levels",
-		{ preHandler: [app.authorizeAccess()] },
-		controller.getAllEducationLevels,
-	);
-
-	// biome-ignore format: line wrap
-	app.get(
-		"/countries",
-		{ preHandler: [app.authorizeAccess()] },
-		controller.getAllCountries,
-	);
-
-	// biome-ignore format: line wrap
-	app.get(
-		"/genders",
-		{ preHandler: [app.authorizeAccess()] },
-		controller.getAllGenders,
-	);
-
-	// biome-ignore format: line wrap
-	app.get(
-		"/categories",
-		{ preHandler: [app.authorizeAccess()] },
-		controller.getAllCategories,
-	);
+	return {
+		prefix: "/dictionaries",
+		routes: [
+			{
+				method: "GET",
+				url: "/cities",
+				handler: controller.getAllCities,
+				preHandler: app.authorize(),
+			},
+			{
+				method: "GET",
+				url: "/education-levels",
+				handler: controller.getAllEducationLevels,
+				preHandler: app.authorize(),
+			},
+			{
+				method: "GET",
+				url: "/countries",
+				handler: controller.getAllCountries,
+				preHandler: app.authorize(),
+			},
+			{
+				method: "GET",
+				url: "/genders",
+				handler: controller.getAllGenders,
+				preHandler: app.authorize(),
+			},
+			{
+				method: "GET",
+				url: "/categories",
+				handler: controller.getAllCategories,
+				preHandler: app.authorize(),
+			},
+		] as RouteOptions[],
+	};
 };

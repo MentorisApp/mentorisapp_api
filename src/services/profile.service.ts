@@ -53,7 +53,31 @@ export function createProfileService(app: FastifyInstance) {
 		return unwrapResult(record);
 	}
 
+	async function getProfile(userId: number) {
+		const profile = await db.query.profiles.findFirst({
+			where: eq(profiles.userId, userId),
+			columns: {
+				age: true,
+				profilePictureUrl: true,
+				firstName: true,
+				lastName: true,
+				id: true,
+				phone: true,
+				userId: true,
+				homeAddress: true,
+			},
+			with: { city: true, country: true, educationLevel: true, gender: true },
+		});
+
+		if (!profile) {
+			throw new NotFoundError("Profile not found.");
+		}
+
+		return profile;
+	}
+
 	return {
+		getProfile,
 		createProfile,
 		updateProfile,
 		checkExistsProfileByUserId,

@@ -56,9 +56,9 @@ export function createAuthService(app: FastifyInstance) {
 		await userService.verifyUser(user.id);
 
 		const jti = tokenService.generateJti();
-		const { roleId, permissionIds } = await userService.getUserPermission(user.id);
+		const { role, permissions } = await userService.getUserPermission(user.id);
 
-		const accessToken = tokenService.issueAccessToken(user.id, roleId, permissionIds);
+		const accessToken = tokenService.issueAccessToken(user.id, role, permissions);
 		const refreshToken = await tokenService.issueRefreshToken(user.id, jti);
 
 		return { accessToken, refreshToken };
@@ -80,8 +80,8 @@ export function createAuthService(app: FastifyInstance) {
 
 		const accessToken = tokenService.issueAccessToken(
 			user.id,
-			userPermission.roleId,
-			userPermission.permissionIds,
+			userPermission.role,
+			userPermission.permissions,
 		);
 
 		const refreshToken = await tokenService.issueRefreshToken(user.id, jti);
@@ -98,9 +98,9 @@ export function createAuthService(app: FastifyInstance) {
 		}
 
 		const newJti = tokenService.generateJti();
-		const { roleId, permissionIds } = await userService.getUserPermission(storedToken.userId);
+		const { role, permissions } = await userService.getUserPermission(storedToken.userId);
 
-		const accessToken = tokenService.issueAccessToken(storedToken.userId, roleId, permissionIds);
+		const accessToken = tokenService.issueAccessToken(storedToken.userId, role, permissions);
 		const refreshToken = await tokenService.issueRefreshToken(storedToken.userId, newJti);
 
 		await tokenService.revokeRefreshToken(oldRefreshToken);

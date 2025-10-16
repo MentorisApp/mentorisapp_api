@@ -1,27 +1,30 @@
-import { FastifyPluginAsync } from "fastify";
+import { FastifyInstance, RouteOptions } from "fastify";
 import { offerController } from "~/controllers/offer.controller";
 
-export const offerRoutes: FastifyPluginAsync = async (app) => {
+export const offerRoutes = (app: FastifyInstance) => {
 	const controller = offerController(app);
 
-	// biome-ignore format: line wrap
-	app.post(
-        "/",
-        { preHandler: [app.authorizeAccess()] },
-        controller.create,
-    );
-
-	// biome-ignore format: line wrap
-	app.put(
-        "/",
-        { preHandler: [app.authorizeAccess()] },
-        controller.update,
-    );
-
-	// biome-ignore format: line wrap
-	app.get(
-        "/",
-        { preHandler: [app.authorizeAccess()] },
-        controller.getOne,
-    );
+	return {
+		prefix: "/offers",
+		routes: [
+			{
+				method: "POST",
+				url: "/",
+				handler: controller.create,
+				preHandler: app.authorize(),
+			},
+			{
+				method: "PUT",
+				url: "/",
+				handler: controller.update,
+				preHandler: app.authorize(),
+			},
+			{
+				method: "GET",
+				url: "/",
+				handler: controller.getOne,
+				preHandler: app.authorize(),
+			},
+		] as RouteOptions[],
+	};
 };

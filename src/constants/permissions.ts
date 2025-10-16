@@ -1,9 +1,10 @@
-export const Permissions = {
-	VIEW_USERS: 1,
-	UPDATE_USER: 4,
-	DELETE_USERS: 3,
-	CREATE_LISTINGS: 4,
-	APPROVE_LISTINGS: 33,
+export const PERMISSIONS = {
+	VIEW_USERS: "VIEW_USERS",
+	UPDATE_USERS: "UPDATE_USERS",
+	CREATE_LISTINGS: "CREATE_LISTINGS",
+	APPROVE_LISTINGS: "APPROVE_LISTINGS",
+	READ_USER: "READ_USER",
 } as const;
-// TODO permissions
-export type Permission = (typeof Permissions)[keyof typeof Permissions];
+
+// Type representing any valid permission
+export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
