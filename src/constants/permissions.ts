@@ -6,5 +6,11 @@ export const PERMISSIONS = {
 	READ_USER: "READ_USER",
 } as const;
 
+export const ROLES = {
+	ADMIN: "ADMIN",
+	USER: "USER",
+	END_USER: "END_USER",
+} as const;
+
 // Type representing any valid permission
 export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];

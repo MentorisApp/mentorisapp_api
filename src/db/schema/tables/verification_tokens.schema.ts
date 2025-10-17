@@ -12,4 +12,5 @@ export const verification_tokens = pgTable("verification_tokens", {
 	used: boolean("used").default(false),
 	expiresAt: timestamp("expires_at").notNull(),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

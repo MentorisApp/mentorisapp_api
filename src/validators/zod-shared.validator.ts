@@ -11,11 +11,20 @@ export const NumberSchema = (name: string) => {
 };
 
 // Used for checking if valid uuids
+// TODO delete this and use the one below because we will check hashed uuids instead of search params
 export const UuidQuerySchema = (name: string) => {
 	const uuidSchema = z.uuid(`${name} must be a valid UUID`);
 
-	return z.object({ [name]: uuidSchema }).required();
+	return z.object({ [name]: uuidSchema }).strict();
 };
+
+export const UuidSchema = z.uuid("Invalid token format.");
+
+export const EmailSchema = z
+	.object({
+		email: z.email("Invalid or missing email in body"),
+	})
+	.strict();
 
 // Generic password schema
 export const PasswordSchema = z

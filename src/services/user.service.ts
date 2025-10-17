@@ -88,10 +88,14 @@ export function createUserService(app: FastifyInstance) {
 			.where(eq(users.id, userId));
 	}
 
-	async function getUserByVerificationToken(token: string, context: VerificationTokenContext) {
+	async function getUserWithValidVerificationToken(
+		token: string,
+		context: VerificationTokenContext,
+	) {
 		const result = await db
 			.select({
 				user: users,
+				token: verification_tokens,
 			})
 			.from(verification_tokens)
 			.innerJoin(users, eq(verification_tokens.userId, users.id))
@@ -105,12 +109,20 @@ export function createUserService(app: FastifyInstance) {
 			)
 			.limit(1);
 
-		// TODO weird data structure reutrn fix and flatten
+		// TODO weird data structure return, fix and flatten
 		return result[0] ?? null;
 	}
 
+	async function updateUserPassword(userId: number, hashedPassword: string) {
+		await db
+			.update(users)
+			.set({ password: hashedPassword, updatedAt: new Date() })
+			.where(eq(users.id, userId));
+	}
+
 	return {
-		getUserByVerificationToken,
+		updateUserPassword,
+		getUserWithValidVerificationToken,
 		verifyUser,
 		createUser,
 		getUserByEmail,

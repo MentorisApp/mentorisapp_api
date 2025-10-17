@@ -3,7 +3,7 @@ import SMTPTransport from "nodemailer/lib/smtp-transport";
 interface TemplateVariables {
 	resetPasswordTemplate: {
 		link: string;
-		username: string;
+		email: string;
 	};
 	verifyAccountTemplate: {
 		link: string;

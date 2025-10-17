@@ -1,8 +1,10 @@
 import { FastifyInstance } from "fastify";
 import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
+import { BadRequestError } from "~/domain/errors/BadRequestError";
 import { InvalidCredentialsError } from "~/domain/errors/InvalidCredentialsError";
-import { UserCreate } from "~/validators/user.validator";
-import { passwordService } from "./password.service";
+import { NotFoundError } from "~/domain/errors/NotFoundError";
+import { hashUtil } from "~/utils/hash.util";
+import { UserCreate, UserUpdatePassword } from "~/validators/user.validator";
 import { createTokenService } from "./token.service";
 import { createUserService } from "./user.service";
 import { createVerificationTokensService } from "./verificationTokens.service";
@@ -19,38 +21,39 @@ export function createAuthService(app: FastifyInstance) {
 			throw new AlreadyExistsError("Email already in use");
 		}
 
-		const hashedPassword = await passwordService.hash(payload.password);
+		const hashedPassword = await hashUtil.password.hash(payload.password);
 
 		const newUser = await userService.createUser({
 			email: payload.email,
 			password: hashedPassword,
 		});
 
-		const verificationToken = await verificationTokenService.createVerificationToken(
+		const token = await verificationTokenService.createVerificationToken(
 			newUser.id,
 			"EMAIL_VERIFICATION",
 		);
 
-		await app.email.send({
+		app.email.send({
 			to: newUser.email,
 			template: {
 				name: "verifyAccountTemplate",
 				variables: {
 					// TODO environment domain/host, just needs to pass the token
-					link: `http://localhost:3000/api/v1/auth/verify-account?token=${verificationToken}`,
+					link: `http://localhost:3000/api/v1/auth/verify-account?token=${token}`,
 				},
 			},
 		});
 	}
 
 	async function verifyUserAndLogin(token: string) {
-		const result = await userService.getUserByVerificationToken(token, "EMAIL_VERIFICATION");
+		const { user } = await userService.getUserWithValidVerificationToken(
+			token,
+			"EMAIL_VERIFICATION",
+		);
 
-		if (!result) {
-			throw new Error("Invalid verification token.");
+		if (!user) {
+			throw new BadRequestError("Invalid verification token.");
 		}
-
-		const user = result.user;
 
 		await verificationTokenService.markTokenUsed(token);
 		await userService.verifyUser(user.id);
@@ -66,7 +69,7 @@ export function createAuthService(app: FastifyInstance) {
 
 	async function login(payload: UserCreate) {
 		const user = await userService.getUserByEmail(payload.email);
-		const isPasswordValid = await passwordService.compare(payload.password, user.password);
+		const isPasswordValid = await hashUtil.password.compare(payload.password, user.password);
 
 		// TODO Check if verified, throw verification error and make user have option to resend verification link
 		// TODO If user reaches 5 verification links sent and still didnt verify, ban code resend for 24 hours for that user
@@ -94,7 +97,7 @@ export function createAuthService(app: FastifyInstance) {
 		const storedToken = await tokenService.getRefreshTokenByJti(payload.jti);
 
 		if (!storedToken || storedToken.revoked) {
-			throw new Error("Token has been revoked or is expired");
+			throw new InvalidCredentialsError("Token has been revoked or is expired");
 		}
 
 		const newJti = tokenService.generateJti();
@@ -117,7 +120,58 @@ export function createAuthService(app: FastifyInstance) {
 		return { cleared: true };
 	}
 
+	async function requestResetPassword(email: string) {
+		const user = await userService.getUserByEmail(email);
+
+		if (!user.email) {
+			// TODO Logger logs error silently
+			return;
+		}
+
+		const token = await verificationTokenService.createVerificationToken(user.id, "PASSWORD_RESET");
+
+		app.email.send({
+			to: user.email,
+			template: {
+				name: "resetPasswordTemplate",
+				variables: {
+					email: user.email,
+					// TODO environment dynamic domain/host, just needs to pass the token
+					// TODO Frontend route should be included here and call this endpoint en route to verify, for now use direct endpoint
+					link: `http://localhost:3000/api/v1/auth/reset-password?token=${token}`,
+				},
+			},
+		});
+	}
+
+	async function resetPassword(payload: UserUpdatePassword) {
+		const hashedPayloadToken = hashUtil.token.hash(payload.token);
+
+		const user = await userService.getUserWithValidVerificationToken(
+			hashedPayloadToken,
+			"PASSWORD_RESET",
+		);
+
+		if (!user) {
+			throw new NotFoundError("Password reset request token not found");
+		}
+
+		const isTokenValidOrExists = hashUtil.token.compare(payload.token, user.token.token);
+
+		if (!isTokenValidOrExists) {
+			throw new NotFoundError("Password reset request token not found");
+		}
+
+		await verificationTokenService.markTokenUsed(hashedPayloadToken);
+
+		const hashedNewPassword = await hashUtil.password.hash(payload.password);
+
+		await userService.updateUserPassword(user.user.id, hashedNewPassword);
+	}
+
 	return {
+		resetPassword,
+		requestResetPassword,
 		register,
 		verifyUserAndLogin,
 		login,
