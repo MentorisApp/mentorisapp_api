@@ -3,6 +3,7 @@ import { FastifyInstance } from "fastify";
 import { VerificationTokenContext } from "~/db/schema/enums/db.enum.schema";
 import { NotFoundError } from "~/domain/errors/NotFoundError";
 import { unwrapResult } from "~/utils/db.util";
+import { hashUtil } from "~/utils/hash.util";
 import { UserCreate } from "~/validators/user.validator";
 
 export function createUserService(app: FastifyInstance) {
@@ -92,6 +93,8 @@ export function createUserService(app: FastifyInstance) {
 		token: string,
 		context: VerificationTokenContext,
 	) {
+		const hashedPayloadToken = hashUtil.token.hash(token);
+
 		const result = await db
 			.select({
 				user: users,
@@ -101,7 +104,7 @@ export function createUserService(app: FastifyInstance) {
 			.innerJoin(users, eq(verification_tokens.userId, users.id))
 			.where(
 				and(
-					eq(verification_tokens.token, token),
+					eq(verification_tokens.token, hashedPayloadToken),
 					eq(verification_tokens.context, context),
 					eq(verification_tokens.used, false),
 					gt(verification_tokens.expiresAt, new Date()),
@@ -109,8 +112,7 @@ export function createUserService(app: FastifyInstance) {
 			)
 			.limit(1);
 
-		// TODO weird data structure return, fix and flatten
-		return result[0] ?? null;
+		return unwrapResult(result, "Verification request token not found");
 	}
 
 	async function updateUserPassword(userId: number, hashedPassword: string) {

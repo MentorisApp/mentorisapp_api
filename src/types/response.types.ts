@@ -12,6 +12,7 @@ export type ApiErrorResponse = {
 	message: string | null;
 	detail: ZodError["issues"] | $ZodFlattenedError<unknown> | string | null;
 	meta: Metadata & { status: HttpStatus };
+	code?: string | null;
 };
 
 export type ApiSuccessResponse<T> = {

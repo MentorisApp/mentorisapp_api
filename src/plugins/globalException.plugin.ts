@@ -7,7 +7,7 @@ import { sendErrorResponse } from "~/utils/response.util";
 const globalExceptionHandler: FastifyPluginAsync = async (app) => {
 	// Global error handler
 	app.setErrorHandler((error, _request, reply) => {
-		console.info("ERROR:", error);
+		console.error(error);
 		sendErrorResponse(error, reply);
 	});
 

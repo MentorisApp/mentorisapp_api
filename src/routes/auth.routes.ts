@@ -42,6 +42,11 @@ export const authRoutes = (app: FastifyInstance) => {
 				url: "/reset-password",
 				handler: controller.resetPassword,
 			},
+			{
+				method: "POST",
+				url: "/resend-verification-link",
+				handler: controller.resendVerificationLink,
+			},
 		] as RouteOptions[],
 	};
 };

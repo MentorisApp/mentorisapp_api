@@ -19,6 +19,7 @@ export function sendErrorResponse(error: FastifyError, reply: FastifyReply) {
 	let status: HttpStatus = error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR;
 	let message = error.message;
 	let detail: ApiErrorResponse["detail"] = null;
+	let code: ApiErrorResponse["code"] = error.code || null;
 
 	if (error instanceof ZodError) {
 		status = HttpStatus.BAD_REQUEST;
@@ -56,6 +57,6 @@ export function sendErrorResponse(error: FastifyError, reply: FastifyReply) {
 		detail = error.message;
 	}
 
-	const response = new ErrorResponse({ status, message, detail });
+	const response = new ErrorResponse({ status, message, detail, code });
 	reply.status(response.meta.status).send(response);
 }
