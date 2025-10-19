@@ -1,10 +1,11 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { HttpStatus } from "~/constants/httpStatusCodes.enum";
+import { BadRequestError } from "~/domain/errors/BadRequestError";
 import { env } from "~/env";
 import { createAuthService } from "~/services/auth.service";
 import { parseDurationMs } from "~/utils/datetime.util";
-import { UserCreateSchema } from "~/validators/user.validator";
-import { UuidQuerySchema } from "~/validators/zod-shared.validator";
+import { UserCreateSchema, UserUpdatePasswordSchema } from "~/validators/user.validator";
+import { EmailSchema, UuidQuerySchema } from "~/validators/zod-shared.validator";
 
 export const authController = (app: FastifyInstance) => {
 	const authService = createAuthService(app);
@@ -43,13 +44,13 @@ export const authController = (app: FastifyInstance) => {
 			const refreshTokenCookie = request.cookies.refreshToken;
 
 			if (!refreshTokenCookie) {
-				return reply.status(HttpStatus.BAD_REQUEST).send({ error: "No refresh token cookie" });
+				throw new BadRequestError("No refresh token cookie");
 			}
 
 			const { valid, value: token } = app.unsignCookie(refreshTokenCookie);
 
 			if (!valid) {
-				return reply.status(HttpStatus.BAD_REQUEST).send({ error: "Invalid refresh token cookie" });
+				throw new BadRequestError("Invalid refresh token cookie");
 			}
 
 			const { cleared } = await authService.logout(token);
@@ -64,13 +65,13 @@ export const authController = (app: FastifyInstance) => {
 			const oldRefreshTokenCookie = request.cookies.refreshToken;
 
 			if (!oldRefreshTokenCookie) {
-				throw new Error("NO REFRESH TOKEN IN COOKIE");
+				throw new BadRequestError("No refresh token in cookie");
 			}
 
 			const { valid, value: oldRefreshToken } = app.unsignCookie(oldRefreshTokenCookie);
 
 			if (!valid) {
-				throw new Error("REFRESH TOKEN COOKIE NOT VALID");
+				throw new BadRequestError("Refresh token is not valid");
 			}
 
 			const { accessToken, refreshToken } = await authService.refresh(oldRefreshToken);
@@ -81,6 +82,18 @@ export const authController = (app: FastifyInstance) => {
 					maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
 				})
 				.send({ accessToken });
+		},
+		requestResetPassword: async (request: FastifyRequest, reply: FastifyReply) => {
+			const { email } = EmailSchema.parse(request.body);
+			await authService.requestResetPassword(email);
+
+			return reply.status(HttpStatus.OK).send();
+		},
+		resetPassword: async (request: FastifyRequest, reply: FastifyReply) => {
+			const { password, token } = UserUpdatePasswordSchema.parse(request.body);
+			await authService.resetPassword({ password, token });
+
+			reply.status(HttpStatus.OK).send();
 		},
 	};
 };

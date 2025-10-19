@@ -64,6 +64,13 @@
       "when": 1760284912378,
       "tag": "0008_offers_categories_junction",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1760710764780,
+      "tag": "0009_update_at_column",
+      "breakpoints": true
     }
   ]
 }
