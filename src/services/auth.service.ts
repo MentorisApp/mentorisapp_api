@@ -1,5 +1,7 @@
 import { FastifyInstance } from "fastify";
+import { AccountNotVerifiedError } from "~/domain/errors/AccountNotVerifiedError";
 import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
+import { AlreadyVerifiedError } from "~/domain/errors/AlreadyVerifiedError";
 import { BadRequestError } from "~/domain/errors/BadRequestError";
 import { InvalidCredentialsError } from "~/domain/errors/InvalidCredentialsError";
 import { NotFoundError } from "~/domain/errors/NotFoundError";
@@ -46,7 +48,7 @@ export function createAuthService(app: FastifyInstance) {
 	}
 
 	async function verifyUserAndLogin(token: string) {
-		const { user } = await userService.getUserWithValidVerificationToken(
+		const { user, token: storedHashToken } = await userService.getUserWithValidVerificationToken(
 			token,
 			"EMAIL_VERIFICATION",
 		);
@@ -55,7 +57,7 @@ export function createAuthService(app: FastifyInstance) {
 			throw new BadRequestError("Invalid verification token.");
 		}
 
-		await verificationTokenService.markTokenUsed(token);
+		await verificationTokenService.markTokenUsed(storedHashToken.token);
 		await userService.verifyUser(user.id);
 
 		const jti = tokenService.generateJti();
@@ -71,8 +73,9 @@ export function createAuthService(app: FastifyInstance) {
 		const user = await userService.getUserByEmail(payload.email);
 		const isPasswordValid = await hashUtil.password.compare(payload.password, user.password);
 
-		// TODO Check if verified, throw verification error and make user have option to resend verification link
-		// TODO If user reaches 5 verification links sent and still didnt verify, ban code resend for 24 hours for that user
+		if (!user.isVerified) {
+			throw new AccountNotVerifiedError();
+		}
 
 		if (!user || !isPasswordValid) {
 			throw new InvalidCredentialsError();
@@ -163,13 +166,41 @@ export function createAuthService(app: FastifyInstance) {
 		}
 
 		await verificationTokenService.markTokenUsed(hashedPayloadToken);
-
 		const hashedNewPassword = await hashUtil.password.hash(payload.password);
-
 		await userService.updateUserPassword(user.user.id, hashedNewPassword);
 	}
 
+	async function resendVerificationLink(email: string) {
+		const user = await userService.getUserByEmail(email);
+
+		if (!user) {
+			throw new NotFoundError("User not found");
+		}
+
+		if (user.isVerified) {
+			throw new AlreadyVerifiedError("User is already verified");
+		}
+
+		const token = await verificationTokenService.createVerificationToken(
+			user.id,
+			"EMAIL_VERIFICATION",
+		);
+
+		app.email.send({
+			to: user.email,
+			template: {
+				name: "verifyAccountTemplate",
+				variables: {
+					// TODO environment dynamic domain/host, just needs to pass the token
+					// TODO Frontend route should be included here and call this endpoint en route to verify, for now use direct endpoint
+					link: `http://localhost:3000/api/v1/auth/verify-account?token=${token}`,
+				},
+			},
+		});
+	}
+
 	return {
+		resendVerificationLink,
 		resetPassword,
 		requestResetPassword,
 		register,

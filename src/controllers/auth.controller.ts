@@ -87,13 +87,19 @@ export const authController = (app: FastifyInstance) => {
 			const { email } = EmailSchema.parse(request.body);
 			await authService.requestResetPassword(email);
 
-			return reply.status(HttpStatus.OK).send();
+			return reply.status(HttpStatus.ACCEPTED).send();
 		},
 		resetPassword: async (request: FastifyRequest, reply: FastifyReply) => {
 			const { password, token } = UserUpdatePasswordSchema.parse(request.body);
 			await authService.resetPassword({ password, token });
 
 			reply.status(HttpStatus.OK).send();
+		},
+		resendVerificationLink: async (request: FastifyRequest, reply: FastifyReply) => {
+			const { email } = EmailSchema.parse(request.body);
+			await authService.resendVerificationLink(email);
+
+			reply.status(HttpStatus.ACCEPTED).send();
 		},
 	};
 };
