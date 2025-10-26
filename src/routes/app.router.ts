@@ -3,32 +3,18 @@ import { authRoutes } from "./auth.routes";
 import { dictionaryRoutes } from "./dictionary.routes";
 import { offerRoutes } from "./offer.routes";
 import { profileRoutes } from "./profile.routes";
+import { reviewRoutes } from "./review.routes";
 
 export async function router(app: FastifyInstance) {
-	const PUBLIC_MODULES = [authRoutes];
-	const PRIVATE_MODULES = [profileRoutes, offerRoutes, dictionaryRoutes];
+	const MODULES = [authRoutes, profileRoutes, offerRoutes, dictionaryRoutes, reviewRoutes];
 
-	for (const module of PUBLIC_MODULES) {
+	// TODO helper function for registering routes
+	for (const module of MODULES) {
 		const { prefix, routes } = module(app);
 
 		app.register(
 			async (subApp) => {
 				for (const route of routes) subApp.route(route);
-			},
-			{ prefix },
-		);
-	}
-
-	for (const module of PRIVATE_MODULES) {
-		const { prefix, routes } = module(app);
-
-		app.register(
-			async (subApp) => {
-				subApp.addHook("preHandler", subApp.authorize());
-
-				for (const route of routes) {
-					subApp.route(route);
-				}
 			},
 			{ prefix },
 		);

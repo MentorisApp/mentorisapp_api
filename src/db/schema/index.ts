@@ -1,5 +1,7 @@
+/* -------------------------------- Junctions ------------------------------- */
 export * from "./junctions/offers_categories.schema";
 export * from "./junctions/roles_permissions.schema";
+/* --------------------------------- Tables --------------------------------- */
 export * from "./tables/categories.schema";
 export * from "./tables/cities.schema";
 export * from "./tables/countries.schema";
@@ -9,6 +11,7 @@ export * from "./tables/offers.schema";
 export * from "./tables/permissions.schema";
 export * from "./tables/profiles.schema";
 export * from "./tables/refresh_tokens.schema";
+export * from "./tables/reviews.schema";
 export * from "./tables/roles.schema";
 export * from "./tables/users.schema";
 export * from "./tables/verification_tokens.schema";

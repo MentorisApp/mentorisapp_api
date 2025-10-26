@@ -7,6 +7,8 @@ export const offerRoutes = (app: FastifyInstance) => {
 	return {
 		prefix: "/offers",
 		routes: [
+			// TODO GET offer public api not by user id
+			// TODO GET offer reviews private/public
 			{
 				method: "POST",
 				url: "/",
@@ -22,8 +24,18 @@ export const offerRoutes = (app: FastifyInstance) => {
 			{
 				method: "GET",
 				url: "/",
-				handler: controller.getOne,
+				handler: controller.getOfferByUserId,
 				preHandler: app.authorize(),
+			},
+			{
+				method: "GET",
+				url: "/:offerId",
+				handler: controller.getOfferByOfferId,
+			},
+			{
+				method: "GET",
+				url: "/:offerId/reviews",
+				handler: controller.getAllActiveReviews,
 			},
 		] as RouteOptions[],
 	};
