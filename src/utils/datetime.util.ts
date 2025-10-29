@@ -1,3 +1,4 @@
+// Converts strins like 7h, 5d into ms
 export function parseDurationMs(duration: string): number {
 	const match = duration.match(/^(\d+)([smhd])$/);
 	if (!match) throw new Error("Invalid duration format");
@@ -19,6 +20,7 @@ export function parseDurationMs(duration: string): number {
 	}
 }
 
+// Get date arg
 export function minutesFromNow(minutes: number): Date {
 	const expires = new Date();
 	expires.setMinutes(expires.getMinutes() + minutes);
