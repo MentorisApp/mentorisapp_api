@@ -1,24 +1,19 @@
 import { pgEnum } from "drizzle-orm/pg-core";
 
-export const verificationTokenContextEnum = pgEnum("verification_token_context", [
+export const VERIFICATION_TOKEN_CONTEXT_ENUM = pgEnum("verification_token_context", [
 	"EMAIL_VERIFICATION",
 	"PASSWORD_RESET",
 ]);
 
-export const offerLevelEnum = pgEnum("offer_level", ["OSNOVNA", "SREDNJA", "FAKULTET", "MATURA"]);
+export const OFFER_LEVEL_ENUM = pgEnum("offer_level", ["OSNOVNA", "SREDNJA", "FAKULTET", "MATURA"]);
 
-export const offerFormatEnum = pgEnum("offer_format", ["UZIVO", "ONLINE", "OBOJE"]);
+export const OFFER_FORMAT_ENUM = pgEnum("offer_format", ["UZIVO", "ONLINE", "OBOJE"]);
 
-export const offerStatusEnum = pgEnum("offer_status", [
-	"PENDING",
-	"APPROVED",
-	"REJECTED",
-	"INACTIVE",
-]);
+export const STATUS_ENUM = pgEnum("mod_status", ["PENDING", "APPROVED", "REJECTED", "INACTIVE"]);
 
-export const priceTypeEnum = pgEnum("price_type", ["FIXED", "RANGE"]);
+export const PRICE_TYPE_ENUM = pgEnum("price_type", ["FIXED", "RANGE"]);
 
-export type VerificationTokenContext = (typeof verificationTokenContextEnum.enumValues)[number];
-export type OfferLevel = (typeof offerLevelEnum.enumValues)[number];
-export type OfferStatus = (typeof offerStatusEnum.enumValues)[number];
-export type OfferFormat = (typeof offerFormatEnum.enumValues)[number];
+export type VerificationTokenContext = (typeof VERIFICATION_TOKEN_CONTEXT_ENUM.enumValues)[number];
+export type OfferLevel = (typeof OFFER_LEVEL_ENUM.enumValues)[number];
+export type ModStatus = (typeof STATUS_ENUM.enumValues)[number];
+export type OfferFormat = (typeof OFFER_FORMAT_ENUM.enumValues)[number];

@@ -1,5 +1,7 @@
 import { relations } from "drizzle-orm";
-import { integer, pgTable, serial, smallint, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { integer, pgTable, serial, smallint, text, varchar } from "drizzle-orm/pg-core";
+import { modColumns } from "../partials/modColumns";
+import { timestampColumns } from "../partials/timestampColumns";
 import { cities } from "./cities.schema";
 import { countries } from "./countries.schema";
 import { education_levels } from "./education_levels.schema";
@@ -30,8 +32,8 @@ export const profiles = pgTable("profiles", {
 	countryId: integer("country_id")
 		.notNull()
 		.references(() => countries.id, { onDelete: "restrict" }),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+	...modColumns,
+	...timestampColumns,
 });
 
 export const profilesRelations = relations(profiles, ({ one }) => ({

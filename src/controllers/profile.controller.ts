@@ -8,6 +8,13 @@ export const profileController = (app: FastifyInstance) => {
 	const profileService = createProfileService(app);
 
 	return {
+		get: async (request: FastifyRequest, reply: FastifyReply) => {
+			const userId = getUserIdFromToken(request);
+			const profile = await profileService.getProfile(userId);
+
+			reply.status(HttpStatus.OK).send(profile);
+		},
+
 		create: async (request: FastifyRequest, reply: FastifyReply) => {
 			const userId = getUserIdFromToken(request);
 			const payload = ProfileCreateSchema.parse(request.body);
@@ -22,13 +29,6 @@ export const profileController = (app: FastifyInstance) => {
 			const updatedProfile = await profileService.updateProfile(payload, userId);
 
 			reply.status(HttpStatus.OK).send(updatedProfile);
-		},
-
-		get: async (request: FastifyRequest, reply: FastifyReply) => {
-			const userId = getUserIdFromToken(request);
-			const profile = await profileService.getProfile(userId);
-
-			reply.status(HttpStatus.OK).send(profile);
 		},
 	};
 };

@@ -69,10 +69,11 @@ export function createAuthService(app: FastifyInstance) {
 		return { accessToken, refreshToken };
 	}
 
-	async function login(payload: UserCreate) {
+	async function login(payload: Omit<UserCreate, "updatedAt">) {
 		const user = await userService.getUserByEmail(payload.email);
 		const isPasswordValid = await hashUtil.password.compare(payload.password, user.password);
 
+		// TODO frontend needs to know exactly if user is verified, if not verified prompt to send verification email
 		if (!user.isVerified) {
 			throw new AccountNotVerifiedError();
 		}

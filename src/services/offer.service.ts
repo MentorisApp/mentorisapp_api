@@ -103,8 +103,41 @@ export function createOfferService(app: FastifyInstance) {
 			throw new NotFoundError("Offer does not exist");
 		}
 
-		return offer;
+		const { offersCategories, ...restOffer } = offer;
+
+		const transformedOffer = {
+			...restOffer,
+			categories: offersCategories.map((oc) => oc.category),
+		};
+
+		return transformedOffer;
 	}
 
-	return { createOffer, updateOffer, getOfferByUserId };
+	async function getOfferByOfferId(offerId: number) {
+		const offer = await db.query.offers.findFirst({
+			where: eq(offers.id, offerId),
+			with: {
+				offersCategories: {
+					with: {
+						category: true,
+					},
+				},
+			},
+		});
+
+		if (!offer) {
+			throw new NotFoundError("Offer does not exist");
+		}
+
+		const { offersCategories, ...restOffer } = offer;
+
+		const transformedOffer = {
+			...restOffer,
+			categories: offersCategories.map((oc) => oc.category),
+		};
+
+		return transformedOffer;
+	}
+
+	return { createOffer, updateOffer, getOfferByUserId, getOfferByOfferId };
 }

@@ -8,7 +8,16 @@ export const ProfileCreateSchema = createInsertSchema(profiles)
 	.strict();
 
 export const ProfileUpdateSchema = createUpdateSchema(profiles)
-	.omit({ profilePictureUrl: true, createdAt: true, updatedAt: true, id: true })
+	.omit({
+		profilePictureUrl: true,
+		createdAt: true,
+		updatedAt: true,
+		id: true,
+		modAt: true,
+		modBy: true,
+		modReason: true,
+		modStatus: true,
+	})
 	.strict();
 
 export type ProfileCreate = z.infer<typeof ProfileCreateSchema>;
