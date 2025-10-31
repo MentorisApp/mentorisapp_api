@@ -23,7 +23,10 @@ const emailPluginHandler: FastifyPluginAsync = async (fastify) => {
 
 			const html = renderEmail(template);
 			const config = emailTemplateConfig[template.name];
-			const from = env.EMAIL_AUTH_USER;
+			const from = {
+				name: "Mentoris App",
+				address: "noreply@mentorisapp.com",
+			};
 			const subject = config.subject;
 
 			const info = await transporter.sendMail({
