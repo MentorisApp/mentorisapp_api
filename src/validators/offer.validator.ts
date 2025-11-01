@@ -1,5 +1,6 @@
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z from "zod";
+
 import { offers } from "~/db/schema";
 
 export const OfferUserCreateSchema = createInsertSchema(offers)

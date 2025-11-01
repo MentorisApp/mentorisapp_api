@@ -1,4 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+
 import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 import { BadRequestError } from "~/domain/errors/BadRequestError";
 import { env } from "~/env";

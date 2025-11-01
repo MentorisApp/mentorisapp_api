@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
+
 import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
 import { NotFoundError } from "~/domain/errors/NotFoundError";
 import { unwrapResult } from "~/utils/db.util";
@@ -9,6 +10,7 @@ export function createProfileService(app: FastifyInstance) {
 	const { db } = app;
 	const { profiles } = db;
 
+	// TODO sanitize multipart fields, trim and clear up
 	async function createProfile(body: ProfileCreate, userId: number) {
 		const existingProfile = await checkExistsProfileByUserId(userId);
 
@@ -20,6 +22,7 @@ export function createProfileService(app: FastifyInstance) {
 			.insert(profiles)
 			.values({
 				...body,
+				profilePictureUrl: body.profilePicture,
 				userId: userId,
 			})
 			.returning();
@@ -45,6 +48,7 @@ export function createProfileService(app: FastifyInstance) {
 			.update(profiles)
 			.set({
 				...body,
+				profilePictureUrl: body.profilePicture,
 				updatedAt: new Date(),
 			})
 			.where(eq(profiles.userId, userId))

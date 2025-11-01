@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
 import { pgTable, serial, varchar } from "drizzle-orm/pg-core";
+
 import { offers_categories } from "../junctions/offers_categories.schema";
 
 export const categories = pgTable("categories", {

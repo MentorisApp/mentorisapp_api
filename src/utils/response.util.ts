@@ -2,9 +2,11 @@ import { DrizzleQueryError } from "drizzle-orm/errors";
 import fastify, { FastifyError, FastifyReply } from "fastify";
 import { DatabaseError } from "pg";
 import z, { ZodError } from "zod";
+
 import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 import { ErrorResponse } from "~/domain/dto/ErrorResponse.dto";
 import { ApiErrorResponse, Metadata } from "~/types/response.types";
+
 import { handleDatabaseError } from "./db.util";
 import { generateUuid } from "./uuid.util";
 

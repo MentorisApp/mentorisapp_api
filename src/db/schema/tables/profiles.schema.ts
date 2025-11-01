@@ -1,12 +1,13 @@
 import { relations } from "drizzle-orm";
 import { integer, pgTable, serial, smallint, text, varchar } from "drizzle-orm/pg-core";
-import { modColumns } from "../partials/modColumns";
-import { timestampColumns } from "../partials/timestampColumns";
+
 import { cities } from "./cities.schema";
 import { countries } from "./countries.schema";
 import { education_levels } from "./education_levels.schema";
 import { genders } from "./genders.schema";
 import { users } from "./users.schema";
+import { modColumns } from "../partials/modColumns";
+import { timestampColumns } from "../partials/timestampColumns";
 
 export const profiles = pgTable("profiles", {
 	id: serial("id").primaryKey(),

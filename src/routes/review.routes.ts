@@ -1,4 +1,5 @@
 import { FastifyInstance, RouteOptions } from "fastify";
+
 import { reviewController } from "~/controllers/review.controller";
 
 export const reviewRoutes = (app: FastifyInstance) => {
@@ -12,7 +13,7 @@ export const reviewRoutes = (app: FastifyInstance) => {
 				method: "POST",
 				url: "/",
 				handler: controller.create,
-				preHandler: app.authorize(),
+				onRequest: app.authorize(),
 			},
 		] as RouteOptions[],
 	};

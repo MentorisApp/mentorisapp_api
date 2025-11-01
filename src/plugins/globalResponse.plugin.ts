@@ -1,5 +1,6 @@
 import { FastifyPluginAsync } from "fastify";
 import fp from "fastify-plugin";
+
 import { SuccessResponse } from "~/domain/dto/SuccessResponse.dto";
 
 const globalResponseHandler: FastifyPluginAsync = async (app) => {

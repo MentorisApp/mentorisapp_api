@@ -1,10 +1,11 @@
 import { relations } from "drizzle-orm";
 import { integer, numeric, pgTable, serial, text, varchar } from "drizzle-orm/pg-core";
+
+import { users } from "./users.schema";
 import { OFFER_FORMAT_ENUM, OFFER_LEVEL_ENUM, PRICE_TYPE_ENUM } from "../enums/db.enum.schema";
 import { offers_categories } from "../junctions/offers_categories.schema";
 import { modColumns } from "../partials/modColumns";
 import { timestampColumns } from "../partials/timestampColumns";
-import { users } from "./users.schema";
 
 export const offers = pgTable("offers", {
 	id: serial("id").primaryKey(),

@@ -2,6 +2,7 @@ import fs from "fs";
 import Handlebars from "handlebars";
 import path from "path";
 import { fileURLToPath } from "url";
+
 import { env } from "~/env";
 import { EmailTemplateParams } from "~/types/email.types";
 

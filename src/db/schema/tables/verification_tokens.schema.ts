@@ -1,7 +1,8 @@
 import { boolean, integer, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+
+import { users } from "./users.schema";
 import { VERIFICATION_TOKEN_CONTEXT_ENUM } from "../enums/db.enum.schema";
 import { timestampColumns } from "../partials/timestampColumns";
-import { users } from "./users.schema";
 
 export const verification_tokens = pgTable("verification_tokens", {
 	id: serial("id").primaryKey(),

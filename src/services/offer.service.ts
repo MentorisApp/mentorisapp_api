@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
+
 import { offers_categories } from "~/db/schema/junctions/offers_categories.schema";
 import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
 import { NotFoundError } from "~/domain/errors/NotFoundError";

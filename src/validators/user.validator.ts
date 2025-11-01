@@ -1,6 +1,8 @@
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z from "zod";
+
 import { users } from "~/db/schema";
+
 import { PasswordSchema, UuidSchema } from "./zod-shared.validator";
 
 export const UserCreateSchema = createInsertSchema(users)

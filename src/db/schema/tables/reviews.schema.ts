@@ -1,9 +1,10 @@
 import { relations } from "drizzle-orm";
 import { integer, numeric, pgTable, serial, text } from "drizzle-orm/pg-core";
-import { modColumns } from "../partials/modColumns";
-import { timestampColumns } from "../partials/timestampColumns";
+
 import { offers } from "./offers.schema";
 import { users } from "./users.schema";
+import { modColumns } from "../partials/modColumns";
+import { timestampColumns } from "../partials/timestampColumns";
 
 export const reviews = pgTable("reviews", {
 	id: serial("id").primaryKey(),

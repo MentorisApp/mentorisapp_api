@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
 import { integer, pgTable, primaryKey } from "drizzle-orm/pg-core";
+
 import { permissions } from "../tables/permissions.schema";
 import { roles } from "../tables/roles.schema";
 

@@ -1,26 +1,33 @@
 import Fastify from "fastify";
+
 import { env } from "~/env";
 import { dbClientPlugin } from "~/plugins/db.plugin";
 import { globalExceptionPlugin } from "~/plugins/globalException.plugin";
 import { globalResponsePlugin } from "~/plugins/globalResponse.plugin";
 import { router } from "~/routes/app.router";
+
 import { authPlugin } from "./plugins/auth.plugin";
 import { cookiePlugin } from "./plugins/cookie.plugin";
+import { corsPlugin } from "./plugins/cors.plugin";
 import { emailPlugin } from "./plugins/email.plugin";
+import { uploadFilePlugin } from "./plugins/uploadFile.plugin";
 
 const app = Fastify({
 	keepAliveTimeout: 30000,
 });
 
 async function buildApp() {
-	app.register(emailPlugin);
+	app.register(corsPlugin);
 	app.register(authPlugin);
 	app.register(cookiePlugin);
 	app.register(dbClientPlugin);
+	app.register(emailPlugin);
 	app.register(globalResponsePlugin);
 	app.register(globalExceptionPlugin);
+	app.register(uploadFilePlugin);
 
 	app.register(router, { prefix: "/api/v1" });
+
 	return app;
 }
 

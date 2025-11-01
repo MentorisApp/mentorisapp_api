@@ -1,4 +1,5 @@
 import { FastifyInstance, RouteOptions } from "fastify";
+
 import { authController } from "~/controllers/auth.controller";
 
 export const authRoutes = (app: FastifyInstance) => {
