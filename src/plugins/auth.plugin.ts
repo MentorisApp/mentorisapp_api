@@ -1,6 +1,7 @@
 import fastifyJwt from "@fastify/jwt";
 import { FastifyPluginAsync, FastifyReply, FastifyRequest } from "fastify";
 import fp from "fastify-plugin";
+
 import { Permission } from "~/constants/permissions";
 import { ForbiddenError } from "~/domain/errors/ForbiddenError";
 import { env } from "~/env";

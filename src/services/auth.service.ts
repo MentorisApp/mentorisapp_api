@@ -1,4 +1,5 @@
 import { FastifyInstance } from "fastify";
+
 import { AccountNotVerifiedError } from "~/domain/errors/AccountNotVerifiedError";
 import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
 import { AlreadyVerifiedError } from "~/domain/errors/AlreadyVerifiedError";
@@ -7,6 +8,7 @@ import { InvalidCredentialsError } from "~/domain/errors/InvalidCredentialsError
 import { NotFoundError } from "~/domain/errors/NotFoundError";
 import { hashUtil } from "~/utils/hash.util";
 import { UserCreate, UserUpdatePassword } from "~/validators/user.validator";
+
 import { createTokenService } from "./token.service";
 import { createUserService } from "./user.service";
 import { createVerificationTokensService } from "./verificationTokens.service";

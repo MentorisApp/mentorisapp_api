@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
 import { pgTable, serial, varchar } from "drizzle-orm/pg-core";
+
 import { roles_permissions } from "../junctions/roles_permissions.schema";
 
 export const permissions = pgTable("permissions", {

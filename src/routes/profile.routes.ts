@@ -1,4 +1,5 @@
 import { FastifyInstance, RouteOptions } from "fastify";
+
 import { profileController } from "~/controllers/profile.controller";
 
 export const profileRoutes = (app: FastifyInstance) => {
@@ -11,19 +12,19 @@ export const profileRoutes = (app: FastifyInstance) => {
 				method: "POST",
 				url: "/",
 				handler: controller.create,
-				preHandler: app.authorize(),
+				onRequest: app.authorize(),
 			},
 			{
 				method: "PUT",
 				url: "/",
 				handler: controller.update,
-				preHandler: app.authorize(),
+				onRequest: app.authorize(),
 			},
 			{
 				method: "GET",
 				url: "/",
 				handler: controller.get,
-				preHandler: app.authorize(),
+				onRequest: app.authorize(),
 			},
 		] as RouteOptions[],
 	};

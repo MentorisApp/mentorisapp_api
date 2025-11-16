@@ -1,4 +1,5 @@
 import { FastifyInstance, RouteOptions } from "fastify";
+
 import { offerController } from "~/controllers/offer.controller";
 
 export const offerRoutes = (app: FastifyInstance) => {
@@ -13,19 +14,19 @@ export const offerRoutes = (app: FastifyInstance) => {
 				method: "POST",
 				url: "/",
 				handler: controller.create,
-				preHandler: app.authorize(),
+				onRequest: app.authorize(),
 			},
 			{
 				method: "PUT",
 				url: "/",
 				handler: controller.update,
-				preHandler: app.authorize(),
+				onRequest: app.authorize(),
 			},
 			{
 				method: "GET",
 				url: "/",
 				handler: controller.getOfferByUserId,
-				preHandler: app.authorize(),
+				onRequest: app.authorize(),
 			},
 			{
 				method: "GET",

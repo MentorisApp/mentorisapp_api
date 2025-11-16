@@ -1,4 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+
 import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 import { createProfileService } from "~/services/profile.service";
 import { getUserIdFromToken } from "~/utils/auth.util";

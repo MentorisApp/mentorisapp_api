@@ -2,8 +2,10 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 import { Pool } from "pg";
+
 import * as schema from "~/db/schema";
 import { env } from "~/env";
+
 import { AppDb } from "../types/db.types";
 
 const databaseClient = async (fastify: FastifyInstance) => {

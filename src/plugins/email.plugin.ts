@@ -1,23 +1,24 @@
 import { FastifyPluginAsync } from "fastify";
 import fp from "fastify-plugin";
 import nodemailer from "nodemailer";
+
 import { emailTemplateConfig } from "~/configs/email.config";
 import { env } from "~/env";
 import type { SendEmailParams } from "~/types/email.types";
 import { renderEmail } from "~/utils/renderEmail.util";
 
-const emailPluginHandler: FastifyPluginAsync = async (fastify) => {
-	const transporter = nodemailer.createTransport({
-		host: env.EMAIL_HOST,
-		port: 587,
-		secure: false,
-		auth: {
-			user: env.EMAIL_AUTH_USER,
-			pass: env.EMAIL_AUTH_PASS,
-		},
-	});
+const transporter = nodemailer.createTransport({
+	host: env.EMAIL_HOST,
+	port: 587,
+	secure: false,
+	auth: {
+		user: env.EMAIL_AUTH_USER,
+		pass: env.EMAIL_AUTH_PASS,
+	},
+});
 
-	fastify.decorate("email", {
+const emailPluginHandler: FastifyPluginAsync = async (app) => {
+	app.decorate("email", {
 		send: async (options: SendEmailParams) => {
 			const { template, to } = options;
 

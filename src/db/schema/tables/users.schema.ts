@@ -1,8 +1,9 @@
 import { relations } from "drizzle-orm";
 import { boolean, integer, pgTable, serial, varchar } from "drizzle-orm/pg-core";
-import { timestampColumns } from "../partials/timestampColumns";
+
 import { profiles } from "./profiles.schema";
 import { roles } from "./roles.schema";
+import { timestampColumns } from "../partials/timestampColumns";
 
 export const users = pgTable("users", {
 	id: serial("id").primaryKey(),

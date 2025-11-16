@@ -1,4 +1,5 @@
 import { DatabaseError } from "pg";
+
 import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 import { PostgresErrorCode } from "~/constants/postgresErrorCodes.enum";
 import { NotFoundError } from "~/domain/errors/NotFoundError";

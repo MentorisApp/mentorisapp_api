@@ -1,6 +1,7 @@
 import { HttpStatus } from "constants/httpStatusCodes.enum";
 import { FastifyPluginAsync } from "fastify";
 import fp from "fastify-plugin";
+
 import { ErrorResponse } from "~/domain/dto/ErrorResponse.dto";
 import { sendErrorResponse } from "~/utils/response.util";
 

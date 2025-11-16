@@ -1,6 +1,7 @@
 import { boolean, integer, pgTable, serial, timestamp, varchar } from "drizzle-orm/pg-core";
-import { timestampColumns } from "../partials/timestampColumns";
+
 import { users } from "./users.schema";
+import { timestampColumns } from "../partials/timestampColumns";
 
 export const refresh_tokens = pgTable("refresh_tokens", {
 	id: serial("id").primaryKey(),

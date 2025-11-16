@@ -1,4 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+
 import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 import { createDictionaryService } from "~/services/dictionary.service";
 

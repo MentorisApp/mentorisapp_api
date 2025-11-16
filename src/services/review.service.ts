@@ -1,5 +1,6 @@
 import { and, desc, eq } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
+
 import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
 import { ForbiddenError } from "~/domain/errors/ForbiddenError";
 import { NotFoundError } from "~/domain/errors/NotFoundError";

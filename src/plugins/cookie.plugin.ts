@@ -1,6 +1,7 @@
 import cookie from "@fastify/cookie";
 import { FastifyPluginAsync } from "fastify";
 import fp from "fastify-plugin";
+
 import { env } from "~/env";
 
 const cookieHandler: FastifyPluginAsync = async (app) => {

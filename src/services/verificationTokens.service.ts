@@ -1,5 +1,6 @@
 import { and, eq, gt, sql } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
+
 import { VerificationTokenContext } from "~/db/schema/enums/db.enum.schema";
 import { TooManyRequestsError } from "~/domain/errors/TooManyRequestsError";
 import { minutesFromNow } from "~/utils/datetime.util";
