@@ -39,6 +39,7 @@
 		"enabled": true,
 		"rules": {
 			"correctness": {
+				"noUnusedImports": "error",
 				"noUnusedFunctionParameters": {
 					"fix": "none",
 					"level": "warn",

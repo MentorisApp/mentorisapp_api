@@ -13,9 +13,9 @@
 		"start:dev": "node --env-file .env.dev dist/app.js",
 		"start:prod": "node --env-file .env.prod dist/app.js",
 		"typecheck": "tsc --noEmit",
-		"lint": "biome check --no-errors-on-unmatched --files-ignore-unknown=true",
+		"biome:check": "biome check --no-errors-on-unmatched --files-ignore-unknown=true",
 		"pre-commit": "lint-staged && yarn typecheck",
-		"pre-push": "yarn typecheck && yarn lint",
+		"pre-push": "yarn typecheck && yarn biome:check",
 		"db:generate": "drizzle-kit generate --name",
 		"db:push": "drizzle-kit push",
 		"db:studio": "drizzle-kit studio",
@@ -57,7 +57,7 @@
 	},
 	"lint-staged": {
 		"*.{ts,js,json}": [
-			"yarn lint"
+			"yarn biome:check"
 		]
 	}
 }
