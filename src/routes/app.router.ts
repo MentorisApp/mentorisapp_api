@@ -6,9 +6,9 @@ import { offerRoutes } from "./offer.routes";
 import { profileRoutes } from "./profile.routes";
 import { reviewRoutes } from "./review.routes";
 
-export async function router(app: FastifyInstance) {
-	const MODULES = [authRoutes, profileRoutes, offerRoutes, dictionaryRoutes, reviewRoutes];
+const MODULES = [authRoutes, profileRoutes, offerRoutes, dictionaryRoutes, reviewRoutes];
 
+export async function router(app: FastifyInstance) {
 	for (const module of MODULES) {
 		const { prefix, routes } = module(app);
 

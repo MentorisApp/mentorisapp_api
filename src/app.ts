@@ -26,7 +26,7 @@ async function buildApp() {
 	app.register(globalExceptionPlugin);
 	app.register(uploadFilePlugin);
 
-	app.register(router, { prefix: "/api/v1" });
+	app.register(router, { prefix: "/api" });
 
 	return app;
 }
