@@ -5,7 +5,8 @@ import { VerificationTokenContext } from "~/db/schema/enums/db.enum.schema";
 import { NotFoundError } from "~/domain/errors/NotFoundError";
 import { unwrapResult } from "~/utils/db.util";
 import { hashUtil } from "~/utils/hash.util";
-import { UserCreate } from "~/validators/user.validator";
+
+import { UserCreate } from "./user.validator";
 
 export function createUserService(app: FastifyInstance) {
 	const { db } = app;

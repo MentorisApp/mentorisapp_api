@@ -1,9 +1,9 @@
 import { FastifyInstance, RouteOptions } from "fastify";
 
-import { profileController } from "~/controllers/profile.controller";
+import { profileController } from "~/modules/profile/profile.controller";
 
 export const profileRoutes = (app: FastifyInstance) => {
-	const controller = profileController(app);
+	const controller = profileController();
 
 	return {
 		prefix: "/profiles",
@@ -11,19 +11,19 @@ export const profileRoutes = (app: FastifyInstance) => {
 			{
 				method: "POST",
 				url: "/",
-				handler: controller.create,
+				handler: controller.createUserProfile,
 				onRequest: app.authorize(),
 			},
 			{
 				method: "PUT",
 				url: "/",
-				handler: controller.update,
+				handler: controller.updateUserProfile,
 				onRequest: app.authorize(),
 			},
 			{
 				method: "GET",
 				url: "/",
-				handler: controller.get,
+				handler: controller.getUserProfileByUserId,
 				onRequest: app.authorize(),
 			},
 		] as RouteOptions[],

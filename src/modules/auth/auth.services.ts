@@ -6,12 +6,12 @@ import { AlreadyVerifiedError } from "~/domain/errors/AlreadyVerifiedError";
 import { BadRequestError } from "~/domain/errors/BadRequestError";
 import { InvalidCredentialsError } from "~/domain/errors/InvalidCredentialsError";
 import { NotFoundError } from "~/domain/errors/NotFoundError";
+import { createTokenService } from "~/modules/token/token.services";
+import { createVerificationTokensService } from "~/modules/token/verificationToken.services";
+import { createUserService } from "~/modules/user/user.services";
 import { hashUtil } from "~/utils/hash.util";
-import { UserCreate, UserUpdatePassword } from "~/validators/user.validator";
 
-import { createTokenService } from "./token.service";
-import { createUserService } from "./user.service";
-import { createVerificationTokensService } from "./verificationTokens.service";
+import { UserCreate, UserUpdatePassword } from "../user/user.validator";
 
 export function createAuthService(app: FastifyInstance) {
 	const userService = createUserService(app);

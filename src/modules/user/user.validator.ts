@@ -2,8 +2,7 @@ import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z from "zod";
 
 import { users } from "~/db/schema";
-
-import { PasswordSchema, UuidSchema } from "./zod-shared.validator";
+import { PasswordSchema, UuidSchema } from "~/utils/zod-shared.validator";
 
 export const UserCreateSchema = createInsertSchema(users)
 	.omit({ id: true, createdAt: true, roleId: true, isVerified: true })

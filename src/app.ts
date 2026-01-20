@@ -1,15 +1,16 @@
 import Fastify from "fastify";
 
+import { router } from "~/app.router";
 import { env } from "~/env";
 import { dbClientPlugin } from "~/plugins/db.plugin";
 import { globalExceptionPlugin } from "~/plugins/globalException.plugin";
 import { globalResponsePlugin } from "~/plugins/globalResponse.plugin";
-import { router } from "~/routes/app.router";
 
 import { authPlugin } from "./plugins/auth.plugin";
 import { cookiePlugin } from "./plugins/cookie.plugin";
 import { corsPlugin } from "./plugins/cors.plugin";
 import { emailPlugin } from "./plugins/email.plugin";
+import { servicesPlugin } from "./plugins/services.plugin";
 import { uploadFilePlugin } from "./plugins/uploadFile.plugin";
 
 const app = Fastify({
@@ -17,14 +18,17 @@ const app = Fastify({
 });
 
 async function buildApp() {
+	app.register(dbClientPlugin);
+	app.register(servicesPlugin);
 	app.register(corsPlugin);
 	app.register(authPlugin);
 	app.register(cookiePlugin);
-	app.register(dbClientPlugin);
 	app.register(emailPlugin);
 	app.register(globalResponsePlugin);
 	app.register(globalExceptionPlugin);
 	app.register(uploadFilePlugin);
+
+	// Services
 
 	app.register(router, { prefix: "/api" });
 

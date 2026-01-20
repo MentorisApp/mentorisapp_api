@@ -3,8 +3,8 @@ import { FastifyInstance } from "fastify";
 
 import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
 import { NotFoundError } from "~/domain/errors/NotFoundError";
+import { ProfileCreate, ProfileUpdate } from "~/modules/profile/profile.validator";
 import { unwrapResult } from "~/utils/db.util";
-import { ProfileCreate, ProfileUpdate } from "~/validators/profile.validator";
 
 export function createProfileService(app: FastifyInstance) {
 	const { db } = app;

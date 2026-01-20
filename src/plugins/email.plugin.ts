@@ -2,7 +2,7 @@ import { FastifyPluginAsync } from "fastify";
 import fp from "fastify-plugin";
 import nodemailer from "nodemailer";
 
-import { emailTemplateConfig } from "~/configs/email.config";
+import { emailTemplateConfig } from "~/config/email.config";
 import { env } from "~/env";
 import type { SendEmailParams } from "~/types/email.types";
 import { renderEmail } from "~/utils/renderEmail.util";

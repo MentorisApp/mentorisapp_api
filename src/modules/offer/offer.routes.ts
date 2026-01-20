@@ -1,9 +1,9 @@
 import { FastifyInstance, RouteOptions } from "fastify";
 
-import { offerController } from "~/controllers/offer.controller";
+import { offerController } from "~/modules/offer/offer.controller";
 
 export const offerRoutes = (app: FastifyInstance) => {
-	const controller = offerController(app);
+	const controller = offerController();
 
 	return {
 		prefix: "/offers",
@@ -13,13 +13,13 @@ export const offerRoutes = (app: FastifyInstance) => {
 			{
 				method: "POST",
 				url: "/",
-				handler: controller.create,
+				handler: controller.createOffer,
 				onRequest: app.authorize(),
 			},
 			{
 				method: "PUT",
 				url: "/",
-				handler: controller.update,
+				handler: controller.updateOffer,
 				onRequest: app.authorize(),
 			},
 			{
@@ -32,11 +32,6 @@ export const offerRoutes = (app: FastifyInstance) => {
 				method: "GET",
 				url: "/:offerId",
 				handler: controller.getOfferByOfferId,
-			},
-			{
-				method: "GET",
-				url: "/:offerId/reviews",
-				handler: controller.getAllActiveReviews,
 			},
 		] as RouteOptions[],
 	};

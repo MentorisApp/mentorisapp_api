@@ -1,9 +1,9 @@
-import { FastifyInstance, RouteOptions } from "fastify";
+import { RouteOptions } from "fastify";
 
-import { authController } from "~/controllers/auth.controller";
+import { authController } from "~/modules/auth/auth.controller";
 
-export const authRoutes = (app: FastifyInstance) => {
-	const controller = authController(app);
+export const authRoutes = () => {
+	const controller = authController();
 
 	return {
 		prefix: "/auth",

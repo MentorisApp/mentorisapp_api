@@ -4,8 +4,8 @@ import { FastifyInstance } from "fastify";
 import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
 import { ForbiddenError } from "~/domain/errors/ForbiddenError";
 import { NotFoundError } from "~/domain/errors/NotFoundError";
+import { ReviewCreate } from "~/modules/review/reviews.validator";
 import { unwrapResult } from "~/utils/db.util";
-import { ReviewCreate } from "~/validators/reviews.validator";
 
 export function createReviewService(app: FastifyInstance) {
 	const { db } = app;

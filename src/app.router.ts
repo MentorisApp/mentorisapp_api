@@ -1,10 +1,10 @@
 import { FastifyInstance } from "fastify";
 
-import { authRoutes } from "./auth.routes";
-import { dictionaryRoutes } from "./dictionary.routes";
-import { offerRoutes } from "./offer.routes";
-import { profileRoutes } from "./profile.routes";
-import { reviewRoutes } from "./review.routes";
+import { authRoutes } from "./modules/auth/auth.routes";
+import { dictionaryRoutes } from "./modules/dictionary/dictionary.routes";
+import { offerRoutes } from "./modules/offer/offer.routes";
+import { profileRoutes } from "./modules/profile/profile.routes";
+import { reviewRoutes } from "./modules/review/review.routes";
 
 const MODULES = [authRoutes, profileRoutes, offerRoutes, dictionaryRoutes, reviewRoutes];
 

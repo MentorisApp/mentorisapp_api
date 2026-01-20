@@ -1,9 +1,9 @@
-import { FastifyInstance, RouteOptions } from "fastify";
+import { RouteOptions } from "fastify";
 
-import { dictionaryController } from "~/controllers/dictionary.controller";
+import { dictionaryController } from "~/modules/dictionary/dictionary.controller";
 
-export const dictionaryRoutes = (app: FastifyInstance) => {
-	const controller = dictionaryController(app);
+export const dictionaryRoutes = () => {
+	const controller = dictionaryController();
 
 	return {
 		prefix: "/dictionaries",
