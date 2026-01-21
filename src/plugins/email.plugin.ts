@@ -3,17 +3,15 @@ import fp from "fastify-plugin";
 import nodemailer from "nodemailer";
 
 import { emailTemplateConfig } from "~/config/email.config";
-import { env } from "~/env";
 import type { SendEmailParams } from "~/types/email.types";
 import { renderEmail } from "~/utils/renderEmail.util";
 
 const transporter = nodemailer.createTransport({
-	host: env.EMAIL_HOST,
+	host: "smtp.ethereal.email",
 	port: 587,
-	secure: false,
 	auth: {
-		user: env.EMAIL_AUTH_USER,
-		pass: env.EMAIL_AUTH_PASS,
+		user: "elfrieda.rau15@ethereal.email",
+		pass: "MEkdXG9nWVNddmhbvJ",
 	},
 });
 

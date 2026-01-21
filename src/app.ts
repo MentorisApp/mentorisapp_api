@@ -20,16 +20,13 @@ const app = Fastify({
 async function buildApp() {
 	app.register(dbClientPlugin);
 	app.register(servicesPlugin);
+	app.register(emailPlugin);
 	app.register(corsPlugin);
 	app.register(authPlugin);
 	app.register(cookiePlugin);
-	app.register(emailPlugin);
 	app.register(globalResponsePlugin);
 	app.register(globalExceptionPlugin);
 	app.register(uploadFilePlugin);
-
-	// Services
-
 	app.register(router, { prefix: "/api" });
 
 	return app;

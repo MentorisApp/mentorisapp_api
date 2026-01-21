@@ -43,7 +43,7 @@ export function createAuthService(app: FastifyInstance) {
 				name: "verifyAccountTemplate",
 				variables: {
 					// TODO environment domain/host, just needs to pass the token
-					link: `http://localhost:3000/api/v1/auth/verify-account?token=${token}`,
+					link: `http://localhost:3000/api/auth/verify-account?token=${token}`,
 				},
 			},
 		});
@@ -144,7 +144,7 @@ export function createAuthService(app: FastifyInstance) {
 					email: user.email,
 					// TODO environment dynamic domain/host, just needs to pass the token
 					// TODO Frontend route should be included here and call this endpoint en route to verify, for now use direct endpoint
-					link: `http://localhost:3000/api/v1/auth/reset-password?token=${token}`,
+					link: `http://localhost:3000/api/auth/reset-password?token=${token}`,
 				},
 			},
 		});
@@ -196,7 +196,7 @@ export function createAuthService(app: FastifyInstance) {
 				variables: {
 					// TODO environment dynamic domain/host, just needs to pass the token
 					// TODO Frontend route should be included here and call this endpoint en route to verify, for now use direct endpoint
-					link: `http://localhost:3000/api/v1/auth/verify-account?token=${token}`,
+					link: `http://localhost:3000/api/auth/verify-account?token=${token}`,
 				},
 			},
 		});
