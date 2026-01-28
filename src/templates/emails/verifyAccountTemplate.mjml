@@ -10,7 +10,7 @@
         <mj-text>
           Thanks for registering! Please verify your email by clicking the button below:
         </mj-text>
-        <mj-button href="{{link}}" background-color="#007bff" color="#ffffff">
+        <mj-button href="{{link}}" target="_blank" background-color="#007bff" color="#ffffff">
           Verify Email
         </mj-button>
       </mj-column>

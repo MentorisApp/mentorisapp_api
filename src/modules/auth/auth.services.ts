@@ -39,11 +39,11 @@ export function createAuthService(app: FastifyInstance) {
 
 		app.email.send({
 			to: newUser.email,
+			// TODO environment domain/host, just needs to pass the token
 			template: {
 				name: "verifyAccountTemplate",
 				variables: {
-					// TODO environment domain/host, just needs to pass the token
-					link: `http://localhost:3000/api/auth/verify-account?token=${token}`,
+					link: `http://localhost:4321/verify?token=${token}`,
 				},
 			},
 		});
@@ -76,12 +76,12 @@ export function createAuthService(app: FastifyInstance) {
 		const isPasswordValid = await hashUtil.password.compare(payload.password, user.password);
 
 		// TODO frontend needs to know exactly if user is verified, if not verified prompt to send verification email
-		if (!user.isVerified) {
-			throw new AccountNotVerifiedError();
-		}
-
 		if (!user || !isPasswordValid) {
 			throw new InvalidCredentialsError();
+		}
+
+		if (!user.isVerified) {
+			throw new AccountNotVerifiedError();
 		}
 
 		const jti = tokenService.generateJti();

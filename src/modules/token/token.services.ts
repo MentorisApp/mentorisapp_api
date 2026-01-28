@@ -40,7 +40,10 @@ export function createTokenService(app: FastifyInstance) {
 
 	async function revokeRefreshToken(refreshToken: string) {
 		const { jti } = await verifyRefreshToken(refreshToken);
-		await db.update(refresh_tokens).set({ revoked: true }).where(eq(refresh_tokens.jti, jti));
+		await db
+			.update(refresh_tokens)
+			.set({ revoked: true, updatedAt: new Date() })
+			.where(eq(refresh_tokens.jti, jti));
 	}
 
 	function verifyRefreshToken(token: string) {
