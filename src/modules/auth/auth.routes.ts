@@ -1,8 +1,8 @@
-import { RouteOptions } from "fastify";
+import { FastifyInstance, RouteOptions } from "fastify";
 
 import { authController } from "~/modules/auth/auth.controller";
 
-export const authRoutes = () => {
+export const authRoutes = (app: FastifyInstance) => {
 	const controller = authController();
 
 	return {
@@ -47,6 +47,12 @@ export const authRoutes = () => {
 				method: "POST",
 				url: "/resend-verification-link",
 				handler: controller.resendVerificationLink,
+			},
+			{
+				method: "GET",
+				url: "/me",
+				handler: controller.getCurrentUser,
+				onRequest: app.authorize(),
 			},
 		] as RouteOptions[],
 	};

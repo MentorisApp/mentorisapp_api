@@ -13,10 +13,16 @@ export async function loginUserUseCase(
 	const payload = UserCreateSchema.parse(request.body);
 	const { accessToken, refreshToken } = await this.authService.login(payload);
 
+	const accessTokenMaxAge = parseDurationMs(env.JWT_ACCESS_TOKEN_EXPIRES_IN);
+	const refreshTokenMaxAge = parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN);
+
 	reply
-		.status(HttpStatus.OK)
-		.setCookie("refreshToken", refreshToken, {
-			maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
+		.setCookie("accessToken", accessToken, {
+			maxAge: accessTokenMaxAge,
 		})
-		.send({ accessToken });
+		.setCookie("refreshToken", refreshToken, {
+			maxAge: refreshTokenMaxAge,
+		})
+		.status(HttpStatus.OK)
+		.send({ message: "Logged in successfully" });
 }

@@ -10,7 +10,7 @@ import { UserCreate } from "./user.validator";
 
 export function createUserService(app: FastifyInstance) {
 	const { db } = app;
-	const { users, roles, verification_tokens } = db;
+	const { users, roles, verification_tokens, profiles } = db;
 
 	async function createUser(user: UserCreate) {
 		return await db.transaction(async (tx) => {
@@ -39,8 +39,30 @@ export function createUserService(app: FastifyInstance) {
 		});
 	}
 
-	async function getUserByEmail(email: UserCreate["email"]) {
+	async function getUserByEmail(email: string) {
 		const user = await db.select().from(users).where(eq(users.email, email)).limit(1);
+		return user[0];
+	}
+
+	async function getUserWithProfile(userId: number) {
+		const user = await db
+			.select({
+				id: users.id,
+				email: users.email,
+				// profile fields
+				firstName: profiles.firstName,
+				lastName: profiles.lastName,
+				profilePictureUrl: profiles.profilePictureUrl,
+			})
+			.from(users)
+			.leftJoin(profiles, eq(profiles.userId, users.id))
+			.where(eq(users.id, userId))
+			.limit(1);
+
+		if (!user[0]) {
+			throw new NotFoundError("User not found.");
+		}
+
 		return user[0];
 	}
 
@@ -132,5 +154,6 @@ export function createUserService(app: FastifyInstance) {
 		getUserByEmail,
 		checkUserExistsByEmail,
 		getUserPermission,
+		getUserWithProfile,
 	};
 }

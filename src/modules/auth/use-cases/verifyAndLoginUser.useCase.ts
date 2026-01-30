@@ -11,14 +11,20 @@ export async function verifyAndLoginUserUseCase(
 	reply: FastifyReply,
 ) {
 	const { token: verificationToken } = UuidQuerySchema("token").parse(request.query);
+
 	const { accessToken, refreshToken } =
 		await this.authService.verifyUserAndLogin(verificationToken);
 
-	reply.setCookie("refreshToken", refreshToken, {
-		maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
-	});
+	const accessTokenMaxAge = parseDurationMs(env.JWT_ACCESS_TOKEN_EXPIRES_IN);
+	const refreshTokenMaxAge = parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN);
 
-	return reply.status(HttpStatus.OK).send({
-		accessToken,
-	});
+	reply
+		.setCookie("accessToken", accessToken, {
+			maxAge: accessTokenMaxAge,
+		})
+		.setCookie("refreshToken", refreshToken, {
+			maxAge: refreshTokenMaxAge,
+		})
+		.status(HttpStatus.OK)
+		.send({ message: "Logged in successfully" });
 }

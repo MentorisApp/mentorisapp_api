@@ -11,7 +11,7 @@ const cookieHandler: FastifyPluginAsync = async (app) => {
 			signed: true,
 			httpOnly: true, // cannot be accessed via JS
 			secure: env.NODE_ENV === "production", // only over HTTPS in prod
-			sameSite: "strict", // CSRF protection
+			sameSite: "lax", // CSRF protection
 			path: "/", // cookie available on all routes
 		},
 	});

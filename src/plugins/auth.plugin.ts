@@ -10,6 +10,10 @@ const authHandler: FastifyPluginAsync = async (app) => {
 	app.register(fastifyJwt, {
 		secret: env.JWT_SECRET,
 		sign: { expiresIn: env.JWT_ACCESS_TOKEN_EXPIRES_IN },
+		cookie: {
+			cookieName: "accessToken",
+			signed: true,
+		},
 	});
 
 	app.decorate(
@@ -17,6 +21,7 @@ const authHandler: FastifyPluginAsync = async (app) => {
 		(requiredPermissions: Permission[] = []) =>
 			async (request: FastifyRequest, _reply: FastifyReply) => {
 				// Skip verifying JWT on route pre handlers, only in private routes entry
+
 				if (!request.user) {
 					await request.jwtVerify();
 				}

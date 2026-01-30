@@ -52,7 +52,8 @@ export function sendErrorResponse(error: FastifyError, reply: FastifyReply) {
 	// Dumb object error code check (just instance of FastifyError)
 	if (
 		error.code === "FST_JWT_NO_AUTHORIZATION_IN_HEADER" ||
-		error.code === "FST_JWT_AUTHORIZATION_TOKEN_EXPIRED"
+		error.code === "FST_JWT_AUTHORIZATION_TOKEN_EXPIRED" ||
+		error.code === "FST_JWT_NO_AUTHORIZATION_IN_COOKIE"
 	) {
 		status = HttpStatus.UNAUTHORIZED;
 		message = "Unauthorized";

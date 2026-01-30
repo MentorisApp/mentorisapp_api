@@ -23,7 +23,11 @@ export async function logoutUserUseCase(
 	const { cleared } = await this.authService.logout(token);
 
 	if (cleared) {
-		return reply.clearCookie("refreshToken").status(HttpStatus.NO_CONTENT).send();
+		return reply
+			.clearCookie("refreshToken")
+			.clearCookie("accessToken")
+			.status(HttpStatus.NO_CONTENT)
+			.send();
 	}
 
 	return reply.status(HttpStatus.BAD_REQUEST).send();

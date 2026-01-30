@@ -1,3 +1,4 @@
+import { getCurrentUserUseCase } from "./use-cases/getCurrentUser.userCase";
 import { loginUserUseCase } from "./use-cases/loginUser.useCase";
 import { logoutUserUseCase } from "./use-cases/logoutUser.useCase";
 import { refreshTokenUseCase } from "./use-cases/refreshToken.useCase";
@@ -9,13 +10,14 @@ import { verifyAndLoginUserUseCase } from "./use-cases/verifyAndLoginUser.useCas
 
 export const authController = () => {
 	return {
-		verifyAndLoginAccount: verifyAndLoginUserUseCase,
-		register: registerUserUseCase,
 		login: loginUserUseCase,
+		getCurrentUser: getCurrentUserUseCase,
 		logout: logoutUserUseCase,
 		refresh: refreshTokenUseCase,
-		requestResetPassword: requestResetPasswordUseCase,
+		register: registerUserUseCase,
 		resetPassword: resetPasswordUseCase,
+		verifyAndLoginAccount: verifyAndLoginUserUseCase,
+		requestResetPassword: requestResetPasswordUseCase,
 		resendVerificationLink: resendVerificationLinkUseCase,
 	};
 };
