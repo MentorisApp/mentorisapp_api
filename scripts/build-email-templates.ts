@@ -7,11 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const srcDir = path.join(__dirname, "..", "src", "templates", "emails");
-const outDir = process.env.EMAIL_OUTPUT_DIR!;
-
-if (!outDir) {
-	throw new Error("EMAIL_OUTPUT_DIR not set in env file!");
-}
+const outDir = "src/templates/compiled";
 
 // Ensure output directory exists
 if (!fs.existsSync(outDir)) {

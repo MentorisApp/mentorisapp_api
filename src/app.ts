@@ -35,7 +35,7 @@ async function buildApp() {
 async function startAppServer() {
 	const app = await buildApp();
 
-	app.listen({ port: env.PORT }, (err) => {
+	app.listen({ port: env.PORT, host: "0.0.0.0" }, (err) => {
 		if (err) {
 			app.log.error(err);
 			process.exit(1);

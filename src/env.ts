@@ -13,7 +13,6 @@ const schema = z.object({
 	EMAIL_HOST: z.string(),
 	EMAIL_AUTH_USER: z.string(),
 	EMAIL_AUTH_PASS: z.string(),
-	EMAIL_OUTPUT_DIR: z.string(),
 
 	DO_SPACES_ACCESS_KEY_ID: z.string(),
 	DO_SPACES_SECRET_KEY: z.string(),

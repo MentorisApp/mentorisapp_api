@@ -1,23 +1,23 @@
-# ---- Base image ----
-FROM node:20-alpine
+# ---------- BUILD STAGE ----------
+FROM node:20-alpine AS builder
 
-# Set working directory
 WORKDIR /app
-
-# Copy package files first for caching
 COPY package.json yarn.lock ./
-
-# Install dependencies
 RUN yarn install --frozen-lockfile
 
-# Copy all source files
 COPY . .
-
-# Build the app (TypeScript + tsc-alias + email templates)
 RUN yarn build
 
-# Expose the port the app listens on
+# ---------- RUNTIME STAGE ----------
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Only copy necessary files
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+
 EXPOSE 3000
 
-# Start the app using your package.json script
-CMD ["yarn", "start:dev"]
+CMD ["node", "dist/app.js"]

@@ -1,0 +1,32 @@
+name: Build and Push Backend Image
+
+on:
+  push:
+    branches: [ "dev" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build image
+        run: |
+          docker build \
+            -t ghcr.io/${{ github.repository_owner }}/mentoris-backend:latest \
+            -t ghcr.io/${{ github.repository_owner }}/mentoris-backend:${{ github.sha }} \
+            .
+
+      - name: Push image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/mentoris-backend:latest
+          docker push ghcr.io/${{ github.repository_owner }}/mentoris-backend:${{ github.sha }}
