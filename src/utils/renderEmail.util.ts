@@ -3,7 +3,6 @@ import Handlebars from "handlebars";
 import path from "path";
 import { fileURLToPath } from "url";
 
-import { env } from "~/env";
 import { EmailTemplateParams } from "~/types/email.types";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -11,12 +10,7 @@ const __dirname = path.dirname(__filename);
 
 // Renders prebuilt mjml to hbs files
 export function renderEmail(template: EmailTemplateParams) {
-	const isDev = env.NODE_ENV === "development";
-
-	const templatesDir = isDev
-		? path.join(__dirname, "..", "templates/compiled")
-		: path.join(__dirname, "..", "dist", "templates");
-
+	const templatesDir = path.join(__dirname, "..", "templates");
 	const templatePath = path.join(templatesDir, `${template.name}.hbs`);
 
 	if (!fs.existsSync(templatePath)) {

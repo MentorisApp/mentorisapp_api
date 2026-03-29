@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const srcDir = path.join(__dirname, "..", "src", "templates", "emails");
-const outDir = "src/templates/compiled";
+const outDir = path.join(__dirname, "..", "dist", "templates");
 
 // Ensure output directory exists
 if (!fs.existsSync(outDir)) {
