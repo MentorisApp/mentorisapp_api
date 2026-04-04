@@ -13,10 +13,9 @@
 		"allowArbitraryExtensions": true,
 		"moduleDetection": "force",
 		"rootDir": "./src",
-		"baseUrl": "./src",
 		"outDir": "./dist",
 		"paths": {
-      		"~/*": ["*"]
+      		"~/*": ["./src/*"]
     }
 	},
 	"tsc-alias": {
