@@ -4,15 +4,6 @@ import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 
 export const dictionaryController = () => {
 	return {
-		getAllCountries: async function (
-			this: FastifyInstance,
-			_request: FastifyRequest,
-			reply: FastifyReply,
-		) {
-			const countries = await this.dictionaryService.getCountriesDictionary();
-			reply.status(HttpStatus.OK).send(countries);
-		},
-
 		getAllCities: async function (
 			this: FastifyInstance,
 			_request: FastifyRequest,

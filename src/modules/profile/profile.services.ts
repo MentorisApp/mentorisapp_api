@@ -66,11 +66,9 @@ export function createProfileService(app: FastifyInstance) {
 				firstName: true,
 				lastName: true,
 				id: true,
-				phone: true,
 				userId: true,
-				homeAddress: true,
 			},
-			with: { city: true, country: true, educationLevel: true, gender: true },
+			with: { city: true, educationLevel: true, gender: true },
 		});
 
 		if (!profile) {

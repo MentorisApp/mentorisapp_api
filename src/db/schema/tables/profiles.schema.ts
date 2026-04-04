@@ -1,8 +1,7 @@
 import { relations } from "drizzle-orm";
-import { integer, pgTable, serial, smallint, text, varchar } from "drizzle-orm/pg-core";
+import { integer, pgTable, serial, smallint, varchar } from "drizzle-orm/pg-core";
 
 import { cities } from "./cities.schema";
-import { countries } from "./countries.schema";
 import { education_levels } from "./education_levels.schema";
 import { genders } from "./genders.schema";
 import { users } from "./users.schema";
@@ -14,9 +13,7 @@ export const profiles = pgTable("profiles", {
 	profilePictureUrl: varchar("profile_picture_url", { length: 255 }),
 	firstName: varchar("first_name", { length: 50 }).notNull(),
 	lastName: varchar("last_name", { length: 50 }).notNull(),
-	phone: varchar("phone", { length: 20 }).notNull(),
 	age: smallint("age").notNull(),
-	homeAddress: text("home_address").notNull(),
 	userId: integer("user_id")
 		.notNull()
 		.references(() => users.id, { onDelete: "cascade" })
@@ -30,9 +27,6 @@ export const profiles = pgTable("profiles", {
 	genderId: integer("gender_id")
 		.notNull()
 		.references(() => genders.id, { onDelete: "restrict" }),
-	countryId: integer("country_id")
-		.notNull()
-		.references(() => countries.id, { onDelete: "restrict" }),
 	...modColumns,
 	...timestampColumns,
 });
@@ -51,11 +45,6 @@ export const profilesRelations = relations(profiles, ({ one }) => ({
 	city: one(cities, {
 		fields: [profiles.cityId],
 		references: [cities.id],
-	}),
-
-	country: one(countries, {
-		fields: [profiles.countryId],
-		references: [countries.id],
 	}),
 
 	gender: one(genders, {

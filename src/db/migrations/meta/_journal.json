@@ -78,6 +78,13 @@
       "when": 1761676310654,
       "tag": "0010_create_reviews",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1775312587828,
+      "tag": "0011_remove_unused_tables",
+      "breakpoints": true
     }
   ]
 }

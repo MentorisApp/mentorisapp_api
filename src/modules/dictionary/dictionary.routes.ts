@@ -20,11 +20,6 @@ export const dictionaryRoutes = () => {
 			},
 			{
 				method: "GET",
-				url: "/countries",
-				handler: controller.getAllCountries,
-			},
-			{
-				method: "GET",
 				url: "/genders",
 				handler: controller.getAllGenders,
 			},
