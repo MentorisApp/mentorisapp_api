@@ -16,6 +16,7 @@
 		"pre-push": "yarn typecheck && yarn biome:check",
 		"db:generate": "drizzle-kit generate --name",
 		"db:push": "drizzle-kit push",
+		"db:migrate": "drizzle-kit migrate",
 		"db:studio": "drizzle-kit studio",
 		"prepare": "husky install"
 	},

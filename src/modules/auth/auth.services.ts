@@ -30,11 +30,12 @@ export function createAuthService(app: FastifyInstance) {
 		const newUser = await userService.createUser({
 			email: payload.email,
 			password: hashedPassword,
+			name: payload.name,
 		});
 
 		const token = await verificationTokenService.createVerificationToken(
 			newUser.id,
-			"EMAIL_VERIFICATION",
+			"email_verification",
 		);
 
 		app.email.send({
@@ -52,7 +53,7 @@ export function createAuthService(app: FastifyInstance) {
 	async function verifyUserAndLogin(token: string) {
 		const { user, token: storedHashToken } = await userService.getUserWithValidVerificationToken(
 			token,
-			"EMAIL_VERIFICATION",
+			"email_verification",
 		);
 
 		if (!user) {
@@ -134,7 +135,7 @@ export function createAuthService(app: FastifyInstance) {
 			return;
 		}
 
-		const token = await verificationTokenService.createVerificationToken(user.id, "PASSWORD_RESET");
+		const token = await verificationTokenService.createVerificationToken(user.id, "password_reset");
 
 		app.email.send({
 			to: user.email,
@@ -155,7 +156,7 @@ export function createAuthService(app: FastifyInstance) {
 
 		const user = await userService.getUserWithValidVerificationToken(
 			hashedPayloadToken,
-			"PASSWORD_RESET",
+			"password_reset",
 		);
 
 		if (!user) {
@@ -186,7 +187,7 @@ export function createAuthService(app: FastifyInstance) {
 
 		const token = await verificationTokenService.createVerificationToken(
 			user.id,
-			"EMAIL_VERIFICATION",
+			"email_verification",
 		);
 
 		app.email.send({

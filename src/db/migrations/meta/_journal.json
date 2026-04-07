@@ -5,85 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1756836530321,
-      "tag": "0000_init_auth",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1757973438232,
-      "tag": "0001_profile_schema",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1758280946784,
-      "tag": "0002_remove_email_profile_schema",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1758281244160,
-      "tag": "0003_unique_user_id",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1759084508831,
-      "tag": "0004_verification_token",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1759091088613,
-      "tag": "0005_update_columns",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1760099465061,
-      "tag": "0006_offers_table_and_enum_changes",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1760211259463,
-      "tag": "0007_profiles_updated_at",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "7",
-      "when": 1760284912378,
-      "tag": "0008_offers_categories_junction",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "7",
-      "when": 1760710764780,
-      "tag": "0009_update_at_column",
-      "breakpoints": true
-    },
-    {
-      "idx": 10,
-      "version": "7",
-      "when": 1761676310654,
-      "tag": "0010_create_reviews",
-      "breakpoints": true
-    },
-    {
-      "idx": 11,
-      "version": "7",
-      "when": 1775312587828,
-      "tag": "0011_remove_unused_tables",
+      "when": 1775587639119,
+      "tag": "0000_init",
       "breakpoints": true
     }
   ]

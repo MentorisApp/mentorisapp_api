@@ -61,14 +61,12 @@ export function createProfileService(app: FastifyInstance) {
 		const profile = await db.query.profiles.findFirst({
 			where: eq(profiles.userId, userId),
 			columns: {
-				age: true,
-				profilePictureUrl: true,
-				firstName: true,
-				lastName: true,
 				id: true,
+				age: true,
 				userId: true,
+				profilePictureUrl: true,
 			},
-			with: { city: true, educationLevel: true, gender: true },
+			with: { educationLevel: true, gender: true },
 		});
 
 		if (!profile) {

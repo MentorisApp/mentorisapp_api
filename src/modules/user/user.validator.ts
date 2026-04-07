@@ -7,7 +7,8 @@ import { PasswordSchema, UuidSchema } from "~/utils/zod-shared.validator";
 export const UserCreateSchema = createInsertSchema(users)
 	.omit({ id: true, createdAt: true, roleId: true, isVerified: true, updatedAt: true })
 	.extend({
-		email: z.email("Email format is incorrect."),
+		email: z.email("Email format is invalid."),
+		name: z.string("Name format is invalid."),
 		password: PasswordSchema,
 	})
 	.strict();

@@ -9,7 +9,7 @@ export const verification_tokens = pgTable("verification_tokens", {
 	userId: integer("user_id")
 		.notNull()
 		.references(() => users.id, { onDelete: "cascade" }),
-	context: VERIFICATION_TOKEN_CONTEXT_ENUM("context").notNull(),
+	context: VERIFICATION_TOKEN_CONTEXT_ENUM("context"),
 	token: text("token").notNull().unique(),
 	used: boolean("used").default(false),
 	expiresAt: timestamp("expires_at").notNull(),

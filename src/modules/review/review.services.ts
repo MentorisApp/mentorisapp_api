@@ -46,6 +46,7 @@ export function createReviewService(app: FastifyInstance) {
 
 	async function getAllActiveOfferReviews(offerId: number) {
 		// TODO pagination
+		// TODO show review full
 		const reviewsData = await db.query.reviews.findMany({
 			where: and(eq(reviews.offerId, offerId), eq(reviews.modStatus, "APPROVED")),
 			columns: {
@@ -60,7 +61,7 @@ export function createReviewService(app: FastifyInstance) {
 			with: {
 				user: {
 					with: {
-						profile: { columns: { firstName: true, lastName: true, profilePictureUrl: true } },
+						profile: { columns: { profilePictureUrl: true } },
 					},
 				},
 			},
