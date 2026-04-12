@@ -15,16 +15,6 @@ export const dictionaryRoutes = () => {
 			},
 			{
 				method: "GET",
-				url: "/education-levels",
-				handler: controller.getAllEducationLevels,
-			},
-			{
-				method: "GET",
-				url: "/genders",
-				handler: controller.getAllGenders,
-			},
-			{
-				method: "GET",
 				url: "/categories",
 				handler: controller.getAllCategories,
 			},

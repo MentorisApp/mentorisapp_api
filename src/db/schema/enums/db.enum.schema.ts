@@ -5,6 +5,7 @@ export const VERIFICATION_TOKEN_CONTEXT_ENUM = pgEnum("verification_token_contex
 	"password_reset",
 ]);
 
+// TODO sifrarnik
 export const OFFER_LEVEL_ENUM = pgEnum("offer_level", ["OSNOVNA", "SREDNJA", "FAKULTET", "MATURA"]);
 
 export const STATUS_ENUM = pgEnum("mod_status", ["PENDING", "APPROVED", "REJECTED", "INACTIVE"]);

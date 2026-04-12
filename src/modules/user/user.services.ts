@@ -32,7 +32,6 @@ export function createUserService(app: FastifyInstance) {
 					email: user.email,
 					password: user.password,
 					roleId: roleId,
-					name: user.name,
 				})
 				.returning();
 
@@ -51,7 +50,7 @@ export function createUserService(app: FastifyInstance) {
 				id: users.id,
 				email: users.email,
 				// profile fields
-				name: users.name,
+				name: profiles.name,
 				profilePictureUrl: profiles.profilePictureUrl,
 			})
 			.from(users)

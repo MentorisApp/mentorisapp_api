@@ -7,14 +7,6 @@ export function createDictionaryService(app: FastifyInstance) {
 		return await db.select().from(db.cities);
 	}
 
-	async function getGendersDictionary() {
-		return await db.select().from(db.genders);
-	}
-
-	async function getEducationLevelsDictionary() {
-		return await db.select().from(db.education_levels);
-	}
-
 	async function getCategoriesDictionary() {
 		return await db.select().from(db.categories);
 	}
@@ -22,7 +14,5 @@ export function createDictionaryService(app: FastifyInstance) {
 	return {
 		getCitiesDictionary,
 		getCategoriesDictionary,
-		getEducationLevelsDictionary,
-		getGendersDictionary,
 	};
 }

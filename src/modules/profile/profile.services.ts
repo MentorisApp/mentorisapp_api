@@ -48,6 +48,7 @@ export function createProfileService(app: FastifyInstance) {
 			.update(profiles)
 			.set({
 				...body,
+
 				profilePictureUrl: body.profilePicture,
 				updatedAt: new Date(),
 			})
@@ -62,11 +63,9 @@ export function createProfileService(app: FastifyInstance) {
 			where: eq(profiles.userId, userId),
 			columns: {
 				id: true,
-				age: true,
 				userId: true,
 				profilePictureUrl: true,
 			},
-			with: { educationLevel: true, gender: true },
 		});
 
 		if (!profile) {

@@ -17,11 +17,6 @@ export const ProfileCreateSchema = createInsertSchema(profiles)
 	})
 	.extend({
 		profilePicture: z.url().optional(),
-		age: z.coerce.number(),
-		educationLevelId: z.coerce.number(),
-		cityId: z.coerce.number(),
-		genderId: z.coerce.number(),
-		countryId: z.coerce.number(),
 	})
 	.strict();
 
@@ -32,17 +27,17 @@ export const ProfileUpdateSchema = createUpdateSchema(profiles)
 		updatedAt: true,
 		id: true,
 		modAt: true,
+		userId: true,
 		modBy: true,
 		modReason: true,
 		modStatus: true,
 	})
 	.extend({
 		profilePicture: z.url().optional(),
-		age: z.coerce.number().optional(),
-		educationLevelId: z.coerce.number().optional(),
+		dob: z.string().optional(),
 		cityId: z.coerce.number().optional(),
-		genderId: z.coerce.number().optional(),
-		countryId: z.coerce.number().optional(),
+		name: z.string().optional(),
+		bio: z.string().optional(),
 	})
 	.strict();
 

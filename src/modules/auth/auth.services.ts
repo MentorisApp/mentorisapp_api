@@ -11,6 +11,7 @@ import { createVerificationTokensService } from "~/modules/token/verificationTok
 import { createUserService } from "~/modules/user/user.services";
 import { hashUtil } from "~/utils/hash.util";
 
+import { LoginUser } from "./auth.validator";
 import { UserCreate, UserUpdatePassword } from "../user/user.validator";
 
 export function createAuthService(app: FastifyInstance) {
@@ -30,7 +31,6 @@ export function createAuthService(app: FastifyInstance) {
 		const newUser = await userService.createUser({
 			email: payload.email,
 			password: hashedPassword,
-			name: payload.name,
 		});
 
 		const token = await verificationTokenService.createVerificationToken(
@@ -72,18 +72,17 @@ export function createAuthService(app: FastifyInstance) {
 		return { accessToken, refreshToken };
 	}
 
-	async function login(payload: Omit<UserCreate, "updatedAt">) {
+	async function login(payload: LoginUser) {
 		const user = await userService.getUserByEmail(payload.email);
-		const isPasswordValid = await hashUtil.password.compare(payload.password, user.password);
 
 		// TODO frontend needs to know exactly if user is verified, if not verified prompt to send verification email
-		if (!user || !isPasswordValid) {
-			throw new InvalidCredentialsError();
-		}
+		if (!user) throw new InvalidCredentialsError();
 
-		if (!user.isVerified) {
-			throw new AccountNotVerifiedError();
-		}
+		const isPasswordValid = await hashUtil.password.compare(payload.password, user.password);
+
+		if (!isPasswordValid) throw new InvalidCredentialsError();
+
+		if (!user.isVerified) throw new AccountNotVerifiedError();
 
 		const jti = tokenService.generateJti();
 		const userPermission = await userService.getUserPermission(user.id);

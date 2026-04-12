@@ -13,24 +13,6 @@ export const dictionaryController = () => {
 			reply.status(HttpStatus.OK).send(cities);
 		},
 
-		getAllGenders: async function (
-			this: FastifyInstance,
-			_request: FastifyRequest,
-			reply: FastifyReply,
-		) {
-			const genders = await this.dictionaryService.getGendersDictionary();
-			reply.status(HttpStatus.OK).send(genders);
-		},
-
-		getAllEducationLevels: async function (
-			this: FastifyInstance,
-			_request: FastifyRequest,
-			reply: FastifyReply,
-		) {
-			const educationLevels = await this.dictionaryService.getEducationLevelsDictionary();
-			reply.status(HttpStatus.OK).send(educationLevels);
-		},
-
 		getAllCategories: async function (
 			this: FastifyInstance,
 			_request: FastifyRequest,
