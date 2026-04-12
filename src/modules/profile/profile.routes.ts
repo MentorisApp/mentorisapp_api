@@ -12,19 +12,19 @@ export const profileRoutes = (app: FastifyInstance) => {
 				method: "POST",
 				url: "/",
 				handler: controller.createUserProfile,
-				onRequest: app.authorize(),
+				onRequest: app.authorize("USER"),
 			},
 			{
 				method: "PUT",
 				url: "/",
 				handler: controller.updateUserProfile,
-				onRequest: app.authorize(),
+				onRequest: app.authorize("USER"),
 			},
 			{
 				method: "GET",
 				url: "/",
 				handler: controller.getUserProfileByUserId,
-				onRequest: app.authorize(),
+				onRequest: app.authorize("USER"),
 			},
 		] as RouteOptions[],
 	};

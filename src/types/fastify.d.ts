@@ -1,7 +1,7 @@
 import "@fastify/jwt";
 import "fastify";
 
-import { Permission } from "~/constants/permissions";
+import { Role } from "~/constants/roles";
 import { createAuthService } from "~/modules/auth/auth.services";
 import { createDictionaryService } from "~/modules/dictionary/dictionary.services";
 import { createOfferService } from "~/modules/offer/offer.services";
@@ -27,9 +27,7 @@ declare module "fastify" {
 		verificationTokenService: ReturnType<typeof createVerificationTokensService>;
 		profileService: ReturnType<typeof createProfileService>;
 		userService: ReturnType<typeof createUserService>;
-		authorize: (
-			requiredPermissions: Permission[] = [],
-		) => (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
+		authorize: (role: Role) => (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
 	}
 }
 

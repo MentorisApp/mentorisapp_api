@@ -2,7 +2,7 @@ import fastifyJwt from "@fastify/jwt";
 import { FastifyPluginAsync, FastifyReply, FastifyRequest } from "fastify";
 import fp from "fastify-plugin";
 
-import { Permission } from "~/constants/permissions";
+import { Role } from "~/constants/roles";
 import { ForbiddenError } from "~/domain/errors/ForbiddenError";
 import { env } from "~/env";
 
@@ -18,29 +18,23 @@ const authHandler: FastifyPluginAsync = async (app) => {
 
 	app.decorate(
 		"authorize",
-		(requiredPermissions: Permission[] = []) =>
-			async (request: FastifyRequest, _reply: FastifyReply) => {
-				// Skip verifying JWT on route pre handlers, only in private routes entry
+		(role: Role) => async (request: FastifyRequest, _reply: FastifyReply) => {
+			// Skip verifying JWT on route pre handlers, only in private routes entry
 
-				if (!request.user) {
-					await request.jwtVerify();
-				}
+			if (!request.user) {
+				await request.jwtVerify();
+			}
 
-				const user = request.user;
+			const user = request.user;
 
-				if (!user) {
-					throw new ForbiddenError("Missing user payload in JWT");
-				}
+			if (!user) {
+				throw new ForbiddenError("Missing user payload in JWT");
+			}
 
-				// Parse Injected user data from JWt in request object and check permissions per route
-				const hasAllPermissions = requiredPermissions.every((perm) =>
-					user.permissions?.includes(perm),
-				);
-
-				if (!hasAllPermissions) {
-					throw new ForbiddenError();
-				}
-			},
+			if (user.role !== role) {
+				throw new ForbiddenError();
+			}
+		},
 	);
 };
 

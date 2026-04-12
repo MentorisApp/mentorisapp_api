@@ -52,7 +52,7 @@ export const authRoutes = (app: FastifyInstance) => {
 				method: "GET",
 				url: "/me",
 				handler: controller.getCurrentUser,
-				onRequest: app.authorize(),
+				onRequest: app.authorize("USER"),
 			},
 		] as RouteOptions[],
 	};

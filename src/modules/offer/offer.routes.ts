@@ -14,19 +14,19 @@ export const offerRoutes = (app: FastifyInstance) => {
 				method: "POST",
 				url: "/",
 				handler: controller.createOffer,
-				onRequest: app.authorize(),
+				onRequest: app.authorize("USER"),
 			},
 			{
 				method: "PUT",
 				url: "/",
 				handler: controller.updateOffer,
-				onRequest: app.authorize(),
+				onRequest: app.authorize("USER"),
 			},
 			{
 				method: "GET",
 				url: "/",
 				handler: controller.getOfferByUserId,
-				onRequest: app.authorize(),
+				onRequest: app.authorize("USER"),
 			},
 			{
 				method: "GET",

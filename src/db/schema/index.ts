@@ -1,6 +1,5 @@
 /* -------------------------------- Junctions ------------------------------- */
 export * from "./junctions/offers_categories.schema";
-export * from "./junctions/roles_permissions.schema";
 /* --------------------------------- Tables --------------------------------- */
 export * from "./tables/categories.schema";
 export * from "./tables/cities.schema";
@@ -8,7 +7,6 @@ export * from "./tables/cities.schema";
 // export * from "./tables/genders.schema";
 export * from "./tables/offer_format.schema";
 export * from "./tables/offers.schema";
-export * from "./tables/permissions.schema";
 export * from "./tables/profiles.schema";
 export * from "./tables/refresh_tokens.schema";
 export * from "./tables/reviews.schema";

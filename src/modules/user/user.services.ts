@@ -1,6 +1,7 @@
 import { and, eq, gt } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
 
+import { Role } from "~/constants/roles";
 import { VerificationTokenContext } from "~/db/schema/enums/db.enum.schema";
 import { NotFoundError } from "~/domain/errors/NotFoundError";
 import { unwrapResult } from "~/utils/db.util";
@@ -70,38 +71,25 @@ export function createUserService(app: FastifyInstance) {
 		return result.length > 0;
 	}
 
-	async function getUserPermission(userId: number) {
-		const userWithRoleAndPermissions = await db.query.users.findFirst({
+	async function getUserRole(userId: number) {
+		const userRole = await db.query.users.findFirst({
 			where: eq(users.id, userId),
 			columns: {},
 			with: {
 				role: {
 					columns: { name: true },
-					with: {
-						rolesPermissions: {
-							columns: {},
-							with: {
-								permission: true,
-							},
-						},
-					},
 				},
 			},
 		});
 
-		if (!userWithRoleAndPermissions) {
-			throw new NotFoundError("User permissions not found");
+		if (!userRole) {
+			throw new NotFoundError("User role not found");
 		}
 
-		const role = userWithRoleAndPermissions.role.name;
-
-		const permissions = userWithRoleAndPermissions.role.rolesPermissions.map(
-			(t) => t.permission.name,
-		);
+		const role = userRole.role.name as Role;
 
 		return {
 			role,
-			permissions,
 		};
 	}
 
@@ -148,11 +136,11 @@ export function createUserService(app: FastifyInstance) {
 	return {
 		updateUserPassword,
 		getUserWithValidVerificationToken,
+		getUserRole,
 		verifyUser,
 		createUser,
 		getUserByEmail,
 		checkUserExistsByEmail,
-		getUserPermission,
 		getUserWithProfile,
 	};
 }

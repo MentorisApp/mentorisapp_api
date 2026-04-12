@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
 
+import { Role } from "~/constants/roles";
 import { env } from "~/env";
 import { parseDurationMs } from "~/utils/datetime.util";
 import { unwrapResult } from "~/utils/db.util";
@@ -14,10 +15,10 @@ export function createTokenService(app: FastifyInstance) {
 		return generateUuid();
 	}
 
-	function issueAccessToken(userId: number, role: string, permissions: string[]) {
+	function issueAccessToken(userId: number, role: Role) {
 		const expiresIn = env.JWT_ACCESS_TOKEN_EXPIRES_IN;
 
-		return app.jwt.sign({ role, permissions, sub: userId.toString() }, { expiresIn });
+		return app.jwt.sign({ role, sub: userId.toString() }, { expiresIn });
 	}
 
 	async function issueRefreshToken(userId: number, jti: string) {

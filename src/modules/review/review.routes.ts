@@ -13,7 +13,7 @@ export const reviewRoutes = (app: FastifyInstance) => {
 				method: "POST",
 				url: "/",
 				handler: controller.createReview,
-				onRequest: app.authorize(),
+				onRequest: app.authorize("USER"),
 			},
 			{
 				method: "GET",
