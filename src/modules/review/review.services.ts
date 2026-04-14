@@ -6,7 +6,7 @@ import { ForbiddenError } from "~/domain/errors/ForbiddenError";
 import { NotFoundError } from "~/domain/errors/NotFoundError";
 import { unwrapResult } from "~/utils/db.util";
 
-import type { CreateReviewRequest } from "./createReview.schema";
+import type { CreateReviewRequest } from "./schemas/createReview.schema";
 
 export function createReviewService(app: FastifyInstance) {
 	const { db } = app;

@@ -3,8 +3,8 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 import { ForbiddenError } from "~/domain/errors/ForbiddenError";
 
-import type { CreateReviewRequest, CreateReviewResponse } from "./createReview.schema";
-import type { GetOfferReviewsParams } from "./getOfferReviews.schema";
+import type { CreateReviewRequest, CreateReviewResponse } from "./schemas/createReview.schema";
+import type { GetOfferReviewsParams } from "./schemas/getOfferReviews.schema";
 
 type CreateReviewHandlerRequest = FastifyRequest<{
 	Body: CreateReviewRequest;

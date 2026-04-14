@@ -5,8 +5,8 @@ import { offers_categories } from "~/db/schema/junctions/offers_categories.schem
 import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
 import { NotFoundError } from "~/domain/errors/NotFoundError";
 
-import type { CreateOfferRequest } from "./controller/createOffer.schema";
-import type { UpdateOfferRequest } from "./controller/updateOffer.schema";
+import type { CreateOfferRequest } from "./schemas/createOffer.schema";
+import type { UpdateOfferRequest } from "./schemas/updateOffer.schema";
 
 export function createOfferService(app: FastifyInstance) {
 	const { db } = app;

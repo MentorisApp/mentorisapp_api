@@ -6,7 +6,7 @@ import { successResponseSchema } from "~/utils/http-schema.util";
 export const GetCurrentUserResponseSchema = z
 	.object({
 		id: z.number().int().positive(),
-		email: z.email(),
+		email: z.string().email(),
 		name: z.string().nullable(),
 		profilePictureUrl: z.string().nullable(),
 	})

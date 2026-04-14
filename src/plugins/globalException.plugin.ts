@@ -8,13 +8,13 @@ import { sendErrorResponse } from "~/utils/response.util";
 const globalExceptionHandler: FastifyPluginAsync = async (app) => {
 	// Global error handler
 	app.setErrorHandler((error, _request, reply) => {
-		console.error(error);
+		// console.error(error);
 		sendErrorResponse(error, reply);
 	});
 
 	// 404 route handler
 	app.setNotFoundHandler((request, reply) => {
-		console.log(request);
+		// console.log(request);
 		reply.status(HttpStatus.NOT_FOUND).send(
 			new ErrorResponse({
 				status: HttpStatus.NOT_FOUND,

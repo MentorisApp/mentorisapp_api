@@ -49,14 +49,16 @@ async function startAppServer() {
 		console.info("PORT =", env.PORT);
 	});
 
-	const shutdown = async () => {
-		console.info("Shutting down...");
-		await app.close();
-		process.exit(0);
-	};
+	if (env.NODE_ENV === "production") {
+		const shutdown = async () => {
+			console.info("Shutting down...");
+			await app.close();
+			process.exit(0);
+		};
 
-	process.on("SIGINT", shutdown);
-	process.on("SIGTERM", shutdown);
+		process.on("SIGINT", shutdown);
+		process.on("SIGTERM", shutdown);
+	}
 }
 
 startAppServer();

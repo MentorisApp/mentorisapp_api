@@ -11,9 +11,9 @@ import { createVerificationTokensService } from "~/modules/token/verificationTok
 import { createUserService } from "~/modules/user/user.services";
 import { hashUtil } from "~/utils/hash.util";
 
-import type { LoginRequest } from "./controller/login.schema";
-import type { RegisterUserRequest } from "./controller/registerUser.schema";
-import type { ResetPasswordRequest } from "./controller/resetPassword.schema";
+import type { LoginRequest } from "./schemas/login.schema";
+import type { RegisterUserRequest } from "./schemas/registerUser.schema";
+import type { ResetPasswordRequest } from "./schemas/resetPassword.schema";
 
 export function createAuthService(app: FastifyInstance) {
 	const userService = createUserService(app);

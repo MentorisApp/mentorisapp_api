@@ -5,8 +5,8 @@ import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
 import { NotFoundError } from "~/domain/errors/NotFoundError";
 import { unwrapResult } from "~/utils/db.util";
 
-import type { CreateProfileRequest } from "./controller/createProfile.schema";
-import type { UpdateProfileRequest } from "./controller/updateProfile.schema";
+import type { CreateProfileRequest } from "./schemas/createProfile.schema";
+import type { UpdateProfileRequest } from "./schemas/updateProfile.schema";
 
 export function createProfileService(app: FastifyInstance) {
 	const { db } = app;
