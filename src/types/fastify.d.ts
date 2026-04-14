@@ -29,6 +29,10 @@ declare module "fastify" {
 		userService: ReturnType<typeof createUserService>;
 		authorize: (role: Role) => (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
 	}
+
+	interface FastifyRequest {
+		userId: number | null;
+	}
 }
 
 declare module "@fastify/jwt" {

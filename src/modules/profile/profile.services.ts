@@ -3,15 +3,17 @@ import { FastifyInstance } from "fastify";
 
 import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
 import { NotFoundError } from "~/domain/errors/NotFoundError";
-import { ProfileCreate, ProfileUpdate } from "~/modules/profile/profile.validator";
 import { unwrapResult } from "~/utils/db.util";
+
+import type { CreateProfileRequest } from "./controller/createProfile.schema";
+import type { UpdateProfileRequest } from "./controller/updateProfile.schema";
 
 export function createProfileService(app: FastifyInstance) {
 	const { db } = app;
 	const { profiles } = db;
 
 	// TODO sanitize multipart fields, trim and clear up
-	async function createProfile(body: ProfileCreate, userId: number) {
+	async function createProfile(body: CreateProfileRequest, userId: number) {
 		const existingProfile = await checkExistsProfileByUserId(userId);
 
 		if (existingProfile) {
@@ -37,7 +39,7 @@ export function createProfileService(app: FastifyInstance) {
 		return result.length > 0;
 	}
 
-	async function updateProfile(body: ProfileUpdate, userId: number) {
+	async function updateProfile(body: UpdateProfileRequest, userId: number) {
 		const existingProfile = await checkExistsProfileByUserId(userId);
 
 		if (!existingProfile) {

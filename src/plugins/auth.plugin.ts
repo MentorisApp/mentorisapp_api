@@ -5,6 +5,7 @@ import fp from "fastify-plugin";
 import { Role } from "~/constants/roles";
 import { ForbiddenError } from "~/domain/errors/ForbiddenError";
 import { env } from "~/env";
+import { getUserIdFromToken } from "~/utils/auth.util";
 
 const authHandler: FastifyPluginAsync = async (app) => {
 	app.register(fastifyJwt, {
@@ -15,6 +16,8 @@ const authHandler: FastifyPluginAsync = async (app) => {
 			signed: true,
 		},
 	});
+
+	app.decorateRequest("userId", null);
 
 	app.decorate(
 		"authorize",
@@ -30,6 +33,8 @@ const authHandler: FastifyPluginAsync = async (app) => {
 			if (!user) {
 				throw new ForbiddenError("Missing user payload in JWT");
 			}
+
+			request.userId = getUserIdFromToken(request);
 
 			if (user.role !== role) {
 				throw new ForbiddenError();

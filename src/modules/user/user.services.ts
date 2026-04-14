@@ -7,13 +7,13 @@ import { NotFoundError } from "~/domain/errors/NotFoundError";
 import { unwrapResult } from "~/utils/db.util";
 import { hashUtil } from "~/utils/hash.util";
 
-import { UserCreate } from "./user.validator";
+import { CreateUserInput } from "./user.types";
 
 export function createUserService(app: FastifyInstance) {
 	const { db } = app;
 	const { users, roles, verification_tokens, profiles } = db;
 
-	async function createUser(user: UserCreate) {
+	async function createUser(user: CreateUserInput) {
 		return await db.transaction(async (tx) => {
 			const userRoleToAssign = "USER";
 
@@ -66,7 +66,7 @@ export function createUserService(app: FastifyInstance) {
 		return user[0];
 	}
 
-	async function checkUserExistsByEmail(email: UserCreate["email"]) {
+	async function checkUserExistsByEmail(email: CreateUserInput["email"]) {
 		const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
 		return result.length > 0;
 	}

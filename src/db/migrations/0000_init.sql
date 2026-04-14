@@ -8,12 +8,6 @@ CREATE TABLE "offers_categories" (
 	CONSTRAINT "offers_categories_category_id_offer_id_pk" PRIMARY KEY("category_id","offer_id")
 );
 --> statement-breakpoint
-CREATE TABLE "roles_permissions" (
-	"role_id" integer NOT NULL,
-	"permission_id" integer NOT NULL,
-	CONSTRAINT "roles_permissions_role_id_permission_id_pk" PRIMARY KEY("role_id","permission_id")
-);
---> statement-breakpoint
 CREATE TABLE "categories" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(50) NOT NULL,
@@ -24,12 +18,6 @@ CREATE TABLE "cities" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(50) NOT NULL,
 	CONSTRAINT "cities_name_unique" UNIQUE("name")
-);
---> statement-breakpoint
-CREATE TABLE "education_levels" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"name" varchar(50) NOT NULL,
-	CONSTRAINT "education_levels_name_unique" UNIQUE("name")
 );
 --> statement-breakpoint
 CREATE TABLE "genders" (
@@ -64,19 +52,13 @@ CREATE TABLE "offers" (
 	CONSTRAINT "offers_user_id_unique" UNIQUE("user_id")
 );
 --> statement-breakpoint
-CREATE TABLE "permissions" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"name" varchar(100) NOT NULL,
-	CONSTRAINT "permissions_name_unique" UNIQUE("name")
-);
---> statement-breakpoint
 CREATE TABLE "profiles" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"profile_picture_url" varchar(255),
-	"age" smallint NOT NULL,
+	"name" varchar(255) NOT NULL,
+	"bio" text,
+	"dob" date,
 	"user_id" integer NOT NULL,
-	"education_level_id" integer NOT NULL,
-	"gender_id" integer NOT NULL,
 	"mod_status" "mod_status" DEFAULT 'PENDING' NOT NULL,
 	"mod_by" integer,
 	"mod_at" timestamp,
@@ -119,7 +101,6 @@ CREATE TABLE "roles" (
 --> statement-breakpoint
 CREATE TABLE "users" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"name" varchar(255) NOT NULL,
 	"email" varchar(255) NOT NULL,
 	"password" varchar(255) NOT NULL,
 	"role_id" integer NOT NULL,
@@ -143,13 +124,9 @@ CREATE TABLE "verification_tokens" (
 --> statement-breakpoint
 ALTER TABLE "offers_categories" ADD CONSTRAINT "offers_categories_category_id_categories_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."categories"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "offers_categories" ADD CONSTRAINT "offers_categories_offer_id_offers_id_fk" FOREIGN KEY ("offer_id") REFERENCES "public"."offers"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "roles_permissions" ADD CONSTRAINT "roles_permissions_role_id_roles_id_fk" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "roles_permissions" ADD CONSTRAINT "roles_permissions_permission_id_permissions_id_fk" FOREIGN KEY ("permission_id") REFERENCES "public"."permissions"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "offers" ADD CONSTRAINT "offers_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "offers" ADD CONSTRAINT "offers_offer_format_id_offer_format_id_fk" FOREIGN KEY ("offer_format_id") REFERENCES "public"."offer_format"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "profiles" ADD CONSTRAINT "profiles_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "profiles" ADD CONSTRAINT "profiles_education_level_id_education_levels_id_fk" FOREIGN KEY ("education_level_id") REFERENCES "public"."education_levels"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "profiles" ADD CONSTRAINT "profiles_gender_id_genders_id_fk" FOREIGN KEY ("gender_id") REFERENCES "public"."genders"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "refresh_tokens" ADD CONSTRAINT "refresh_tokens_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "reviews" ADD CONSTRAINT "reviews_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "reviews" ADD CONSTRAINT "reviews_offer_id_offers_id_fk" FOREIGN KEY ("offer_id") REFERENCES "public"."offers"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint

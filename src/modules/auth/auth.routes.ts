@@ -1,59 +1,89 @@
-import { FastifyInstance, RouteOptions } from "fastify";
+import { FastifyPluginAsync } from "fastify";
+import { ZodTypeProvider } from "fastify-type-provider-zod";
 
-import { authController } from "~/modules/auth/auth.controller";
+import { getCurrentUserHandler } from "~/modules/auth/controller/getCurrentUser.controller";
+import { getCurrentUserRouteSchema } from "~/modules/auth/controller/getCurrentUser.schema";
+import { loginHandler } from "~/modules/auth/controller/login.controller";
+import { loginRouteSchema } from "~/modules/auth/controller/login.schema";
+import { logoutHandler } from "~/modules/auth/controller/logout.controller";
+import { logoutRouteSchema } from "~/modules/auth/controller/logout.schema";
+import { refreshTokenHandler } from "~/modules/auth/controller/refreshToken.controller";
+import { refreshTokenRouteSchema } from "~/modules/auth/controller/refreshToken.schema";
+import { registerUserHandler } from "~/modules/auth/controller/registerUser.controller";
+import { registerUserRouteSchema } from "~/modules/auth/controller/registerUser.schema";
+import { requestPasswordResetHandler } from "~/modules/auth/controller/requestPasswordReset.controller";
+import { requestPasswordResetRouteSchema } from "~/modules/auth/controller/requestPasswordReset.schema";
+import { resendVerificationLinkHandler } from "~/modules/auth/controller/resendVerificationLink.controller";
+import { resendVerificationLinkRouteSchema } from "~/modules/auth/controller/resendVerificationLink.schema";
+import { resetPasswordHandler } from "~/modules/auth/controller/resetPassword.controller";
+import { resetPasswordRouteSchema } from "~/modules/auth/controller/resetPassword.schema";
+import { verifyAccountHandler } from "~/modules/auth/controller/verifyAccount.controller";
+import { verifyAccountRouteSchema } from "~/modules/auth/controller/verifyAccount.schema";
 
-export const authRoutes = (app: FastifyInstance) => {
-	const controller = authController();
+export const authRoutes: FastifyPluginAsync = async (app) => {
+	const authRoutesApp = app.withTypeProvider<ZodTypeProvider>();
 
-	return {
-		prefix: "/auth",
-		routes: [
-			{
-				method: "POST",
-				url: "/register",
-				handler: controller.register,
-			},
-			{
-				method: "POST",
-				url: "/login",
-				handler: controller.login,
-			},
-			{
-				method: "POST",
-				url: "/logout",
-				handler: controller.logout,
-			},
-			{
-				method: "POST",
-				url: "/refresh",
-				handler: controller.refresh,
-			},
-			{
-				method: "GET",
-				url: "/verify-account",
-				handler: controller.verifyAndLoginAccount,
-			},
-			{
-				method: "POST",
-				url: "/request-reset-password",
-				handler: controller.requestResetPassword,
-			},
-			{
-				method: "POST",
-				url: "/reset-password",
-				handler: controller.resetPassword,
-			},
-			{
-				method: "POST",
-				url: "/resend-verification-link",
-				handler: controller.resendVerificationLink,
-			},
-			{
-				method: "GET",
-				url: "/me",
-				handler: controller.getCurrentUser,
-				onRequest: app.authorize("USER"),
-			},
-		] as RouteOptions[],
-	};
+	authRoutesApp.route({
+		method: "POST",
+		url: "/register",
+		schema: registerUserRouteSchema,
+		handler: registerUserHandler,
+	});
+
+	authRoutesApp.route({
+		method: "POST",
+		url: "/login",
+		schema: loginRouteSchema,
+		handler: loginHandler,
+	});
+
+	authRoutesApp.route({
+		method: "POST",
+		url: "/logout",
+		schema: logoutRouteSchema,
+		handler: logoutHandler,
+	});
+
+	authRoutesApp.route({
+		method: "POST",
+		url: "/refresh",
+		schema: refreshTokenRouteSchema,
+		handler: refreshTokenHandler,
+	});
+
+	authRoutesApp.route({
+		method: "GET",
+		url: "/verify-account",
+		schema: verifyAccountRouteSchema,
+		handler: verifyAccountHandler,
+	});
+
+	authRoutesApp.route({
+		method: "POST",
+		url: "/request-reset-password",
+		schema: requestPasswordResetRouteSchema,
+		handler: requestPasswordResetHandler,
+	});
+
+	authRoutesApp.route({
+		method: "POST",
+		url: "/reset-password",
+		schema: resetPasswordRouteSchema,
+		handler: resetPasswordHandler,
+	});
+
+	authRoutesApp.route({
+		method: "POST",
+		url: "/resend-verification-link",
+		schema: resendVerificationLinkRouteSchema,
+		handler: resendVerificationLinkHandler,
+	});
+
+	authRoutesApp.route({
+		method: "GET",
+		url: "/me",
+		schema: getCurrentUserRouteSchema,
+		onRequest: app.authorize("USER"),
+		handler: getCurrentUserHandler,
+	});
 };

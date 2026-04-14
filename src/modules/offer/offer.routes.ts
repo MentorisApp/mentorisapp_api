@@ -1,38 +1,47 @@
-import { FastifyInstance, RouteOptions } from "fastify";
+import { FastifyPluginAsync } from "fastify";
+import { ZodTypeProvider } from "fastify-type-provider-zod";
 
-import { offerController } from "~/modules/offer/offer.controller";
+import { createOfferHandler } from "~/modules/offer/controller/createOffer.controller";
+import { createOfferRouteSchema } from "~/modules/offer/controller/createOffer.schema";
+import { getOfferHandler } from "~/modules/offer/controller/getOffer.controller";
+import { getOfferRouteSchema } from "~/modules/offer/controller/getOffer.schema";
+import { getOfferByIdHandler } from "~/modules/offer/controller/getOfferById.controller";
+import { getOfferByIdRouteSchema } from "~/modules/offer/controller/getOfferById.schema";
+import { updateOfferHandler } from "~/modules/offer/controller/updateOffer.controller";
+import { updateOfferRouteSchema } from "~/modules/offer/controller/updateOffer.schema";
 
-export const offerRoutes = (app: FastifyInstance) => {
-	const controller = offerController();
+export const offerRoutes: FastifyPluginAsync = async (app) => {
+	const offerRoutesApp = app.withTypeProvider<ZodTypeProvider>();
+	const authorizeUser = app.authorize("USER");
 
-	return {
-		prefix: "/offers",
-		routes: [
-			// TODO GET offer public api not by user id
-			// TODO GET offer reviews private/public
-			{
-				method: "POST",
-				url: "/",
-				handler: controller.createOffer,
-				onRequest: app.authorize("USER"),
-			},
-			{
-				method: "PUT",
-				url: "/",
-				handler: controller.updateOffer,
-				onRequest: app.authorize("USER"),
-			},
-			{
-				method: "GET",
-				url: "/",
-				handler: controller.getOfferByUserId,
-				onRequest: app.authorize("USER"),
-			},
-			{
-				method: "GET",
-				url: "/:offerId",
-				handler: controller.getOfferByOfferId,
-			},
-		] as RouteOptions[],
-	};
+	offerRoutesApp.route({
+		method: "POST",
+		url: "/",
+		schema: createOfferRouteSchema,
+		onRequest: authorizeUser,
+		handler: createOfferHandler,
+	});
+
+	offerRoutesApp.route({
+		method: "PUT",
+		url: "/",
+		schema: updateOfferRouteSchema,
+		onRequest: authorizeUser,
+		handler: updateOfferHandler,
+	});
+
+	offerRoutesApp.route({
+		method: "GET",
+		url: "/",
+		schema: getOfferRouteSchema,
+		onRequest: authorizeUser,
+		handler: getOfferHandler,
+	});
+
+	offerRoutesApp.route({
+		method: "GET",
+		url: "/:offerId",
+		schema: getOfferByIdRouteSchema,
+		handler: getOfferByIdHandler,
+	});
 };

@@ -1,23 +1,25 @@
-import { RouteOptions } from "fastify";
+import { FastifyPluginAsync } from "fastify";
+import { ZodTypeProvider } from "fastify-type-provider-zod";
 
-import { dictionaryController } from "~/modules/dictionary/dictionary.controller";
+import { getCategoriesHandler } from "~/modules/dictionary/controller/getCategories.controller";
+import { getCategoriesRouteSchema } from "~/modules/dictionary/controller/getCategories.schema";
+import { getCitiesHandler } from "~/modules/dictionary/controller/getCities.controller";
+import { getCitiesRouteSchema } from "~/modules/dictionary/controller/getCities.schema";
 
-export const dictionaryRoutes = () => {
-	const controller = dictionaryController();
+export const dictionaryRoutes: FastifyPluginAsync = async (app) => {
+	const dictionaryRoutesApp = app.withTypeProvider<ZodTypeProvider>();
 
-	return {
-		prefix: "/dictionaries",
-		routes: [
-			{
-				method: "GET",
-				url: "/cities",
-				handler: controller.getAllCities,
-			},
-			{
-				method: "GET",
-				url: "/categories",
-				handler: controller.getAllCategories,
-			},
-		] as RouteOptions[],
-	};
+	dictionaryRoutesApp.route({
+		method: "GET",
+		url: "/cities",
+		schema: getCitiesRouteSchema,
+		handler: getCitiesHandler,
+	});
+
+	dictionaryRoutesApp.route({
+		method: "GET",
+		url: "/categories",
+		schema: getCategoriesRouteSchema,
+		handler: getCategoriesHandler,
+	});
 };

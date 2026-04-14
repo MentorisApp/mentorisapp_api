@@ -11,15 +11,16 @@ import { createVerificationTokensService } from "~/modules/token/verificationTok
 import { createUserService } from "~/modules/user/user.services";
 import { hashUtil } from "~/utils/hash.util";
 
-import { LoginUser } from "./auth.validator";
-import { UserCreate, UserUpdatePassword } from "../user/user.validator";
+import type { LoginRequest } from "./controller/login.schema";
+import type { RegisterUserRequest } from "./controller/registerUser.schema";
+import type { ResetPasswordRequest } from "./controller/resetPassword.schema";
 
 export function createAuthService(app: FastifyInstance) {
 	const userService = createUserService(app);
 	const verificationTokenService = createVerificationTokensService(app);
 	const tokenService = createTokenService(app);
 
-	async function register(payload: UserCreate) {
+	async function register(payload: RegisterUserRequest) {
 		const isUserExisting = await userService.checkUserExistsByEmail(payload.email);
 
 		if (isUserExisting) {
@@ -72,7 +73,7 @@ export function createAuthService(app: FastifyInstance) {
 		return { accessToken, refreshToken };
 	}
 
-	async function login(payload: LoginUser) {
+	async function login(payload: LoginRequest) {
 		const user = await userService.getUserByEmail(payload.email);
 
 		// TODO frontend needs to know exactly if user is verified, if not verified prompt to send verification email
@@ -146,7 +147,7 @@ export function createAuthService(app: FastifyInstance) {
 		});
 	}
 
-	async function resetPassword(payload: UserUpdatePassword) {
+	async function resetPassword(payload: ResetPasswordRequest) {
 		const hashedPayloadToken = hashUtil.token.hash(payload.token);
 
 		const user = await userService.getUserWithValidVerificationToken(

@@ -1,5 +1,5 @@
 {
-  "id": "c453f8e9-203f-417c-9df6-894a7c4ed28a",
+  "id": "abc7f7aa-d191-4c00-8ad2-0a072f716a0e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -64,66 +64,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.roles_permissions": {
-      "name": "roles_permissions",
-      "schema": "",
-      "columns": {
-        "role_id": {
-          "name": "role_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "permission_id": {
-          "name": "permission_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "roles_permissions_role_id_roles_id_fk": {
-          "name": "roles_permissions_role_id_roles_id_fk",
-          "tableFrom": "roles_permissions",
-          "tableTo": "roles",
-          "columnsFrom": [
-            "role_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "roles_permissions_permission_id_permissions_id_fk": {
-          "name": "roles_permissions_permission_id_permissions_id_fk",
-          "tableFrom": "roles_permissions",
-          "tableTo": "permissions",
-          "columnsFrom": [
-            "permission_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "roles_permissions_role_id_permission_id_pk": {
-          "name": "roles_permissions_role_id_permission_id_pk",
-          "columns": [
-            "role_id",
-            "permission_id"
-          ]
-        }
-      },
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.categories": {
       "name": "categories",
       "schema": "",
@@ -180,39 +120,6 @@
       "uniqueConstraints": {
         "cities_name_unique": {
           "name": "cities_name_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.education_levels": {
-      "name": "education_levels",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "education_levels_name_unique": {
-          "name": "education_levels_name_unique",
           "nullsNotDistinct": false,
           "columns": [
             "name"
@@ -439,39 +346,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.permissions": {
-      "name": "permissions",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "permissions_name_unique": {
-          "name": "permissions_name_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.profiles": {
       "name": "profiles",
       "schema": "",
@@ -488,26 +362,26 @@
           "primaryKey": false,
           "notNull": false
         },
-        "age": {
-          "name": "age",
-          "type": "smallint",
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
+        },
+        "bio": {
+          "name": "bio",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dob": {
+          "name": "dob",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
         },
         "user_id": {
           "name": "user_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "education_level_id": {
-          "name": "education_level_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "gender_id": {
-          "name": "gender_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -566,32 +440,6 @@
             "id"
           ],
           "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "profiles_education_level_id_education_levels_id_fk": {
-          "name": "profiles_education_level_id_education_levels_id_fk",
-          "tableFrom": "profiles",
-          "tableTo": "education_levels",
-          "columnsFrom": [
-            "education_level_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "restrict",
-          "onUpdate": "no action"
-        },
-        "profiles_gender_id_genders_id_fk": {
-          "name": "profiles_gender_id_genders_id_fk",
-          "tableFrom": "profiles",
-          "tableTo": "genders",
-          "columnsFrom": [
-            "gender_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "restrict",
           "onUpdate": "no action"
         }
       },
@@ -840,12 +688,6 @@
           "name": "id",
           "type": "serial",
           "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "primaryKey": false,
           "notNull": true
         },
         "email": {

@@ -4,14 +4,15 @@ import { FastifyInstance } from "fastify";
 import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
 import { ForbiddenError } from "~/domain/errors/ForbiddenError";
 import { NotFoundError } from "~/domain/errors/NotFoundError";
-import { ReviewCreate } from "~/modules/review/reviews.validator";
 import { unwrapResult } from "~/utils/db.util";
+
+import type { CreateReviewRequest } from "./createReview.schema";
 
 export function createReviewService(app: FastifyInstance) {
 	const { db } = app;
 	const { reviews, offers } = db;
 
-	async function createReview(payload: ReviewCreate, userId: number) {
+	async function createReview(payload: CreateReviewRequest, userId: number) {
 		const offer = await db.query.offers.findFirst({
 			where: eq(offers.id, payload.offerId),
 			columns: { id: true, userId: true },

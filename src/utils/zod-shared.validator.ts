@@ -1,32 +1,18 @@
 import z from "zod";
 
-// Used for checking numbers in query params
-export const NumberSchema = (name: string) => {
-	const numberSchema = z.coerce
+export const createPositiveIntSchema = (name: string) =>
+	z.coerce
 		.number(`${name} must be a valid number`)
 		.int(`${name} must be an integer`)
 		.positive(`${name} must be a positive number`);
 
-	return z.object({ [name]: numberSchema }).required();
-};
-
-// Used for checking if valid uuids
-// TODO delete this and use the one below because we will check hashed uuids instead of search params
-export const UuidQuerySchema = (name: string) => {
-	const uuidSchema = z.uuid(`${name} must be a valid UUID`);
-
-	return z.object({ [name]: uuidSchema }).strict();
-};
+export const createPositiveIntParamsSchema = (name: string) =>
+	z.object({ [name]: createPositiveIntSchema(name) }).strict();
 
 export const UuidSchema = z.uuid("Invalid token format.");
 
-export const EmailSchema = z
-	.object({
-		email: z.email("Invalid or missing email in body"),
-	})
-	.strict();
+export const EmailSchema = z.email("Email format is invalid.");
 
-// Generic password schema
 export const PasswordSchema = z
 	.string()
 	.min(8, "Password must be at least 8 characters long.")

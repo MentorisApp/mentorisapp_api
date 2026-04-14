@@ -4,13 +4,15 @@ import { FastifyInstance } from "fastify";
 import { offers_categories } from "~/db/schema/junctions/offers_categories.schema";
 import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
 import { NotFoundError } from "~/domain/errors/NotFoundError";
-import { OfferUserCreate, OfferUserUpdate } from "~/modules/offer/offer.validator";
+
+import type { CreateOfferRequest } from "./controller/createOffer.schema";
+import type { UpdateOfferRequest } from "./controller/updateOffer.schema";
 
 export function createOfferService(app: FastifyInstance) {
 	const { db } = app;
 	const { offers } = db;
 
-	async function createOffer(body: OfferUserCreate, userId: number) {
+	async function createOffer(body: CreateOfferRequest, userId: number) {
 		const existingOffer = await checkOfferExistsByUserId(userId);
 
 		if (existingOffer) {
@@ -43,7 +45,7 @@ export function createOfferService(app: FastifyInstance) {
 		return newOffer;
 	}
 
-	async function updateOffer(body: OfferUserUpdate, userId: number) {
+	async function updateOffer(body: UpdateOfferRequest, userId: number) {
 		const existingOffer = await checkOfferExistsByUserId(userId);
 
 		if (!existingOffer) {
