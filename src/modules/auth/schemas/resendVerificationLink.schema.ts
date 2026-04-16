@@ -19,6 +19,6 @@ export type ResendVerificationLinkResponse = z.infer<typeof ResendVerificationLi
 export const resendVerificationLinkRouteSchema = {
 	body: ResendVerificationLinkRequestSchema,
 	response: {
-		[HttpStatus.ACCEPTED]: emptySuccessResponseSchema,
+		[HttpStatus.OK]: emptySuccessResponseSchema,
 	},
 };

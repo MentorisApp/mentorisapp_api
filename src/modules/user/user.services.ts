@@ -3,7 +3,7 @@ import { FastifyInstance } from "fastify";
 
 import { Role } from "~/constants/roles";
 import { VerificationTokenContext } from "~/db/schema/enums/db.enum.schema";
-import { NotFoundError } from "~/domain/errors/NotFoundError";
+import { NotFoundError } from "~/errors/generic/NotFoundError";
 import { unwrapResult } from "~/utils/db.util";
 import { hashUtil } from "~/utils/hash.util";
 

@@ -1,7 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 
 import { HttpStatus } from "~/constants/httpStatusCodes.enum";
-import { ForbiddenError } from "~/domain/errors/ForbiddenError";
 import { env } from "~/env";
 import { getSignedCookieOrThrow } from "~/utils/cookie.util";
 import { parseDurationMs } from "~/utils/datetime.util";
@@ -56,7 +55,7 @@ export function createAuthController(app: FastifyInstance) {
 					maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
 				})
 				.status(HttpStatus.OK)
-				.send({ message: "Logged in successfully" });
+				.success(null, { message: "Logged in successfully" });
 		},
 
 		async logout(request: FastifyRequest, reply: FastifyReply) {
@@ -72,7 +71,7 @@ export function createAuthController(app: FastifyInstance) {
 					.clearCookie("refreshToken")
 					.clearCookie("accessToken")
 					.status(HttpStatus.NO_CONTENT)
-					.send();
+					.success();
 			}
 
 			return reply.status(HttpStatus.BAD_REQUEST).send();
@@ -92,7 +91,7 @@ export function createAuthController(app: FastifyInstance) {
 				.setCookie("refreshToken", nextRefreshToken, {
 					maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
 				})
-				.send({ accessToken });
+				.success({ accessToken });
 		},
 
 		async verifyAccount(request: VerifyAccountHandlerRequest, reply: FastifyReply) {
@@ -114,7 +113,7 @@ export function createAuthController(app: FastifyInstance) {
 		async requestPasswordReset(request: RequestPasswordResetHandlerRequest, reply: FastifyReply) {
 			await app.authService.requestResetPassword(request.body.email);
 
-			return reply.status(HttpStatus.ACCEPTED).send();
+			return reply.status(HttpStatus.OK).send();
 		},
 
 		async resetPassword(request: ResetPasswordHandlerRequest, reply: FastifyReply) {
@@ -129,14 +128,10 @@ export function createAuthController(app: FastifyInstance) {
 		) {
 			await app.authService.resendVerificationLink(request.body.email);
 
-			reply.status(HttpStatus.ACCEPTED).send();
+			reply.status(HttpStatus.OK).send();
 		},
 
 		async getCurrentUser(request: FastifyRequest, reply: FastifyReply) {
-			if (!request.userId) {
-				throw new ForbiddenError("Missing authenticated user context");
-			}
-
 			const userProfile = await app.userService.getUserWithProfile(request.userId);
 
 			reply.status(HttpStatus.OK).send(userProfile);

@@ -2,8 +2,8 @@ import { eq } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
 
 import { offers_categories } from "~/db/schema/junctions/offers_categories.schema";
-import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
-import { NotFoundError } from "~/domain/errors/NotFoundError";
+import { ConflictError } from "~/errors/generic/ConflictError";
+import { NotFoundError } from "~/errors/generic/NotFoundError";
 
 import type { CreateOfferRequest } from "./schemas/createOffer.schema";
 import type { UpdateOfferRequest } from "./schemas/updateOffer.schema";
@@ -16,7 +16,7 @@ export function createOfferService(app: FastifyInstance) {
 		const existingOffer = await checkOfferExistsByUserId(userId);
 
 		if (existingOffer) {
-			throw new AlreadyExistsError("Offer already exists for this user");
+			throw new ConflictError("Offer already exists for this user");
 		}
 
 		const { categoryIds, ...offerData } = body;
@@ -90,7 +90,7 @@ export function createOfferService(app: FastifyInstance) {
 		return record.length > 0;
 	}
 
-	async function getOfferByUserId(userId: number) {
+	async function getOfferByUserId(userId: number): Promise<{ id: number }> {
 		const offer = await db.query.offers.findFirst({
 			where: eq(offers.userId, userId),
 			with: {

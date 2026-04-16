@@ -1,11 +1,22 @@
 import fastifyJwt from "@fastify/jwt";
 import { FastifyPluginAsync, FastifyReply, FastifyRequest } from "fastify";
 import fp from "fastify-plugin";
+import z from "zod";
 
 import { Role } from "~/constants/roles";
-import { ForbiddenError } from "~/domain/errors/ForbiddenError";
 import { env } from "~/env";
-import { getUserIdFromToken } from "~/utils/auth.util";
+import { ForbiddenError } from "~/errors/generic/ForbiddenError";
+
+const UserIdSchema = z.coerce
+	.number("userId in token payload must be a valid number")
+	.int("userId in token payload must be an integer")
+	.positive("userId in token payload must be a positive number");
+
+export const getUserIdFromToken = (request: FastifyRequest): number => {
+	const sub = request.user?.sub;
+	const result = UserIdSchema.parse(sub);
+	return result;
+};
 
 const authHandler: FastifyPluginAsync = async (app) => {
 	app.register(fastifyJwt, {
@@ -17,7 +28,7 @@ const authHandler: FastifyPluginAsync = async (app) => {
 		},
 	});
 
-	app.decorateRequest("userId", null);
+	app.decorateRequest("userId");
 
 	app.decorate(
 		"authorize",

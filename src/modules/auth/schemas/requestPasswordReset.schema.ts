@@ -19,6 +19,6 @@ export type RequestPasswordResetResponse = z.infer<typeof RequestPasswordResetRe
 export const requestPasswordResetRouteSchema = {
 	body: RequestPasswordResetRequestSchema,
 	response: {
-		[HttpStatus.ACCEPTED]: emptySuccessResponseSchema,
+		[HttpStatus.OK]: emptySuccessResponseSchema,
 	},
 };

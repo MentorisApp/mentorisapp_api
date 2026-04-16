@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
 
-import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
-import { NotFoundError } from "~/domain/errors/NotFoundError";
+import { ConflictError } from "~/errors/generic/ConflictError";
+import { NotFoundError } from "~/errors/generic/NotFoundError";
 import { unwrapResult } from "~/utils/db.util";
 
 import type { CreateProfileRequest } from "./schemas/createProfile.schema";
@@ -17,7 +17,7 @@ export function createProfileService(app: FastifyInstance) {
 		const existingProfile = await checkExistsProfileByUserId(userId);
 
 		if (existingProfile) {
-			throw new AlreadyExistsError("Profile already exists");
+			throw new ConflictError("Profile already exists");
 		}
 
 		const result = await db

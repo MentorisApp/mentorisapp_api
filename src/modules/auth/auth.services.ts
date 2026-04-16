@@ -1,11 +1,11 @@
 import { FastifyInstance } from "fastify";
 
-import { AccountNotVerifiedError } from "~/domain/errors/AccountNotVerifiedError";
-import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
-import { AlreadyVerifiedError } from "~/domain/errors/AlreadyVerifiedError";
-import { BadRequestError } from "~/domain/errors/BadRequestError";
-import { InvalidCredentialsError } from "~/domain/errors/InvalidCredentialsError";
-import { NotFoundError } from "~/domain/errors/NotFoundError";
+import { AccountNotVerifiedError } from "~/errors/domain/AccountNotVerifiedError";
+import { AlreadyVerifiedError } from "~/errors/domain/AlreadyVerifiedError";
+import { InvalidCredentialsError } from "~/errors/domain/InvalidCredentialsError";
+import { BadRequestError } from "~/errors/generic/BadRequestError";
+import { ConflictError } from "~/errors/generic/ConflictError";
+import { NotFoundError } from "~/errors/generic/NotFoundError";
 import { createTokenService } from "~/modules/token/token.services";
 import { createVerificationTokensService } from "~/modules/token/verificationToken.services";
 import { createUserService } from "~/modules/user/user.services";
@@ -24,7 +24,7 @@ export function createAuthService(app: FastifyInstance) {
 		const isUserExisting = await userService.checkUserExistsByEmail(payload.email);
 
 		if (isUserExisting) {
-			throw new AlreadyExistsError("Email already in use");
+			throw new ConflictError("Email already in use");
 		}
 
 		const hashedPassword = await hashUtil.password.hash(payload.password);
@@ -76,7 +76,6 @@ export function createAuthService(app: FastifyInstance) {
 	async function login(payload: LoginRequest) {
 		const user = await userService.getUserByEmail(payload.email);
 
-		// TODO frontend needs to know exactly if user is verified, if not verified prompt to send verification email
 		if (!user) throw new InvalidCredentialsError();
 
 		const isPasswordValid = await hashUtil.password.compare(payload.password, user.password);
@@ -178,7 +177,7 @@ export function createAuthService(app: FastifyInstance) {
 		}
 
 		if (user.isVerified) {
-			throw new AlreadyVerifiedError("User is already verified");
+			throw new AlreadyVerifiedError();
 		}
 
 		const token = await verificationTokenService.createVerificationToken(

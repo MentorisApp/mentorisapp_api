@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 
 import { HttpStatus } from "~/constants/httpStatusCodes.enum";
-import { ForbiddenError } from "~/domain/errors/ForbiddenError";
+import { ForbiddenError } from "~/errors/generic/ForbiddenError";
 
 import type { CreateReviewRequest, CreateReviewResponse } from "./schemas/createReview.schema";
 import type { GetOfferReviewsParams } from "./schemas/getOfferReviews.schema";

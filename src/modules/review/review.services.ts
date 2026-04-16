@@ -1,9 +1,9 @@
 import { and, desc, eq } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
 
-import { AlreadyExistsError } from "~/domain/errors/AlreadyExistsError";
-import { ForbiddenError } from "~/domain/errors/ForbiddenError";
-import { NotFoundError } from "~/domain/errors/NotFoundError";
+import { ConflictError } from "~/errors/generic/ConflictError";
+import { ForbiddenError } from "~/errors/generic/ForbiddenError";
+import { NotFoundError } from "~/errors/generic/NotFoundError";
 import { unwrapResult } from "~/utils/db.util";
 
 import type { CreateReviewRequest } from "./schemas/createReview.schema";
@@ -29,7 +29,7 @@ export function createReviewService(app: FastifyInstance) {
 		const reviewExists = await checkUserReviewExistsByOfferId(userId, payload.offerId);
 
 		if (reviewExists) {
-			throw new AlreadyExistsError("Review already exists");
+			throw new ConflictError("Review already exists");
 		}
 
 		const result = await db

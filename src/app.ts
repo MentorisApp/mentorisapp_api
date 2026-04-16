@@ -5,12 +5,14 @@ import { registerAppRoutes } from "~/app.router";
 import { env } from "~/env";
 import { dbClientPlugin } from "~/plugins/db.plugin";
 import { globalExceptionPlugin } from "~/plugins/globalException.plugin";
-import { globalResponsePlugin } from "~/plugins/globalResponse.plugin";
+
+// import { globalResponsePlugin } from "~/plugins/globalResponse.plugin";
 
 import { authPlugin } from "./plugins/auth.plugin";
 import { cookiePlugin } from "./plugins/cookie.plugin";
 import { corsPlugin } from "./plugins/cors.plugin";
 import { emailPlugin } from "./plugins/email.plugin";
+import { responsePlugin } from "./plugins/response.plugin";
 import { servicesPlugin } from "./plugins/services.plugin";
 import { uploadFilePlugin } from "./plugins/uploadFile.plugin";
 
@@ -28,7 +30,7 @@ async function buildApp() {
 	app.register(corsPlugin);
 	app.register(authPlugin);
 	app.register(cookiePlugin);
-	app.register(globalResponsePlugin);
+	app.register(responsePlugin);
 	app.register(globalExceptionPlugin);
 	app.register(uploadFilePlugin);
 	app.register(registerAppRoutes, { prefix: "/api" });

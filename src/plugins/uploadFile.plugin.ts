@@ -3,8 +3,8 @@ import fastifyMultipart, { MultipartFile } from "@fastify/multipart";
 import { FastifyPluginAsync, FastifyRequest } from "fastify";
 import fp from "fastify-plugin";
 
-import { ForbiddenError } from "~/domain/errors/ForbiddenError";
 import { env } from "~/env";
+import { UnauthorizedError } from "~/errors/generic/UnauthorizedError";
 import { generateUuid } from "~/utils/uuid.util";
 
 import { extname } from "node:path";
@@ -33,7 +33,7 @@ const uploadPluginHandler: FastifyPluginAsync = async (app) => {
 	// TODO this runs and uploads even if body validation fails
 	async function onFile(this: FastifyRequest, part: UploadFilePart) {
 		if (!this.userId) {
-			throw new ForbiddenError("Missing authenticated user context");
+			throw new UnauthorizedError("Missing authenticated user context");
 		}
 
 		const extension = extname(part.filename || "") || ".jpg";

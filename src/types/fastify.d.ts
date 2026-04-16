@@ -1,6 +1,8 @@
 import "@fastify/jwt";
 import "fastify";
 
+import { ApiCode } from "~/constants/apiCode.enum";
+import { DomainCode } from "~/constants/domainCodes.enum";
 import { Role } from "~/constants/roles";
 import { createAuthService } from "~/modules/auth/auth.services";
 import { createDictionaryService } from "~/modules/dictionary/dictionary.services";
@@ -31,7 +33,17 @@ declare module "fastify" {
 	}
 
 	interface FastifyRequest {
-		userId: number | null;
+		userId: number;
+	}
+	interface FastifyReply {
+		success: <T>(
+			data?: T,
+			options?: {
+				message?: string | null;
+				code?: ApiCode;
+				domainCode?: DomainCode;
+			},
+		) => FastifyReply;
 	}
 }
 

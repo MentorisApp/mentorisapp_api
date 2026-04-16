@@ -26,3 +26,7 @@ export const getOfferByIdRouteSchema = {
 		[HttpStatus.OK]: successResponseSchema(GetOfferByIdResponseSchema),
 	},
 };
+
+const test = createSelectSchema(offers);
+
+type Test = z.infer<typeof test>;
