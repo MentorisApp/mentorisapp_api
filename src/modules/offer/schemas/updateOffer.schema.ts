@@ -1,9 +1,7 @@
-import { createSelectSchema, createUpdateSchema } from "drizzle-zod";
+import { createUpdateSchema } from "drizzle-zod";
 import z from "zod";
 
-import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 import { offers } from "~/db/schema";
-import { successResponseSchema } from "~/utils/http-schema.util";
 
 export const UpdateOfferRequestSchema = createUpdateSchema(offers)
 	.pick({
@@ -36,13 +34,6 @@ export const UpdateOfferRequestSchema = createUpdateSchema(offers)
 
 export type UpdateOfferRequest = z.infer<typeof UpdateOfferRequestSchema>;
 
-export const UpdateOfferResponseSchema = createSelectSchema(offers);
-
-export type UpdateOfferResponse = z.infer<typeof UpdateOfferResponseSchema>;
-
 export const updateOfferRouteSchema = {
 	body: UpdateOfferRequestSchema,
-	response: {
-		[HttpStatus.OK]: successResponseSchema(UpdateOfferResponseSchema),
-	},
 };

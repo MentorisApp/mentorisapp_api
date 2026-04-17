@@ -2,7 +2,6 @@ import { createInsertSchema } from "drizzle-zod";
 import { FastifySchema } from "fastify";
 import z from "zod";
 
-import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 import { reviews } from "~/db/schema";
 
 export const CreateReviewRequestSchema = createInsertSchema(reviews)
@@ -15,14 +14,6 @@ export const CreateReviewRequestSchema = createInsertSchema(reviews)
 
 export type CreateReviewRequest = z.infer<typeof CreateReviewRequestSchema>;
 
-export const CreateReviewResponseSchema = z
-	.object({
-		id: z.number().int().positive(),
-	})
-	.strict();
-
-export type CreateReviewResponse = z.infer<typeof CreateReviewResponseSchema>;
-
-export const createReviewRouteSchema = {
+export const createReviewRouteSchema: FastifySchema = {
 	body: CreateReviewRequestSchema,
-} satisfies FastifySchema;
+};

@@ -12,14 +12,6 @@ export const RegisterUserRequestSchema = z
 
 export type RegisterUserRequest = z.infer<typeof RegisterUserRequestSchema>;
 
-export const RegisterUserResponseSchema = z.null();
-
-export type RegisterUserResponse = z.infer<typeof RegisterUserResponseSchema>;
-
 export const registerUserRouteSchema: FastifySchema = {
 	body: RegisterUserRequestSchema,
-	// response: {
-	// 	[HttpStatus.CREATED]: emptySuccessResponseSchema,
-	// 	[HttpStatus.BAD_REQUEST]: RegisterUserRequestSchema,
-	// },
 };

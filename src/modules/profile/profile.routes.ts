@@ -3,7 +3,6 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 
 import { createProfileController } from "~/modules/profile/profile.controller";
 import { createProfileRouteSchema } from "~/modules/profile/schemas/createProfile.schema";
-import { getProfileRouteSchema } from "~/modules/profile/schemas/getProfile.schema";
 import { updateProfileRouteSchema } from "~/modules/profile/schemas/updateProfile.schema";
 
 export const profileRoutes: FastifyPluginAsync = async (app) => {
@@ -30,7 +29,6 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
 	profileRoutesApp.route({
 		method: "GET",
 		url: "/",
-		schema: getProfileRouteSchema,
 		onRequest: authorizeUser,
 		handler: profileController.getProfile,
 	});

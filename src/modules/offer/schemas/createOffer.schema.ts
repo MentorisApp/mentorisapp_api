@@ -1,4 +1,4 @@
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { createInsertSchema } from "drizzle-zod";
 import z from "zod";
 
 import { offers } from "~/db/schema";
@@ -32,10 +32,6 @@ export const CreateOfferRequestSchema = createInsertSchema(offers)
 	.strict();
 
 export type CreateOfferRequest = z.infer<typeof CreateOfferRequestSchema>;
-
-export const CreateOfferResponseSchema = createSelectSchema(offers);
-
-export type CreateOfferResponse = z.infer<typeof CreateOfferResponseSchema>;
 
 export const createOfferRouteSchema = {
 	body: CreateOfferRequestSchema,

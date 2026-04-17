@@ -3,8 +3,6 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 
 import { createAuthController } from "~/modules/auth/auth.controller";
 import { loginRouteSchema } from "~/modules/auth/schemas/login.schema";
-import { logoutRouteSchema } from "~/modules/auth/schemas/logout.schema";
-import { refreshTokenRouteSchema } from "~/modules/auth/schemas/refreshToken.schema";
 import { registerUserRouteSchema } from "~/modules/auth/schemas/registerUser.schema";
 import { requestPasswordResetRouteSchema } from "~/modules/auth/schemas/requestPasswordReset.schema";
 import { resendVerificationLinkRouteSchema } from "~/modules/auth/schemas/resendVerificationLink.schema";
@@ -32,14 +30,12 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 	authRoutesApp.route({
 		method: "POST",
 		url: "/logout",
-		schema: logoutRouteSchema,
 		handler: authController.logout,
 	});
 
 	authRoutesApp.route({
 		method: "POST",
 		url: "/refresh",
-		schema: refreshTokenRouteSchema,
 		handler: authController.refreshToken,
 	});
 

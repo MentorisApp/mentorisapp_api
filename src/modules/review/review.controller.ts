@@ -1,9 +1,10 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 
+import { ApiCode } from "~/constants/apiCode.enum";
 import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 import { ForbiddenError } from "~/errors/generic/ForbiddenError";
 
-import type { CreateReviewRequest, CreateReviewResponse } from "./schemas/createReview.schema";
+import type { CreateReviewRequest } from "./schemas/createReview.schema";
 import type { GetOfferReviewsParams } from "./schemas/getOfferReviews.schema";
 
 type CreateReviewHandlerRequest = FastifyRequest<{
@@ -22,9 +23,8 @@ export function createReviewController(app: FastifyInstance) {
 			}
 
 			const review = await app.reviewService.createReview(request.body, request.userId);
-			const response: CreateReviewResponse = { id: review.id };
 
-			reply.status(HttpStatus.CREATED).send(response);
+			reply.status(HttpStatus.CREATED).success({ data: review, code: ApiCode.CREATED });
 		},
 
 		async getOfferReviews(request: GetOfferReviewsHandlerRequest, reply: FastifyReply) {

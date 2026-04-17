@@ -1,9 +1,7 @@
-import { createSelectSchema, createUpdateSchema } from "drizzle-zod";
+import { createUpdateSchema } from "drizzle-zod";
 import z from "zod";
 
-import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 import { profiles } from "~/db/schema";
-import { successResponseSchema } from "~/utils/http-schema.util";
 
 export const UpdateProfileRequestSchema = createUpdateSchema(profiles)
 	.omit({
@@ -28,13 +26,6 @@ export const UpdateProfileRequestSchema = createUpdateSchema(profiles)
 
 export type UpdateProfileRequest = z.infer<typeof UpdateProfileRequestSchema>;
 
-export const UpdateProfileResponseSchema = createSelectSchema(profiles);
-
-export type UpdateProfileResponse = z.infer<typeof UpdateProfileResponseSchema>;
-
 export const updateProfileRouteSchema = {
 	body: UpdateProfileRequestSchema,
-	response: {
-		[HttpStatus.OK]: successResponseSchema(UpdateProfileResponseSchema),
-	},
 };

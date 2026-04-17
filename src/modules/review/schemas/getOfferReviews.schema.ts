@@ -1,6 +1,5 @@
 import z from "zod";
 
-import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 import { createPositiveIntParamsSchema } from "~/utils/zod-shared.validator";
 
 export const GetOfferReviewsParamsSchema = createPositiveIntParamsSchema("offerId");

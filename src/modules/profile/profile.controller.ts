@@ -28,9 +28,11 @@ export function createProfileController(app: FastifyInstance) {
 
 		async getProfile(request: FastifyRequest, reply: FastifyReply) {
 			const profile = await app.profileService.getProfile(request.userId);
-			reply
-				.status(HttpStatus.OK)
-				.success(profile, { message: "Profile created successfully", code: ApiCode.OK });
+			reply.status(HttpStatus.OK).success({
+				data: profile,
+				message: "Profile created successfully",
+				code: ApiCode.OK,
+			});
 		},
 	};
 }
