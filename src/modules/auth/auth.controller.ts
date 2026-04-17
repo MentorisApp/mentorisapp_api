@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 
+import { ApiCode } from "~/constants/apiCode.enum";
 import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 import { env } from "~/env";
 import { getSignedCookieOrThrow } from "~/utils/cookie.util";
@@ -39,9 +40,12 @@ type VerifyAccountHandlerRequest = FastifyRequest<{
 export function createAuthController(app: FastifyInstance) {
 	return {
 		async registerUser(request: RegisterUserHandlerRequest, reply: FastifyReply) {
-			await app.authService.register(request.body);
+			const email = await app.authService.register(request.body);
 
-			return reply.status(HttpStatus.CREATED).send();
+			return reply.status(HttpStatus.CREATED).success({
+				message: `Verification email sent to ${email}`,
+				code: ApiCode.CREATED,
+			});
 		},
 
 		async login(request: LoginHandlerRequest, reply: FastifyReply) {
@@ -55,7 +59,7 @@ export function createAuthController(app: FastifyInstance) {
 					maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
 				})
 				.status(HttpStatus.OK)
-				.success(null, { message: "Logged in successfully" });
+				.success({ message: "Logged in successfully" });
 		},
 
 		async logout(request: FastifyRequest, reply: FastifyReply) {
@@ -74,7 +78,7 @@ export function createAuthController(app: FastifyInstance) {
 					.success();
 			}
 
-			return reply.status(HttpStatus.BAD_REQUEST).send();
+			return reply.status(HttpStatus.BAD_REQUEST).success();
 		},
 
 		async refreshToken(request: FastifyRequest, reply: FastifyReply) {
@@ -91,7 +95,7 @@ export function createAuthController(app: FastifyInstance) {
 				.setCookie("refreshToken", nextRefreshToken, {
 					maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
 				})
-				.success({ accessToken });
+				.success({ data: accessToken });
 		},
 
 		async verifyAccount(request: VerifyAccountHandlerRequest, reply: FastifyReply) {
@@ -107,19 +111,19 @@ export function createAuthController(app: FastifyInstance) {
 					maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
 				})
 				.status(HttpStatus.OK)
-				.send({ message: "Logged in successfully" });
+				.success({ message: "Logged in successfully" });
 		},
 
 		async requestPasswordReset(request: RequestPasswordResetHandlerRequest, reply: FastifyReply) {
 			await app.authService.requestResetPassword(request.body.email);
 
-			return reply.status(HttpStatus.OK).send();
+			return reply.status(HttpStatus.OK).success();
 		},
 
 		async resetPassword(request: ResetPasswordHandlerRequest, reply: FastifyReply) {
 			await app.authService.resetPassword(request.body);
 
-			reply.status(HttpStatus.OK).send();
+			reply.status(HttpStatus.OK).success();
 		},
 
 		async resendVerificationLink(
@@ -128,13 +132,13 @@ export function createAuthController(app: FastifyInstance) {
 		) {
 			await app.authService.resendVerificationLink(request.body.email);
 
-			reply.status(HttpStatus.OK).send();
+			reply.status(HttpStatus.OK).success();
 		},
 
 		async getCurrentUser(request: FastifyRequest, reply: FastifyReply) {
 			const userProfile = await app.userService.getUserWithProfile(request.userId);
 
-			reply.status(HttpStatus.OK).send(userProfile);
+			reply.status(HttpStatus.OK).success({ data: userProfile });
 		},
 	};
 }

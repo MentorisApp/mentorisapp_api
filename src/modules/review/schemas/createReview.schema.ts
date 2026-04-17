@@ -4,7 +4,6 @@ import z from "zod";
 
 import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 import { reviews } from "~/db/schema";
-import { successResponseSchema } from "~/utils/http-schema.util";
 
 export const CreateReviewRequestSchema = createInsertSchema(reviews)
 	.pick({
@@ -26,7 +25,4 @@ export type CreateReviewResponse = z.infer<typeof CreateReviewResponseSchema>;
 
 export const createReviewRouteSchema = {
 	body: CreateReviewRequestSchema,
-	response: {
-		[HttpStatus.CREATED]: successResponseSchema(CreateReviewResponseSchema),
-	},
 } satisfies FastifySchema;

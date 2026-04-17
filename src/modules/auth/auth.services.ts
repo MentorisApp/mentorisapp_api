@@ -49,6 +49,8 @@ export function createAuthService(app: FastifyInstance) {
 				},
 			},
 		});
+
+		return payload.email;
 	}
 
 	async function verifyUserAndLogin(token: string) {

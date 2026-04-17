@@ -1,7 +1,6 @@
 import z from "zod";
 
 import { HttpStatus } from "~/constants/httpStatusCodes.enum";
-import { successResponseSchema } from "~/utils/http-schema.util";
 import { createPositiveIntParamsSchema } from "~/utils/zod-shared.validator";
 
 export const GetOfferReviewsParamsSchema = createPositiveIntParamsSchema("offerId");
@@ -25,9 +24,6 @@ export const GetOfferReviewsResponseSchema = z.array(OfferReviewSchema);
 
 export const getOfferReviewsRouteSchema = {
 	params: GetOfferReviewsParamsSchema,
-	response: {
-		[HttpStatus.OK]: successResponseSchema(GetOfferReviewsResponseSchema),
-	},
 };
 
 export type GetOfferReviewsParams = z.infer<typeof GetOfferReviewsParamsSchema>;

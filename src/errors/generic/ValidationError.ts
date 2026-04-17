@@ -5,6 +5,6 @@ import { AppError } from "../base/AppError";
 
 export class ValidationError extends AppError {
 	constructor(message = "Validation failed") {
-		super(message, HttpStatus.UNPROCESSABLE_ENTITY, ApiCode.VALIDATION_ERROR);
+		super(message, HttpStatus.BAD_REQUEST, ApiCode.VALIDATION_ERROR);
 	}
 }

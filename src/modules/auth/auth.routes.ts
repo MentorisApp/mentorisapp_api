@@ -2,7 +2,6 @@ import { FastifyPluginAsync } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 
 import { createAuthController } from "~/modules/auth/auth.controller";
-import { getCurrentUserRouteSchema } from "~/modules/auth/schemas/getCurrentUser.schema";
 import { loginRouteSchema } from "~/modules/auth/schemas/login.schema";
 import { logoutRouteSchema } from "~/modules/auth/schemas/logout.schema";
 import { refreshTokenRouteSchema } from "~/modules/auth/schemas/refreshToken.schema";
@@ -75,7 +74,6 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 	authRoutesApp.route({
 		method: "GET",
 		url: "/me",
-		schema: getCurrentUserRouteSchema,
 		onRequest: app.authorize("USER"),
 		handler: authController.getCurrentUser,
 	});

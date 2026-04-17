@@ -17,8 +17,8 @@ const responseHandler: FastifyPluginAsync = async (app) => {
 		"success",
 		function <T>(
 			this: FastifyReply,
-			data?: T,
 			options?: {
+				data?: T;
 				message?: string | null;
 				code?: ApiCode;
 				domainCode?: DomainCode;
@@ -26,7 +26,7 @@ const responseHandler: FastifyPluginAsync = async (app) => {
 		) {
 			const response: ApiResponse<T> = {
 				success: true,
-				data: data ?? null,
+				data: options?.data ?? null,
 				message: options?.message ?? null,
 				code: options?.code ?? ApiCode.OK,
 				domainCode: options?.domainCode,

@@ -1,7 +1,6 @@
+import { FastifySchema } from "fastify";
 import z from "zod";
 
-import { HttpStatus } from "~/constants/httpStatusCodes.enum";
-import { emptySuccessResponseSchema } from "~/utils/http-schema.util";
 import { EmailSchema, PasswordSchema } from "~/utils/zod-shared.validator";
 
 export const RegisterUserRequestSchema = z
@@ -17,9 +16,10 @@ export const RegisterUserResponseSchema = z.null();
 
 export type RegisterUserResponse = z.infer<typeof RegisterUserResponseSchema>;
 
-export const registerUserRouteSchema = {
+export const registerUserRouteSchema: FastifySchema = {
 	body: RegisterUserRequestSchema,
-	response: {
-		[HttpStatus.CREATED]: emptySuccessResponseSchema,
-	},
+	// response: {
+	// 	[HttpStatus.CREATED]: emptySuccessResponseSchema,
+	// 	[HttpStatus.BAD_REQUEST]: RegisterUserRequestSchema,
+	// },
 };

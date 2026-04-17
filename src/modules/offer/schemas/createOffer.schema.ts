@@ -1,9 +1,7 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import z from "zod";
 
-import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 import { offers } from "~/db/schema";
-import { successResponseSchema } from "~/utils/http-schema.util";
 
 export const CreateOfferRequestSchema = createInsertSchema(offers)
 	.pick({
@@ -41,7 +39,4 @@ export type CreateOfferResponse = z.infer<typeof CreateOfferResponseSchema>;
 
 export const createOfferRouteSchema = {
 	body: CreateOfferRequestSchema,
-	response: {
-		[HttpStatus.CREATED]: successResponseSchema(CreateOfferResponseSchema),
-	},
 };

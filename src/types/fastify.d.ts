@@ -36,14 +36,12 @@ declare module "fastify" {
 		userId: number;
 	}
 	interface FastifyReply {
-		success: <T>(
-			data?: T,
-			options?: {
-				message?: string | null;
-				code?: ApiCode;
-				domainCode?: DomainCode;
-			},
-		) => FastifyReply;
+		success: <T = unknown>(options?: {
+			data?: T;
+			message?: string | null;
+			code?: ApiCode;
+			domainCode?: DomainCode;
+		}) => FastifyReply;
 	}
 }
 
