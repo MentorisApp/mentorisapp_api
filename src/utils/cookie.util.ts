@@ -12,15 +12,11 @@ export function getSignedCookieOrThrow(
 	cookieValue: string | undefined,
 	options: SignedCookieOptions,
 ) {
-	if (!cookieValue) {
-		throw new BadRequestError(options.missingMessage);
-	}
+	if (!cookieValue) throw new BadRequestError(options.missingMessage);
 
 	const { valid, value } = app.unsignCookie(cookieValue);
 
-	if (!valid) {
-		throw new BadRequestError(options.invalidMessage);
-	}
+	if (!valid) throw new BadRequestError(options.invalidMessage);
 
 	return value;
 }

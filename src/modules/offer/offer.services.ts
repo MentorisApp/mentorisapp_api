@@ -15,9 +15,7 @@ export function createOfferService(app: FastifyInstance) {
 	async function createOffer(body: CreateOfferRequest, userId: number) {
 		const existingOffer = await checkOfferExistsByUserId(userId);
 
-		if (existingOffer) {
-			throw new ConflictError("Offer already exists for this user");
-		}
+		if (existingOffer) throw new ConflictError("Offer already exists for this user");
 
 		const { categoryIds, ...offerData } = body;
 
@@ -48,9 +46,7 @@ export function createOfferService(app: FastifyInstance) {
 	async function updateOffer(body: UpdateOfferRequest, userId: number) {
 		const existingOffer = await checkOfferExistsByUserId(userId);
 
-		if (!existingOffer) {
-			throw new NotFoundError("Offer you are trying to update does not exist");
-		}
+		if (!existingOffer) throw new NotFoundError("Offer you are trying to update does not exist");
 
 		const { categoryIds, priceType, price, priceFrom, priceTo, ...restBody } = body;
 
@@ -90,7 +86,7 @@ export function createOfferService(app: FastifyInstance) {
 		return record.length > 0;
 	}
 
-	async function getOfferByUserId(userId: number): Promise<{ id: number }> {
+	async function getOfferByUserId(userId: number) {
 		const offer = await db.query.offers.findFirst({
 			where: eq(offers.userId, userId),
 			with: {
@@ -102,9 +98,7 @@ export function createOfferService(app: FastifyInstance) {
 			},
 		});
 
-		if (!offer) {
-			throw new NotFoundError("Offer does not exist");
-		}
+		if (!offer) throw new NotFoundError("Offer does not exist");
 
 		const { offersCategories, ...restOffer } = offer;
 
@@ -121,26 +115,140 @@ export function createOfferService(app: FastifyInstance) {
 			where: eq(offers.id, offerId),
 			with: {
 				offersCategories: {
-					with: {
-						category: true,
-					},
+					with: { category: { columns: { id: true, name: true } } },
+					columns: { offerId: false, categoryId: false },
 				},
 			},
 		});
 
-		if (!offer) {
-			throw new NotFoundError("Offer does not exist");
-		}
+		if (!offer) throw new NotFoundError("Offer does not exist");
 
-		const { offersCategories, ...restOffer } = offer;
-
-		const transformedOffer = {
-			...restOffer,
-			categories: offersCategories.map((oc) => oc.category),
-		};
-
-		return transformedOffer;
+		return offer;
 	}
 
 	return { createOffer, updateOffer, getOfferByUserId, getOfferByOfferId };
 }
+
+// TODO USE THISSSSSS IN MAPPER AND DTO
+type OfferService = ReturnType<typeof createOfferService>;
+
+// TODO USE THISSSSSS IN MAPPER AND DTO
+export type OfferWithRelations = NonNullable<
+	Awaited<ReturnType<OfferService["getOfferByOfferId"]>>
+>;
+
+/**
+ * 🧠 PROJECT STRUCTURE GUIDELINE (DTO + MAPPERS + DOMAIN LAYER)
+ *
+ * This project uses a feature-based architecture.
+ *
+ * Each feature/module (e.g. profile, offers, users) contains its own:
+ *
+ * ┌─────────────────────────────────────────────┐
+ * │ MODULE (e.g. offers/)                      │
+ * ├─────────────────────────────────────────────┤
+ * │ controller.ts   → HTTP layer (Fastify)     │
+ * │ service.ts      → business logic + DB      │
+ * │ repository.ts   → (optional) DB abstraction│
+ * │                                             │
+ * │ dtos/                                      │
+ * │   offer.dto.ts  → API response types       │
+ * │                                             │
+ * │ mappers/                                   │
+ * │   offer.mapper.ts → DB/domain → DTO shape  │
+ * │                                             │
+ * │ schemas/ (optional)                        │
+ * │   zod validation for request bodies        │
+ * └─────────────────────────────────────────────┘
+ *
+ *
+ * ─────────────────────────────────────────────
+ * 🧩 RESPONSIBILITY RULES
+ * ─────────────────────────────────────────────
+ *
+ * 1. Controller
+ *    - ONLY handles HTTP (request/response)
+ *    - NO business logic
+ *    - NO DB calls
+ *    - calls service + returns DTO
+ *
+ *
+ * 2. Service
+ *    - contains business logic
+ *    - handles validation rules (e.g. "exists", "conflict")
+ *    - interacts with DB (directly or via repository)
+ *    - returns RAW DB shape OR domain object (NOT API shape)
+ *
+ *
+ * 3. Mapper
+ *    - converts DB/domain → DTO
+ *    - handles:
+ *        - renaming fields (snake_case → camelCase)
+ *        - flattening relations
+ *        - shaping API response
+ *    - MUST NOT contain business logic
+ *
+ *
+ * 4. DTO
+ *    - defines API response contract
+ *    - should be stable and frontend-focused
+ *    - NEVER contains DB structure
+ *    - can be defined using Zod inference OR TS types
+ *
+ *
+ * ─────────────────────────────────────────────
+ * 🧠 DATA FLOW
+ * ─────────────────────────────────────────────
+ *
+ * DB (Drizzle)
+ *   ↓
+ * Service (business logic)
+ *   ↓
+ * Mapper (shape transformation)
+ *   ↓
+ * DTO (API contract)
+ *   ↓
+ * Controller response
+ *
+ *
+ * ─────────────────────────────────────────────
+ * 🧪 EXAMPLE FLOW (offers)
+ * ─────────────────────────────────────────────
+ *
+ * service:
+ *   const offer = await db.query.offers.findFirst(...)
+ *   return offer;
+ *
+ * mapper:
+ *   return {
+ *     id: offer.id,
+ *     categories: offer.offersCategories.map(...)
+ *   }
+ *
+ * controller:
+ *   reply.ok({
+ *     data: toOfferDto(offer)
+ *   })
+ *
+ *
+ * ─────────────────────────────────────────────
+ * 🚫 ANTI-PATTERNS
+ * ─────────────────────────────────────────────
+ *
+ * ❌ DB shape returned directly to frontend
+ * ❌ mapping inside controllers
+ * ❌ business logic inside mappers
+ * ❌ leaking DB join structure into API
+ *
+ *
+ * ─────────────────────────────────────────────
+ * 🚀 DESIGN GOAL
+ * ─────────────────────────────────────────────
+ *
+ * - DB = efficient data access
+ * - Service = business rules
+ * - Mapper = transformation logic
+ * - DTO = stable API contract
+ *
+ * Keep controllers thin, services meaningful, mappers pure.
+ */

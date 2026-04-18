@@ -6,8 +6,6 @@ import { env } from "~/env";
 import { dbClientPlugin } from "~/plugins/db.plugin";
 import { globalExceptionPlugin } from "~/plugins/globalException.plugin";
 
-// import { globalResponsePlugin } from "~/plugins/globalResponse.plugin";
-
 import { authPlugin } from "./plugins/auth.plugin";
 import { cookiePlugin } from "./plugins/cookie.plugin";
 import { corsPlugin } from "./plugins/cors.plugin";
@@ -16,11 +14,11 @@ import { responsePlugin } from "./plugins/response.plugin";
 import { servicesPlugin } from "./plugins/services.plugin";
 import { uploadFilePlugin } from "./plugins/uploadFile.plugin";
 
-const app = Fastify({
-	keepAliveTimeout: 30000,
-}).withTypeProvider<ZodTypeProvider>();
-
 async function buildApp() {
+	const baseApp = Fastify({ keepAliveTimeout: 30000 });
+
+	const app = baseApp.withTypeProvider<ZodTypeProvider>();
+
 	app.setValidatorCompiler(validatorCompiler);
 	app.setSerializerCompiler(serializerCompiler);
 

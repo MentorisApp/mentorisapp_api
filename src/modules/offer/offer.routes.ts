@@ -1,22 +1,24 @@
 import { FastifyPluginAsync } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 
-import { createOfferController } from "~/modules/offer/offer.controller";
 import { createOfferRouteSchema } from "~/modules/offer/schemas/createOffer.schema";
 import { getOfferByIdRouteSchema } from "~/modules/offer/schemas/getOfferById.schema";
 import { updateOfferRouteSchema } from "~/modules/offer/schemas/updateOffer.schema";
+import { createAuthGuards } from "~/utils/createAuthGuards";
 
 export const offerRoutes: FastifyPluginAsync = async (app) => {
+	const { authorizeUser } = createAuthGuards(app);
 	const offerRoutesApp = app.withTypeProvider<ZodTypeProvider>();
-	const authorizeUser = app.authorize("USER");
-	const offerController = createOfferController(app);
 
 	offerRoutesApp.route({
 		method: "POST",
 		url: "/",
 		schema: createOfferRouteSchema,
 		onRequest: authorizeUser,
-		handler: offerController.createOffer,
+		handler: async function createOffer(req, res) {
+			const { id } = await app.offerService.createOffer(req.body, req.userId);
+			res.created({ id });
+		},
 	});
 
 	offerRoutesApp.route({
@@ -24,20 +26,29 @@ export const offerRoutes: FastifyPluginAsync = async (app) => {
 		url: "/",
 		schema: updateOfferRouteSchema,
 		onRequest: authorizeUser,
-		handler: offerController.updateOffer,
+		handler: async function updateOffer(req, res) {
+			const offer = await app.offerService.updateOffer(req.body, req.userId);
+			res.ok({ data: offer });
+		},
 	});
 
 	offerRoutesApp.route({
 		method: "GET",
 		url: "/",
 		onRequest: authorizeUser,
-		handler: offerController.getOffer,
+		handler: async function getOffer(req, res) {
+			const offer = await app.offerService.getOfferByUserId(req.userId);
+			res.ok({ data: offer });
+		},
 	});
 
 	offerRoutesApp.route({
 		method: "GET",
 		url: "/:offerId",
 		schema: getOfferByIdRouteSchema,
-		handler: offerController.getOfferById,
+		handler: async function getOfferById(req, res) {
+			const offer = await app.offerService.getOfferByOfferId(req.params.offerId);
+			res.ok({ data: offer });
+		},
 	});
 };

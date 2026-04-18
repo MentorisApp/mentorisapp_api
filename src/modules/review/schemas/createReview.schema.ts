@@ -1,5 +1,4 @@
 import { createInsertSchema } from "drizzle-zod";
-import { FastifySchema } from "fastify";
 import z from "zod";
 
 import { reviews } from "~/db/schema";
@@ -14,6 +13,6 @@ export const CreateReviewRequestSchema = createInsertSchema(reviews)
 
 export type CreateReviewRequest = z.infer<typeof CreateReviewRequestSchema>;
 
-export const createReviewRouteSchema: FastifySchema = {
+export const createReviewRouteSchema = {
 	body: CreateReviewRequestSchema,
 };

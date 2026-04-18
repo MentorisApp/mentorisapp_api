@@ -1,4 +1,3 @@
-import { FastifySchema } from "fastify";
 import z from "zod";
 
 import { EmailSchema, PasswordSchema } from "~/utils/zod-shared.validator";
@@ -12,6 +11,6 @@ export const RegisterUserRequestSchema = z
 
 export type RegisterUserRequest = z.infer<typeof RegisterUserRequestSchema>;
 
-export const registerUserRouteSchema: FastifySchema = {
+export const registerUserRouteSchema = {
 	body: RegisterUserRequestSchema,
 };

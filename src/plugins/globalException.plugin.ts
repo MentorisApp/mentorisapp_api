@@ -12,7 +12,6 @@ import { buildErrorResponse } from "~/utils/errorResponse.util";
 
 const globalExceptionHandler: FastifyPluginAsync = async (app) => {
 	app.setErrorHandler((error, _req, reply) => {
-		console.log("🚀 ~ globalExceptionHandler ~ error:", error);
 		const handlers = [
 			handleAppError,
 			handleValidationError,
@@ -23,7 +22,6 @@ const globalExceptionHandler: FastifyPluginAsync = async (app) => {
 
 		for (const handler of handlers) {
 			const handled = handler(error, reply);
-			console.log(handled);
 			if (handled) break;
 		}
 	});

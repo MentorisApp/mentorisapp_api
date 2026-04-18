@@ -1,7 +1,6 @@
 import "@fastify/jwt";
 import "fastify";
 
-import { ApiCode } from "~/constants/apiCode.enum";
 import { DomainCode } from "~/constants/domainCodes.enum";
 import { Role } from "~/constants/roles";
 import { createAuthService } from "~/modules/auth/auth.services";
@@ -36,12 +35,9 @@ declare module "fastify" {
 		userId: number;
 	}
 	interface FastifyReply {
-		success: <T = unknown>(options?: {
-			data?: T;
-			message?: string | null;
-			code?: ApiCode;
-			domainCode?: DomainCode;
-		}) => FastifyReply;
+		ok<T>(options: { data: T; message?: string | null; domainCode?: DomainCode }): FastifyReply;
+		created<T>(options: { id: T; message?: string | null; domainCode?: DomainCode }): FastifyReply;
+		noContent(options?: { message?: string | null; domainCode?: DomainCode }): FastifyReply;
 	}
 }
 

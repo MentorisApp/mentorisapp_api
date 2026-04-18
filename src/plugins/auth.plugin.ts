@@ -6,6 +6,7 @@ import z from "zod";
 import { Role } from "~/constants/roles";
 import { env } from "~/env";
 import { ForbiddenError } from "~/errors/generic/ForbiddenError";
+import { UnauthorizedError } from "~/errors/generic/UnauthorizedError";
 
 const UserIdSchema = z.coerce
 	.number("userId in token payload must be a valid number")
@@ -34,22 +35,15 @@ const authHandler: FastifyPluginAsync = async (app) => {
 		"authorize",
 		(role: Role) => async (request: FastifyRequest, _reply: FastifyReply) => {
 			// Skip verifying JWT on route pre handlers, only in private routes entry
-
-			if (!request.user) {
-				await request.jwtVerify();
-			}
+			if (!request.user) await request.jwtVerify();
 
 			const user = request.user;
 
-			if (!user) {
-				throw new ForbiddenError("Missing user payload in JWT");
-			}
+			if (!user) throw new UnauthorizedError();
 
 			request.userId = getUserIdFromToken(request);
 
-			if (user.role !== role) {
-				throw new ForbiddenError();
-			}
+			if (user.role !== role) throw new ForbiddenError();
 		},
 	);
 };

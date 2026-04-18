@@ -1,21 +1,22 @@
 import { FastifyPluginAsync } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 
-import { createProfileController } from "~/modules/profile/profile.controller";
 import { createProfileRouteSchema } from "~/modules/profile/schemas/createProfile.schema";
 import { updateProfileRouteSchema } from "~/modules/profile/schemas/updateProfile.schema";
 
 export const profileRoutes: FastifyPluginAsync = async (app) => {
 	const profileRoutesApp = app.withTypeProvider<ZodTypeProvider>();
 	const authorizeUser = app.authorize("USER");
-	const profileController = createProfileController(app);
 
 	profileRoutesApp.route({
 		method: "POST",
 		url: "/",
 		schema: createProfileRouteSchema,
 		onRequest: authorizeUser,
-		handler: profileController.createProfile,
+		handler: async function createProfile(request, reply) {
+			const profileId = await app.profileService.createProfile(request.body, request.userId);
+			reply.created({ id: profileId });
+		},
 	});
 
 	profileRoutesApp.route({
@@ -23,13 +24,19 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
 		url: "/",
 		schema: updateProfileRouteSchema,
 		onRequest: authorizeUser,
-		handler: profileController.updateProfile,
+		handler: async function updateProfile(request, reply) {
+			const profile = await app.profileService.updateProfile(request.body, request.userId);
+			reply.ok({ data: profile });
+		},
 	});
 
 	profileRoutesApp.route({
 		method: "GET",
 		url: "/",
 		onRequest: authorizeUser,
-		handler: profileController.getProfile,
+		handler: async function getProfile(request, reply) {
+			const profile = await app.profileService.getProfile(request.userId);
+			reply.ok({ data: profile });
+		},
 	});
 };
