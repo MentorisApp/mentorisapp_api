@@ -2,9 +2,7 @@ import { FastifyPluginAsync } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 
 import { env } from "~/env";
-import type { LoginRequest } from "~/modules/auth/schemas/login.schema";
 import { loginRouteSchema } from "~/modules/auth/schemas/login.schema";
-import type { RegisterUserRequest } from "~/modules/auth/schemas/registerUser.schema";
 import { registerUserRouteSchema } from "~/modules/auth/schemas/registerUser.schema";
 import type { RequestPasswordResetRequest } from "~/modules/auth/schemas/requestPasswordReset.schema";
 import { requestPasswordResetRouteSchema } from "~/modules/auth/schemas/requestPasswordReset.schema";
@@ -26,8 +24,8 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 		url: "/register",
 		schema: registerUserRouteSchema,
 		handler: async function registerUser(request, reply) {
-			const email = await app.authService.register(request.body as RegisterUserRequest);
-			reply.created({ id: email, message: `Verification email sent to ${email}` });
+			const email = await app.authService.register(request.body);
+			reply.noContent({ message: `Verification email sent to ${email}` });
 		},
 	});
 
@@ -36,9 +34,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 		url: "/login",
 		schema: loginRouteSchema,
 		handler: async function login(request, reply) {
-			const { accessToken, refreshToken } = await app.authService.login(
-				request.body as LoginRequest,
-			);
+			const { accessToken, refreshToken } = await app.authService.login(request.body);
 
 			reply
 				.setCookie("accessToken", accessToken, {
@@ -48,7 +44,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 					maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
 				});
 
-			reply.ok({ data: null, message: "Logged in successfully" });
+			reply.noContent({ message: "Logged in successfully" });
 		},
 	});
 

@@ -41,7 +41,8 @@ async function startAppServer() {
 
 	app.listen({ port: env.PORT, host: "0.0.0.0" }, (err) => {
 		if (err) {
-			app.log.error(err);
+			console.log("🚀 ~ startAppServer ~ err:", err);
+			// app.log.error(err);
 			process.exit(1);
 		}
 

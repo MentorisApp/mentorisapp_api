@@ -8,8 +8,8 @@ export const VerifyAccountQuerySchema = z
 	})
 	.strict();
 
-export type VerifyAccountQuery = z.infer<typeof VerifyAccountQuerySchema>;
-
 export const verifyAccountRouteSchema = {
 	querystring: VerifyAccountQuerySchema,
 };
+
+export type VerifyAccountQuery = z.infer<typeof VerifyAccountQuerySchema>;

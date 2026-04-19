@@ -5,7 +5,7 @@ import { ApiCode } from "~/constants/apiCode.enum";
 import { DomainCode } from "~/constants/domainCodes.enum";
 import { HttpStatus } from "~/constants/httpStatusCodes.enum";
 
-export type ApiResponse<T> = {
+export type ApiResponse<T = unknown> = {
 	data: T | null;
 	success: boolean;
 	message: string | null;
@@ -19,11 +19,13 @@ export type OkOptions<T> = {
 	domainCode?: DomainCode;
 };
 
-export type CreatedOptions<T> = {
-	id: T;
+export type CreatedOptions = {
+	id: number;
 	message?: string | null;
 	domainCode?: DomainCode;
 };
+
+export type NoContentOptions = Omit<OkOptions<null>, "data">;
 
 const responseHandler: FastifyPluginAsync = async (app) => {
 	app.decorateReply("ok", function <T>(this: FastifyReply, options: OkOptions<T>) {
@@ -38,8 +40,8 @@ const responseHandler: FastifyPluginAsync = async (app) => {
 		return this.status(HttpStatus.OK).send(response);
 	});
 
-	app.decorateReply("created", function <T>(this: FastifyReply, options: CreatedOptions<T>) {
-		const response: ApiResponse<{ id: T }> = {
+	app.decorateReply("created", function (this: FastifyReply, options: CreatedOptions) {
+		const response: ApiResponse<{ id: number }> = {
 			success: true,
 			data: { id: options.id },
 			message: options.message ?? null,
@@ -50,20 +52,17 @@ const responseHandler: FastifyPluginAsync = async (app) => {
 		return this.status(HttpStatus.CREATED).send(response);
 	});
 
-	app.decorateReply(
-		"noContent",
-		function (this: FastifyReply, options?: Omit<OkOptions<null>, "data">) {
-			const response: ApiResponse<null> = {
-				success: true,
-				data: null,
-				message: options?.message ?? null,
-				code: ApiCode.NO_CONTENT,
-				domainCode: options?.domainCode ?? null,
-			};
+	app.decorateReply("noContent", function (this: FastifyReply, options?: NoContentOptions) {
+		const response: ApiResponse<null> = {
+			success: true,
+			data: null,
+			message: options?.message ?? null,
+			code: ApiCode.NO_CONTENT,
+			domainCode: options?.domainCode ?? null,
+		};
 
-			return this.status(HttpStatus.NO_CONTENT).send(response);
-		},
-	);
+		return this.status(HttpStatus.NO_CONTENT).send(response);
+	});
 };
 
 export const responsePlugin = fp(responseHandler, {

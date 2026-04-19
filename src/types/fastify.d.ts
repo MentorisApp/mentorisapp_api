@@ -1,7 +1,6 @@
 import "@fastify/jwt";
 import "fastify";
 
-import { DomainCode } from "~/constants/domainCodes.enum";
 import { Role } from "~/constants/roles";
 import { createAuthService } from "~/modules/auth/auth.services";
 import { createDictionaryService } from "~/modules/dictionary/dictionary.services";
@@ -11,6 +10,7 @@ import { createReviewService } from "~/modules/review/review.services";
 import { createTokenService } from "~/modules/token/token.services";
 import { createVerificationTokensService } from "~/modules/token/verificationToken.services";
 import { createUserService } from "~/modules/user/user.services";
+import { CreatedOptions, NoContentOptions, OkOptions } from "~/plugins/response.plugin";
 
 import { AppDb } from "./db.types";
 import { EmailPlugin } from "./email.types";
@@ -35,9 +35,9 @@ declare module "fastify" {
 		userId: number;
 	}
 	interface FastifyReply {
-		ok<T>(options: { data: T; message?: string | null; domainCode?: DomainCode }): FastifyReply;
-		created<T>(options: { id: T; message?: string | null; domainCode?: DomainCode }): FastifyReply;
-		noContent(options?: { message?: string | null; domainCode?: DomainCode }): FastifyReply;
+		ok<T>(options: OkOptions<T>): FastifyReply;
+		created(options: CreatedOptions): FastifyReply;
+		noContent(options?: NoContentOptions): FastifyReply;
 	}
 }
 

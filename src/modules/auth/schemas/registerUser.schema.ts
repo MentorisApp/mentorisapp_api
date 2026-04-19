@@ -9,8 +9,8 @@ export const RegisterUserRequestSchema = z
 	})
 	.strict();
 
-export type RegisterUserRequest = z.infer<typeof RegisterUserRequestSchema>;
-
 export const registerUserRouteSchema = {
 	body: RegisterUserRequestSchema,
 };
+
+export type RegisterUserRequest = z.infer<typeof RegisterUserRequestSchema>;
