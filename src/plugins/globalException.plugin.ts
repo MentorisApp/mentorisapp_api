@@ -1,4 +1,4 @@
-import { FastifyPluginAsync } from "fastify";
+import { FastifyError, FastifyPluginAsync } from "fastify";
 import fp from "fastify-plugin";
 
 import { ApiCode } from "~/constants/apiCode.enum";
@@ -11,8 +11,7 @@ import { handleValidationError } from "~/errors/handlers/handleValidationError";
 import { buildErrorResponse } from "~/utils/errorResponse.util";
 
 const globalExceptionHandler: FastifyPluginAsync = async (app) => {
-	app.setErrorHandler((error, _req, reply) => {
-		console.log("🚀 ~ globalExceptionHandler ~ error:", error);
+	app.setErrorHandler((error: FastifyError, _req, reply) => {
 		const handlers = [
 			handleAppError,
 			handleValidationError,

@@ -26,6 +26,8 @@
 		"@fastify/cors": "^11.1.0",
 		"@fastify/jwt": "^10.0.0",
 		"@fastify/multipart": "^9.3.0",
+		"@fastify/swagger": "^9.7.0",
+		"@fastify/swagger-ui": "^5.2.5",
 		"bcrypt": "^6.0.0",
 		"dotenv": "^17.2.1",
 		"drizzle-orm": "^0.44.2",
@@ -59,5 +61,8 @@
 		"*.{ts,js,json}": [
 			"yarn biome:check"
 		]
-	}
+	},
+  	"resolutions": {
+    	"@fastify/static": "9.1.0"
+  	}
 }
