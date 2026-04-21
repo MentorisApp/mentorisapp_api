@@ -1,7 +1,7 @@
 import { FastifyReply } from "fastify";
 
-import { ApiCode } from "~/constants/apiCode.enum";
-import { HttpStatus } from "~/constants/httpStatusCodes.enum";
+import { ApiCode } from "~/enums/apiCode.enum";
+import { HttpStatus } from "~/enums/httpStatus.enum";
 import { buildErrorResponse } from "~/utils/errorResponse.util";
 
 export function handleUnknownError(_error: unknown, reply: FastifyReply) {

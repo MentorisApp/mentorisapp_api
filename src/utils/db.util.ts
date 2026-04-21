@@ -1,8 +1,8 @@
 import { DatabaseError } from "pg";
 
-import { ApiCode } from "~/constants/apiCode.enum";
-import { HttpStatus } from "~/constants/httpStatusCodes.enum";
-import { PostgresErrorCode } from "~/constants/postgresErrorCodes.enum";
+import { ApiCode } from "~/enums/apiCode.enum";
+import { HttpStatus } from "~/enums/httpStatus.enum";
+import { PostgresErrorCode } from "~/enums/postgresErrorCode.enum";
 import { NotFoundError } from "~/errors/generic/NotFoundError";
 
 export function unwrapResult<T>(rows: T[], message: string = "Resource not found"): T {

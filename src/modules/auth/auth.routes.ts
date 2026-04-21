@@ -4,11 +4,9 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { env } from "~/env";
 import { loginRouteSchema } from "~/modules/auth/schemas/login.schema";
 import { registerUserRouteSchema } from "~/modules/auth/schemas/registerUser.schema";
-import type { RequestPasswordResetRequest } from "~/modules/auth/schemas/requestPasswordReset.schema";
 import { requestPasswordResetRouteSchema } from "~/modules/auth/schemas/requestPasswordReset.schema";
 import type { ResendVerificationLinkRequest } from "~/modules/auth/schemas/resendVerificationLink.schema";
 import { resendVerificationLinkRouteSchema } from "~/modules/auth/schemas/resendVerificationLink.schema";
-import type { ResetPasswordRequest } from "~/modules/auth/schemas/resetPassword.schema";
 import { resetPasswordRouteSchema } from "~/modules/auth/schemas/resetPassword.schema";
 import type { VerifyAccountQuery } from "~/modules/auth/schemas/verifyAccount.schema";
 import { verifyAccountRouteSchema } from "~/modules/auth/schemas/verifyAccount.schema";
@@ -24,8 +22,8 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 		url: "/register",
 		schema: registerUserRouteSchema,
 		handler: async function registerUser(request, reply) {
-			const email = await app.authService.register(request.body);
-			reply.noContent({ message: `Verification email sent to ${email}` });
+			const { email } = await app.authService.register(request.body);
+			reply.success({ data: email });
 		},
 	});
 
@@ -44,7 +42,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 					maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
 				});
 
-			reply.noContent({ message: "Logged in successfully" });
+			reply.success();
 		},
 	});
 
@@ -62,10 +60,10 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 
 			if (cleared) {
 				reply.clearCookie("refreshToken").clearCookie("accessToken");
-				return reply.noContent({ message: "Logged out" });
 			}
 
-			return reply.noContent();
+			// TODO might not be success response?
+			return reply.success();
 		},
 	});
 
@@ -81,11 +79,15 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 			const { accessToken, refreshToken: nextRefreshToken } =
 				await app.authService.refresh(refreshToken);
 
-			reply.setCookie("refreshToken", nextRefreshToken, {
-				maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
-			});
+			reply
+				.setCookie("accessToken", accessToken, {
+					maxAge: parseDurationMs(env.JWT_ACCESS_TOKEN_EXPIRES_IN),
+				})
+				.setCookie("refreshToken", nextRefreshToken, {
+					maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
+				});
 
-			reply.ok({ data: accessToken });
+			reply.success();
 		},
 	});
 
@@ -105,7 +107,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 					maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
 				});
 
-			reply.ok({ data: null, message: "Verified successfully" });
+			reply.success();
 		},
 	});
 
@@ -114,9 +116,10 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 		url: "/request-reset-password",
 		schema: requestPasswordResetRouteSchema,
 		handler: async function requestPasswordReset(request, reply) {
-			const body = request.body as RequestPasswordResetRequest;
+			const body = request.body;
 			await app.authService.requestResetPassword(body.email);
-			reply.ok({ data: null, message: `A password reset email was sent to ${body.email}` });
+
+			reply.success({ data: body.email });
 		},
 	});
 
@@ -125,8 +128,8 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 		url: "/reset-password",
 		schema: resetPasswordRouteSchema,
 		handler: async function resetPassword(request, reply) {
-			await app.authService.resetPassword(request.body as ResetPasswordRequest);
-			reply.ok({ data: null });
+			await app.authService.resetPassword(request.body);
+			reply.success();
 		},
 	});
 
@@ -137,7 +140,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 		handler: async function resendVerificationLink(request, reply) {
 			const body = request.body as ResendVerificationLinkRequest;
 			await app.authService.resendVerificationLink(body.email);
-			reply.ok({ data: null, message: `Verification link sent to ${body.email}` });
+			reply.success({ data: body.email });
 		},
 	});
 
@@ -147,7 +150,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 		onRequest: authorizeUser,
 		handler: async function getCurrentUser(request, reply) {
 			const userProfile = await app.userService.getUserWithProfile(request.userId);
-			reply.ok({ data: userProfile });
+			reply.success({ data: userProfile });
 		},
 	});
 };

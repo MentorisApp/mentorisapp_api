@@ -7,22 +7,20 @@ import { jsonSchemaTransform, jsonSchemaTransformObject } from "fastify-type-pro
 const swaggerConfig: FastifyPluginAsync = async (app) => {
 	// 1. Register OpenAPI
 	await app.register(swagger, {
+		transform: jsonSchemaTransform,
+		transformObject: jsonSchemaTransformObject,
 		openapi: {
 			info: {
 				title: "Mentoris API",
 				version: "1.0.0",
 			},
 		},
-		transform: jsonSchemaTransform,
-		transformObject: jsonSchemaTransformObject,
 	});
 
 	// 2. Register Swagger UI
 	await app.register(swaggerUi, {
 		routePrefix: "/docs",
-		// exposeRoute: true,
 		transformSpecificationClone: true,
-
 		uiConfig: {
 			docExpansion: "list",
 		},

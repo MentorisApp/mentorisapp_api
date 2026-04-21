@@ -10,33 +10,33 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
 
 	profileRoutesApp.route({
 		method: "POST",
-		url: "/",
+		url: "",
 		schema: createProfileRouteSchema,
 		onRequest: authorizeUser,
 		handler: async function createProfile(request, reply) {
-			const profileId = await app.profileService.createProfile(request.body, request.userId);
-			reply.created({ id: profileId });
+			await app.profileService.createProfile(request.body, request.userId);
+			reply.success();
 		},
 	});
 
 	profileRoutesApp.route({
 		method: "PUT",
-		url: "/",
+		url: "",
 		schema: updateProfileRouteSchema,
 		onRequest: authorizeUser,
 		handler: async function updateProfile(request, reply) {
-			const profile = await app.profileService.updateProfile(request.body, request.userId);
-			reply.ok({ data: profile });
+			await app.profileService.updateProfile(request.body, request.userId);
+			reply.success();
 		},
 	});
 
 	profileRoutesApp.route({
 		method: "GET",
-		url: "/",
+		url: "",
 		onRequest: authorizeUser,
 		handler: async function getProfile(request, reply) {
 			const profile = await app.profileService.getProfile(request.userId);
-			reply.ok({ data: profile });
+			reply.success({ data: profile });
 		},
 	});
 };

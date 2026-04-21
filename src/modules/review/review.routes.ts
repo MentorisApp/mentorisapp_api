@@ -9,12 +9,12 @@ export const reviewRoutes: FastifyPluginAsync = async (app) => {
 
 	reviewRoutesApp.route({
 		method: "POST",
-		url: "/",
+		url: "",
 		schema: createReviewRouteSchema,
 		onRequest: app.authorize("USER"),
 		handler: async function createReview(request, reply) {
-			const { id } = await app.reviewService.createReview(request.body, request.userId);
-			reply.created({ id });
+			const review = await app.reviewService.createReview(request.body, request.userId);
+			reply.success({ data: review });
 		},
 	});
 
@@ -24,7 +24,7 @@ export const reviewRoutes: FastifyPluginAsync = async (app) => {
 		schema: getOfferReviewsRouteSchema,
 		handler: async function getOfferReviews(request, reply) {
 			const reviews = await app.reviewService.getAllActiveOfferReviews(request.params.offerId);
-			reply.ok({ data: reviews });
+			reply.success({ data: reviews });
 		},
 	});
 };

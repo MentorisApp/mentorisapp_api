@@ -1,5 +1,5 @@
-import { ApiCode } from "~/constants/apiCode.enum";
-import { HttpStatus } from "~/constants/httpStatusCodes.enum";
+import { ApiCode } from "~/enums/apiCode.enum";
+import { HttpStatus } from "~/enums/httpStatus.enum";
 
 import { AppError } from "../base/AppError";
 

@@ -12,7 +12,7 @@ import { createUserService } from "~/modules/user/user.services";
 import { hashUtil } from "~/utils/hash.util";
 
 import type { LoginRequest } from "./schemas/login.schema";
-import type { RegisterUserRequest } from "./schemas/registerUser.schema";
+import { RegisterUserPayload } from "./schemas/registerUser.schema";
 import type { ResetPasswordRequest } from "./schemas/resetPassword.schema";
 
 export function createAuthService(app: FastifyInstance) {
@@ -20,12 +20,10 @@ export function createAuthService(app: FastifyInstance) {
 	const verificationTokenService = createVerificationTokensService(app);
 	const tokenService = createTokenService(app);
 
-	async function register(payload: RegisterUserRequest) {
+	async function register(payload: RegisterUserPayload) {
 		const isUserExisting = await userService.checkUserExistsByEmail(payload.email);
 
-		if (isUserExisting) {
-			throw new ConflictError("Email already in use");
-		}
+		if (isUserExisting) throw new ConflictError("Email already in use");
 
 		const hashedPassword = await hashUtil.password.hash(payload.password);
 
@@ -50,7 +48,7 @@ export function createAuthService(app: FastifyInstance) {
 			},
 		});
 
-		return payload.email;
+		return { userId: newUser.id, email: newUser.email };
 	}
 
 	async function verifyUserAndLogin(token: string) {
@@ -59,9 +57,7 @@ export function createAuthService(app: FastifyInstance) {
 			"email_verification",
 		);
 
-		if (!user) {
-			throw new BadRequestError("Invalid verification token.");
-		}
+		if (!user) throw new BadRequestError("Invalid verification token.");
 
 		await verificationTokenService.markTokenUsed(storedHashToken.token);
 		await userService.verifyUser(user.id);
@@ -100,14 +96,14 @@ export function createAuthService(app: FastifyInstance) {
 		const payload = tokenService.verifyRefreshToken(oldRefreshToken);
 		const storedToken = await tokenService.getRefreshTokenByJti(payload.jti);
 
-		if (!storedToken || storedToken.revoked) {
+		if (!storedToken || storedToken.revoked)
 			throw new InvalidCredentialsError("Token has been revoked or is expired");
-		}
 
 		const newJti = tokenService.generateJti();
 		const { role } = await userService.getUserRole(storedToken.userId);
 
 		const accessToken = tokenService.issueAccessToken(storedToken.userId, role);
+
 		const refreshToken = await tokenService.issueRefreshToken(storedToken.userId, newJti);
 
 		await tokenService.revokeRefreshToken(oldRefreshToken);
@@ -167,20 +163,18 @@ export function createAuthService(app: FastifyInstance) {
 		}
 
 		await verificationTokenService.markTokenUsed(hashedPayloadToken);
+
 		const hashedNewPassword = await hashUtil.password.hash(payload.password);
+
 		await userService.updateUserPassword(user.user.id, hashedNewPassword);
 	}
 
 	async function resendVerificationLink(email: string) {
 		const user = await userService.getUserByEmail(email);
 
-		if (!user) {
-			throw new NotFoundError("User not found");
-		}
+		if (!user) throw new NotFoundError("User not found");
 
-		if (user.isVerified) {
-			throw new AlreadyVerifiedError();
-		}
+		if (user.isVerified) throw new AlreadyVerifiedError();
 
 		const token = await verificationTokenService.createVerificationToken(
 			user.id,

@@ -10,7 +10,6 @@ import { createReviewService } from "~/modules/review/review.services";
 import { createTokenService } from "~/modules/token/token.services";
 import { createVerificationTokensService } from "~/modules/token/verificationToken.services";
 import { createUserService } from "~/modules/user/user.services";
-import { CreatedOptions, NoContentOptions, OkOptions } from "~/plugins/response.plugin";
 
 import { AppDb } from "./db.types";
 import { EmailPlugin } from "./email.types";
@@ -35,9 +34,7 @@ declare module "fastify" {
 		userId: number;
 	}
 	interface FastifyReply {
-		ok<T>(options: OkOptions<T>): FastifyReply;
-		created(options: CreatedOptions): FastifyReply;
-		noContent(options?: NoContentOptions): FastifyReply;
+		success(options?: { data?: TData | undefined; meta?: TMeta | undefined }): FastifyReply;
 	}
 }
 

@@ -12,33 +12,33 @@ export const offerRoutes: FastifyPluginAsync = async (app) => {
 
 	offerRoutesApp.route({
 		method: "POST",
-		url: "/",
+		url: "",
 		schema: createOfferRouteSchema,
 		onRequest: authorizeUser,
-		handler: async function createOffer(req, res) {
-			const { id } = await app.offerService.createOffer(req.body, req.userId);
-			res.created({ id });
+		handler: async function createOffer(request, reply) {
+			const offer = await app.offerService.createOffer(request.body, request.userId);
+			reply.success({ data: offer.id });
 		},
 	});
 
 	offerRoutesApp.route({
 		method: "PUT",
-		url: "/",
+		url: "",
 		schema: updateOfferRouteSchema,
 		onRequest: authorizeUser,
-		handler: async function updateOffer(req, res) {
-			const offer = await app.offerService.updateOffer(req.body, req.userId);
-			res.ok({ data: offer });
+		handler: async function updateOffer(request, reply) {
+			const offer = await app.offerService.updateOffer(request.body, request.userId);
+			reply.success({ data: offer });
 		},
 	});
 
 	offerRoutesApp.route({
 		method: "GET",
-		url: "/",
+		url: "",
 		onRequest: authorizeUser,
-		handler: async function getOffer(req, res) {
-			const offer = await app.offerService.getOfferByUserId(req.userId);
-			res.ok({ data: offer });
+		handler: async function getOffer(request, reply) {
+			const offer = await app.offerService.getOfferByUserId(request.userId);
+			reply.success({ data: offer });
 		},
 	});
 
@@ -46,9 +46,9 @@ export const offerRoutes: FastifyPluginAsync = async (app) => {
 		method: "GET",
 		url: "/:offerId",
 		schema: getOfferByIdRouteSchema,
-		handler: async function getOfferById(req, res) {
-			const offer = await app.offerService.getOfferByOfferId(req.params.offerId);
-			res.ok({ data: offer });
+		handler: async function getOfferById(request, reply) {
+			const offer = await app.offerService.getOfferByOfferId(request.params.offerId);
+			reply.success({ data: offer });
 		},
 	});
 };

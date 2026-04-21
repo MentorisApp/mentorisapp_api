@@ -1,6 +1,6 @@
 import { FastifyError, FastifyReply } from "fastify";
 
-import { ApiCode } from "~/constants/apiCode.enum";
+import { ApiCode } from "~/enums/apiCode.enum";
 import { buildErrorResponse } from "~/utils/errorResponse.util";
 
 const authCodes = [

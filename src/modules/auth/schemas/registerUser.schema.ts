@@ -1,8 +1,11 @@
+import { FastifySchema } from "fastify";
 import z from "zod";
 
+import { HttpStatus } from "~/enums/httpStatus.enum";
+import { ApiResponseNoContent } from "~/shared/schemas/apiResponse.schema";
 import { EmailSchema, PasswordSchema } from "~/utils/zod-shared.validator";
 
-export const RegisterUserRequestSchema = z
+const RegisterUserPayloadSchema = z
 	.object({
 		email: EmailSchema,
 		password: PasswordSchema,
@@ -10,7 +13,12 @@ export const RegisterUserRequestSchema = z
 	.strict();
 
 export const registerUserRouteSchema = {
-	body: RegisterUserRequestSchema,
-};
+	tags: ["Auth"],
+	summary: "Creates user then sends verification email",
+	body: RegisterUserPayloadSchema,
+	response: {
+		[HttpStatus.CREATED]: ApiResponseNoContent,
+	},
+} satisfies FastifySchema;
 
-export type RegisterUserRequest = z.infer<typeof RegisterUserRequestSchema>;
+export type RegisterUserPayload = z.infer<typeof RegisterUserPayloadSchema>;

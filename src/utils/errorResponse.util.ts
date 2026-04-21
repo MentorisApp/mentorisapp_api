@@ -1,14 +1,10 @@
-import { ApiCode } from "~/constants/apiCode.enum";
-import { ApiResponse } from "~/plugins/response.plugin";
+import { ApiCode } from "~/enums/apiCode.enum";
+import { ErrorResponse } from "~/shared/schemas/apiResponse.schema";
 
-type BuildErrorResponseArgs = Omit<ApiResponse<null>, "data" | "success">;
-
-export function buildErrorResponse(error: BuildErrorResponseArgs): ApiResponse<null> {
+export function buildErrorResponse(error: Partial<ErrorResponse>): ErrorResponse {
 	return {
-		data: null,
-		success: false,
-		message: error.message ?? "Internal Server Error",
 		code: error.code ?? ApiCode.INTERNAL_SERVER_ERROR,
-		domainCode: error.domainCode ?? null,
+		message: error.message ?? "Internal Server Error",
+		fieldErrors: error.fieldErrors ?? null,
 	};
 }

@@ -1,6 +1,6 @@
-import { ApiCode } from "~/constants/apiCode.enum";
-import { DomainCode } from "~/constants/domainCodes.enum";
-import { HttpStatus } from "~/constants/httpStatusCodes.enum";
+import { ApiCode } from "~/enums/apiCode.enum";
+import { DomainCode } from "~/enums/domainCode.enum";
+import { HttpStatus } from "~/enums/httpStatus.enum";
 
 import { AppError } from "../base/AppError";
 

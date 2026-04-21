@@ -3,6 +3,7 @@ export enum ApiCode {
 	OK = "OK",
 	CREATED = "CREATED",
 	NO_CONTENT = "NO_CONTENT",
+	ACCEPTED = "ACCEPTED",
 
 	// Client errors
 	BAD_REQUEST = "BAD_REQUEST",
