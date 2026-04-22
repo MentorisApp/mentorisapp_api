@@ -96,14 +96,14 @@ export function createAuthService(app: FastifyInstance) {
 		const payload = tokenService.verifyRefreshToken(oldRefreshToken);
 		const storedToken = await tokenService.getRefreshTokenByJti(payload.jti);
 
-		if (!storedToken || storedToken.revoked)
-			throw new InvalidCredentialsError("Token has been revoked or is expired");
+		const isTokenInvalid = !storedToken || storedToken.revoked;
+
+		if (isTokenInvalid) throw new InvalidCredentialsError("Token has been revoked or is expired");
 
 		const newJti = tokenService.generateJti();
 		const { role } = await userService.getUserRole(storedToken.userId);
 
 		const accessToken = tokenService.issueAccessToken(storedToken.userId, role);
-
 		const refreshToken = await tokenService.issueRefreshToken(storedToken.userId, newJti);
 
 		await tokenService.revokeRefreshToken(oldRefreshToken);

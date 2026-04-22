@@ -32,7 +32,6 @@ const globalExceptionHandler: FastifyPluginAsync = async (app) => {
 			buildErrorResponse({
 				message: "Route not found",
 				code: ApiCode.NOT_FOUND,
-				domainCode: null,
 			}),
 		);
 	});

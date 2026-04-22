@@ -1,7 +1,6 @@
 import { DatabaseError } from "pg";
 
-import { ApiCode } from "~/enums/apiCode.enum";
-import { HttpStatus } from "~/enums/httpStatus.enum";
+import { ApiCode, ErrorCodeType } from "~/enums/apiCode.enum";
 import { PostgresErrorCode } from "~/enums/postgresErrorCode.enum";
 import { NotFoundError } from "~/errors/generic/NotFoundError";
 
@@ -13,14 +12,12 @@ export function unwrapResult<T>(rows: T[], message: string = "Resource not found
 }
 
 export function handleDatabaseError(error: DatabaseError): {
-	statusCode: HttpStatus;
 	message: string;
-	code: ApiCode;
+	code: ErrorCodeType;
 } {
 	switch (error.code) {
 		case PostgresErrorCode.UNIQUE_VIOLATION:
 			return {
-				statusCode: HttpStatus.CONFLICT,
 				message: "Resource already exists",
 				code: ApiCode.CONFLICT,
 			};
@@ -28,7 +25,6 @@ export function handleDatabaseError(error: DatabaseError): {
 		case PostgresErrorCode.FOREIGN_KEY_VIOLATION:
 		case PostgresErrorCode.NOT_NULL_VIOLATION:
 			return {
-				statusCode: HttpStatus.BAD_REQUEST,
 				message: "Invalid request data",
 				code: ApiCode.BAD_REQUEST,
 			};
@@ -36,14 +32,12 @@ export function handleDatabaseError(error: DatabaseError): {
 		case PostgresErrorCode.DEADLOCK_DETECTED:
 		case PostgresErrorCode.SERIALIZATION_FAILURE:
 			return {
-				statusCode: HttpStatus.SERVICE_UNAVAILABLE,
 				message: "Database temporarily unavailable, please retry",
 				code: ApiCode.SERVICE_UNAVAILABLE,
 			};
 
 		default:
 			return {
-				statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
 				message: "Database error",
 				code: ApiCode.INTERNAL_SERVER_ERROR,
 			};

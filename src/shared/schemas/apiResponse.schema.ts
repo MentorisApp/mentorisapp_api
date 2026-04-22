@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-// TODO filter meta schema
-// TODO mayb request meta schema with timestamps etc
+import { ErrorCodes } from "~/enums/apiCode.enum";
+
 export const PaginationMetaSchema = z.object({
 	page: z.number(),
 	pageSize: z.number(),
@@ -25,18 +25,17 @@ export const ApiResponse = <TData extends z.ZodTypeAny, TMeta extends z.ZodTypeA
 
 export const ApiResponseNoContent = z.undefined();
 
-export type PaginationMeta = z.infer<typeof PaginationMetaSchema>;
+export const ErrorResponseSchema = z.object({
+	code: z.enum(ErrorCodes),
+	message: z.string().nullable(),
+	fieldErrors: z.record(z.string(), z.array(z.string())).nullable().optional(),
+});
 
+export type PaginationMeta = z.infer<typeof PaginationMetaSchema>;
 export type SearchMeta = z.infer<typeof SearchMetaSchema>;
 
+export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
 export type SuccessResponse<TData, TMeta = unknown> = {
 	data?: TData;
 	meta?: TMeta;
-};
-
-export type ErrorResponse = {
-	// TODO make type safe code
-	code: string; // domain or generic code
-	message: string | null; // human readable fallback
-	fieldErrors?: Record<string, string[]> | null; // form mappings
 };

@@ -11,7 +11,8 @@ export function handleValidationError(error: FastifyError, reply: FastifyReply) 
 	const response = buildErrorResponse({
 		message: error.validation?.[0]?.message ?? "Validation error",
 		code: ApiCode.VALIDATION_ERROR,
-		domainCode: null,
+		// TODO TRY TO MAP ROUTE SCHEMA VALIDATION ZOD ERROR INTO A NICE ERROR FOR RESPONSE DTO
+		// fieldErrors: error.validation,
 	});
 
 	reply.status(HttpStatus.BAD_REQUEST).send(response);

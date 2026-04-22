@@ -1,15 +1,16 @@
 import { FastifyError, FastifyReply } from "fastify";
 
-import { buildErrorResponse } from "~/utils/errorResponse.util";
+import { buildErrorResponse, errorCodeToHttpStatus } from "~/utils/errorResponse.util";
 
 import { AppError } from "../base/AppError";
 
 export function handleAppError(error: FastifyError, reply: FastifyReply) {
 	if (!(error instanceof AppError)) return false;
 
-	const response = buildErrorResponse(error);
+	const errorResponse = buildErrorResponse(error);
+	const status = errorCodeToHttpStatus[errorResponse.code];
 
-	reply.status(error.statusCode).send(response);
+	reply.status(status).send(errorResponse);
 
 	return true;
 }

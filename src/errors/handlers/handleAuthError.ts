@@ -1,7 +1,7 @@
 import { FastifyError, FastifyReply } from "fastify";
 
 import { ApiCode } from "~/enums/apiCode.enum";
-import { buildErrorResponse } from "~/utils/errorResponse.util";
+import { buildErrorResponse, errorCodeToHttpStatus } from "~/utils/errorResponse.util";
 
 const authCodes = [
 	"FST_JWT_NO_AUTHORIZATION_IN_HEADER",
@@ -13,12 +13,12 @@ const authCodes = [
 export function handleAuthError(error: FastifyError, reply: FastifyReply) {
 	if (!authCodes.includes(error.code)) return false;
 
-	reply.status(401).send(
-		buildErrorResponse({
-			message: error.message,
-			code: ApiCode.UNAUTHORIZED,
-		}),
-	);
+	const authError = buildErrorResponse({
+		message: error.message,
+		code: ApiCode.UNAUTHORIZED,
+	});
+
+	reply.status(errorCodeToHttpStatus[authError.code]).send(error);
 
 	return true;
 }
