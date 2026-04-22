@@ -1,7 +1,7 @@
 import { FastifySchema } from "fastify";
 import z from "zod";
 
-import { EmailSchema, PasswordSchema } from "~/utils/zod-shared.validator";
+import { EmailSchema, PasswordSchema } from "~/shared/schemas/general.schema";
 
 export const LoginRequestSchema = z
 	.object({

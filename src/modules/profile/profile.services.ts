@@ -18,16 +18,16 @@ export function createProfileService(app: FastifyInstance) {
 
 		if (existingProfile) throw new ConflictError("Profile already exists");
 
-		const [{ id: profileId }] = await db
+		const profile = await db
 			.insert(profiles)
 			.values({
 				...body,
 				profilePictureUrl: body.profilePicture,
 				userId: userId,
 			})
-			.returning({ id: profiles.id });
+			.returning();
 
-		return profileId;
+		return profile;
 	}
 
 	async function checkExistsProfileByUserId(userId: number) {

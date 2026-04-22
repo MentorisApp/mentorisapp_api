@@ -14,8 +14,8 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
 		schema: createProfileRouteSchema,
 		onRequest: authorizeUser,
 		handler: async function createProfile(request, reply) {
-			await app.profileService.createProfile(request.body, request.userId);
-			reply.success();
+			const createdProfile = await app.profileService.createProfile(request.body, request.userId);
+			reply.success({ data: createdProfile });
 		},
 	});
 

@@ -1,6 +1,6 @@
 import z from "zod";
 
-import { PasswordSchema, UuidSchema } from "~/utils/zod-shared.validator";
+import { PasswordSchema, UuidSchema } from "~/shared/schemas/general.schema";
 
 export const ResetPasswordRequestSchema = z
 	.object({

@@ -1,6 +1,6 @@
 import z from "zod";
 
-import { UuidSchema } from "~/utils/zod-shared.validator";
+import { UuidSchema } from "~/shared/schemas/general.schema";
 
 export const VerifyAccountQuerySchema = z
 	.object({

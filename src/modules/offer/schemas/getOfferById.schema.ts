@@ -1,6 +1,6 @@
 import z from "zod";
 
-import { createPositiveIntParamsSchema } from "~/utils/zod-shared.validator";
+import { createPositiveIntParamsSchema } from "~/shared/schemas/general.schema";
 
 export const GetOfferByIdParamsSchema = createPositiveIntParamsSchema("offerId");
 

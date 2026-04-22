@@ -1,6 +1,6 @@
 import z from "zod";
 
-import { EmailSchema } from "~/utils/zod-shared.validator";
+import { EmailSchema } from "~/shared/schemas/general.schema";
 
 export const ResendVerificationLinkRequestSchema = z
 	.object({

@@ -4,7 +4,7 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { createOfferRouteSchema } from "~/modules/offer/schemas/createOffer.schema";
 import { getOfferByIdRouteSchema } from "~/modules/offer/schemas/getOfferById.schema";
 import { updateOfferRouteSchema } from "~/modules/offer/schemas/updateOffer.schema";
-import { createAuthGuards } from "~/utils/createAuthGuards";
+import { createAuthGuards } from "~/utils/createAuthGuards.util";
 
 export const offerRoutes: FastifyPluginAsync = async (app) => {
 	const { authorizeUser } = createAuthGuards(app);
