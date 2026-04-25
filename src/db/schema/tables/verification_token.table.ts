@@ -12,6 +12,6 @@ export const verification_tokens = pgTable("verification_tokens", {
 	context: VERIFICATION_TOKEN_CONTEXT_ENUM("context"),
 	token: text("token").notNull().unique(),
 	used: boolean("used").default(false),
-	expiresAt: timestamp("expires_at").notNull(),
+	expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
 	...timestampColumns,
 });

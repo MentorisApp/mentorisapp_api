@@ -8,6 +8,13 @@
       "when": 1775984762677,
       "tag": "0000_init",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1777113331447,
+      "tag": "0001_timestamps_with_timezone",
+      "breakpoints": true
     }
   ]
 }

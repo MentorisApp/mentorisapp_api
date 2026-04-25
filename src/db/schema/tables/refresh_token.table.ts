@@ -10,6 +10,6 @@ export const refresh_tokens = pgTable("refresh_tokens", {
 		.notNull()
 		.references(() => users.id, { onDelete: "cascade" }),
 	revoked: boolean("revoked").default(false).notNull(),
-	expiresAt: timestamp("expires_at").notNull(),
+	expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
 	...timestampColumns,
 });

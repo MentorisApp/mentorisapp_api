@@ -3,7 +3,6 @@ export * from "./junctions/offer_category.table";
 /* --------------------------------- Tables --------------------------------- */
 export * from "./tables/category.table";
 export * from "./tables/city.table";
-// export * from "./tables/education_levels.schema";
 export * from "./tables/gender.table";
 export * from "./tables/offer.table";
 export * from "./tables/offer_format.table";
