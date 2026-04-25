@@ -1,5 +1,3 @@
-import { FastifyInstance } from "fastify";
-
 import { createTokenService } from "~/modules/token/token.services";
 import { createVerificationTokensService } from "~/modules/token/verificationToken.services";
 import { createUserService } from "~/modules/user/user.services";
@@ -9,13 +7,14 @@ import { InvalidCredentialsError } from "~/shared/errors/domain/InvalidCredentia
 import { BadRequestError } from "~/shared/errors/generic/BadRequestError";
 import { ConflictError } from "~/shared/errors/generic/ConflictError";
 import { NotFoundError } from "~/shared/errors/generic/NotFoundError";
+import { App } from "~/types/app.types";
 import { hashUtil } from "~/utils/hash.util";
 
 import type { LoginRequest } from "./schemas/login.schema";
 import { RegisterUserRequest } from "./schemas/registerUser.schema";
 import type { ResetPasswordRequest } from "./schemas/resetPassword.schema";
 
-export function createAuthService(app: FastifyInstance) {
+export function createAuthService(app: App) {
 	const userService = createUserService(app);
 	const verificationTokenService = createVerificationTokensService(app);
 	const tokenService = createTokenService(app);

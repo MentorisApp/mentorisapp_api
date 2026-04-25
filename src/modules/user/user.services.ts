@@ -1,15 +1,15 @@
 import { and, eq, gt } from "drizzle-orm";
-import { FastifyInstance } from "fastify";
 
 import { VerificationTokenContext } from "~/db/schema/enums/db.enum.schema";
 import { NotFoundError } from "~/shared/errors/generic/NotFoundError";
+import { App } from "~/types/app.types";
 import { unwrapResult } from "~/utils/db.util";
 import { hashUtil } from "~/utils/hash.util";
 
 import { CreateUserInput } from "./user.types";
 import { Role } from "../auth/auth.constants";
 
-export function createUserService(app: FastifyInstance) {
+export function createUserService(app: App) {
 	const { db } = app;
 	const { users, roles, verification_tokens, profiles } = db;
 
@@ -39,8 +39,11 @@ export function createUserService(app: FastifyInstance) {
 	}
 
 	async function getUserByEmail(email: string) {
-		const user = await db.select().from(users).where(eq(users.email, email)).limit(1);
-		return user[0];
+		const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
+
+		if (!user) throw new NotFoundError("User not found");
+
+		return user;
 	}
 
 	async function getUserWithProfile(userId: number) {
@@ -48,12 +51,13 @@ export function createUserService(app: FastifyInstance) {
 			.select({
 				id: users.id,
 				email: users.email,
+				isVerified: users.isVerified,
 				// profile fields
 				name: profiles.name,
 				profilePictureUrl: profiles.profilePictureUrl,
 			})
 			.from(users)
-			.leftJoin(profiles, eq(profiles.userId, users.id))
+			.innerJoin(profiles, eq(profiles.userId, users.id))
 			.where(eq(users.id, userId))
 			.limit(1);
 
@@ -102,7 +106,7 @@ export function createUserService(app: FastifyInstance) {
 	) {
 		const hashedPayloadToken = hashUtil.token.hash(token);
 
-		const result = await db
+		const [result] = await db
 			.select({
 				user: users,
 				token: verification_tokens,
@@ -119,7 +123,9 @@ export function createUserService(app: FastifyInstance) {
 			)
 			.limit(1);
 
-		return unwrapResult(result, "Verification request token not found");
+		if (!result) throw new NotFoundError("Verification request token or user not found");
+
+		return result;
 	}
 
 	async function updateUserPassword(userId: number, hashedPassword: string) {

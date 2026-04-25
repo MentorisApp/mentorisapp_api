@@ -3,8 +3,8 @@ import { FastifyPluginAsync, FastifyReply, FastifyRequest } from "fastify";
 import fp from "fastify-plugin";
 import z from "zod";
 
-import { Role } from "~/constants/roles";
 import { env } from "~/env";
+import { Role } from "~/modules/auth/auth.constants";
 import { ForbiddenError } from "~/shared/errors/generic/ForbiddenError";
 import { UnauthorizedError } from "~/shared/errors/generic/UnauthorizedError";
 

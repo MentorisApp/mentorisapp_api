@@ -1,5 +1,4 @@
 import { FastifyPluginAsync } from "fastify";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
 
 import { env } from "~/env";
 import { loginRouteSchema } from "~/modules/auth/schemas/login.schema";
@@ -10,13 +9,12 @@ import { resendVerificationLinkRouteSchema } from "~/modules/auth/schemas/resend
 import { resetPasswordRouteSchema } from "~/modules/auth/schemas/resetPassword.schema";
 import type { VerifyAccountQuery } from "~/modules/auth/schemas/verifyAccount.schema";
 import { verifyAccountRouteSchema } from "~/modules/auth/schemas/verifyAccount.schema";
+import { App } from "~/types/app.types";
 import { getSignedCookieOrThrow } from "~/utils/cookie.util";
 import { parseDurationMs } from "~/utils/datetime.util";
 
-export const authRoutes: FastifyPluginAsync = async (app) => {
-	const authRoutesApp = app.withTypeProvider<ZodTypeProvider>();
-
-	authRoutesApp.route({
+export const authRoutes: FastifyPluginAsync = async (app: App) => {
+	app.route({
 		method: "POST",
 		url: "/register",
 		schema: registerUserRouteSchema,
@@ -26,7 +24,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 		},
 	});
 
-	authRoutesApp.route({
+	app.route({
 		method: "POST",
 		url: "/login",
 		schema: loginRouteSchema,
@@ -45,7 +43,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 		},
 	});
 
-	authRoutesApp.route({
+	app.route({
 		method: "POST",
 		url: "/logout",
 		handler: async function logout(request, reply) {
@@ -60,7 +58,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 		},
 	});
 
-	authRoutesApp.route({
+	app.route({
 		method: "POST",
 		url: "/refresh",
 		handler: async function refreshToken(request, reply) {
@@ -84,7 +82,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 		},
 	});
 
-	authRoutesApp.route({
+	app.route({
 		method: "GET",
 		url: "/verify-account",
 		schema: verifyAccountRouteSchema,
@@ -104,7 +102,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 		},
 	});
 
-	authRoutesApp.route({
+	app.route({
 		method: "POST",
 		url: "/request-reset-password",
 		schema: requestPasswordResetRouteSchema,
@@ -116,7 +114,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 		},
 	});
 
-	authRoutesApp.route({
+	app.route({
 		method: "POST",
 		url: "/reset-password",
 		schema: resetPasswordRouteSchema,
@@ -126,7 +124,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 		},
 	});
 
-	authRoutesApp.route({
+	app.route({
 		method: "POST",
 		url: "/resend-verification-link",
 		schema: resendVerificationLinkRouteSchema,

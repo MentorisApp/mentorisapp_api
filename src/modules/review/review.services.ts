@@ -1,14 +1,14 @@
 import { and, desc, eq } from "drizzle-orm";
-import { FastifyInstance } from "fastify";
 
 import { ConflictError } from "~/shared/errors/generic/ConflictError";
 import { ForbiddenError } from "~/shared/errors/generic/ForbiddenError";
 import { NotFoundError } from "~/shared/errors/generic/NotFoundError";
+import { App } from "~/types/app.types";
 import { unwrapResult } from "~/utils/db.util";
 
-import type { CreateReviewRequest } from "./schemas/createReview.schema";
+import type { CreateReviewRequest } from "./schemas/dto/create-review.schema";
 
-export function createReviewService(app: FastifyInstance) {
+export function createReviewService(app: App) {
 	const { db } = app;
 	const { reviews, offers } = db;
 

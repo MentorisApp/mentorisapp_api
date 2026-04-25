@@ -1,17 +1,18 @@
 import { FastifyPluginAsync } from "fastify";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
 
+import { App } from "~/types/app.types";
 import { createAuthGuards } from "~/utils/createAuthGuards.util";
 
-export const userRoutes: FastifyPluginAsync = async (app) => {
-	const { authorizeUser } = createAuthGuards(app);
-	const userRoutesApp = app.withTypeProvider<ZodTypeProvider>();
+import { getCurrentUserRouteSchema } from "./schema/route/user-routes.schema";
 
-	userRoutesApp.route({
+export const userRoutes: FastifyPluginAsync = async (app: App) => {
+	const { authorizeUser } = createAuthGuards(app);
+
+	app.route({
 		method: "GET",
 		url: "/me",
 		onRequest: authorizeUser,
-		// TODO schema
+		schema: getCurrentUserRouteSchema,
 		handler: async function getCurrentUser(request, reply) {
 			const userProfile = await app.userService.getUserWithProfile(request.userId);
 			reply.ok({ data: userProfile });

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { CreateProfileRequestSchema } from "./create-profile.request";
+import { CreateProfileRequestSchema } from "./create-profile.schema";
 
 export const UpdateProfileRequestSchema = CreateProfileRequestSchema.partial();
 

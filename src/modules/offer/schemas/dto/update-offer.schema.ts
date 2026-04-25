@@ -33,7 +33,3 @@ export const UpdateOfferRequestSchema = createUpdateSchema(offers)
 	.strict();
 
 export type UpdateOfferRequest = z.infer<typeof UpdateOfferRequestSchema>;
-
-export const updateOfferRouteSchema = {
-	body: UpdateOfferRequestSchema,
-};

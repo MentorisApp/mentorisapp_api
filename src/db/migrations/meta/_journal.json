@@ -15,6 +15,13 @@
       "when": 1777113331447,
       "tag": "0001_timestamps_with_timezone",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1777142497513,
+      "tag": "0002_remove_mod_columns_profile",
+      "breakpoints": true
     }
   ]
 }

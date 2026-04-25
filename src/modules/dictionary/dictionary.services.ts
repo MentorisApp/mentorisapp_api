@@ -1,6 +1,6 @@
-import { FastifyInstance } from "fastify";
+import { App } from "~/types/app.types";
 
-export function createDictionaryService(app: FastifyInstance) {
+export function createDictionaryService(app: App) {
 	const { db } = app;
 
 	async function getCitiesDictionary() {

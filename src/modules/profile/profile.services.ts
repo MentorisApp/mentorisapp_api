@@ -1,13 +1,14 @@
 import { eq } from "drizzle-orm";
-import { FastifyInstance } from "fastify";
 
 import { ConflictError } from "~/shared/errors/generic/ConflictError";
 import { NotFoundError } from "~/shared/errors/generic/NotFoundError";
+import { App } from "~/types/app.types";
 import { unwrapResult } from "~/utils/db.util";
 
-import { CreateProfileRequest, UpdateProfileRequest } from "./profile.schema";
+import { CreateProfileRequest } from "./schemas/dto/create-profile.schema";
+import { UpdateProfileRequest } from "./schemas/dto/update-profile.schema";
 
-export function createProfileService(app: FastifyInstance) {
+export function createProfileService(app: App) {
 	const { db } = app;
 	const { profiles } = db;
 
@@ -42,6 +43,7 @@ export function createProfileService(app: FastifyInstance) {
 			.set({
 				...body,
 				profilePictureUrl: body.profilePicture,
+				dob: body.dob?.toISOString(),
 			})
 			.where(eq(profiles.userId, userId))
 			.returning();

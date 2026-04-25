@@ -15,7 +15,7 @@ import { servicesPlugin } from "./plugins/services.plugin";
 import { swaggerPlugin } from "./plugins/swagger.plugin";
 import { uploadFilePlugin } from "./plugins/uploadFile.plugin";
 
-async function buildApp() {
+export async function buildApp() {
 	const baseApp = Fastify({ keepAliveTimeout: 30000 });
 	const app = baseApp.withTypeProvider<ZodTypeProvider>();
 

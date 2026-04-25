@@ -1,13 +1,13 @@
 import { and, eq, gt, sql } from "drizzle-orm";
-import { FastifyInstance } from "fastify";
 
 import { VerificationTokenContext } from "~/db/schema/enums/db.enum.schema";
 import { TooManyRequestsError } from "~/shared/errors/domain/TooManyRequestsError";
+import { App } from "~/types/app.types";
 import { minutesFromNow } from "~/utils/datetime.util";
 import { hashUtil } from "~/utils/hash.util";
 import { generateUuid } from "~/utils/uuid.util";
 
-export function createVerificationTokensService(app: FastifyInstance) {
+export function createVerificationTokensService(app: App) {
 	const { db } = app;
 	const { verification_tokens } = db;
 

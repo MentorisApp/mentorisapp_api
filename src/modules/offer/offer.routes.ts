@@ -1,16 +1,23 @@
 import { FastifyPluginAsync } from "fastify";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
 
-import { createOfferRouteSchema } from "~/modules/offer/schemas/createOffer.schema";
-import { getOfferByIdRouteSchema } from "~/modules/offer/schemas/getOfferById.schema";
-import { updateOfferRouteSchema } from "~/modules/offer/schemas/updateOffer.schema";
+import { App } from "~/types/app.types";
 import { createAuthGuards } from "~/utils/createAuthGuards.util";
 
-export const offerRoutes: FastifyPluginAsync = async (app) => {
-	const { authorizeUser } = createAuthGuards(app);
-	const offerRoutesApp = app.withTypeProvider<ZodTypeProvider>();
+import {
+	createOfferRouteSchema,
+	getMyOfferRouteSchema,
+	getOfferByOfferIdRouteSchema,
+	updateOfferRouteSchema,
+} from "./schemas/route/offer-routes.schema";
+import { reviewRoutes } from "../review/review.routes";
 
-	offerRoutesApp.route({
+export const offerRoutes: FastifyPluginAsync = async (app: App) => {
+	const { authorizeUser } = createAuthGuards(app);
+
+	// reviews as submodule for offer routes
+	app.register(reviewRoutes);
+
+	app.route({
 		method: "POST",
 		url: "",
 		schema: createOfferRouteSchema,
@@ -21,7 +28,7 @@ export const offerRoutes: FastifyPluginAsync = async (app) => {
 		},
 	});
 
-	offerRoutesApp.route({
+	app.route({
 		method: "PUT",
 		url: "",
 		schema: updateOfferRouteSchema,
@@ -32,21 +39,22 @@ export const offerRoutes: FastifyPluginAsync = async (app) => {
 		},
 	});
 
-	offerRoutesApp.route({
+	app.route({
 		method: "GET",
-		url: "",
+		url: "/user",
 		onRequest: authorizeUser,
+		schema: getMyOfferRouteSchema,
 		handler: async function getMyOffer(request, reply) {
 			const offer = await app.offerService.getOfferByUserId(request.userId);
 			reply.ok({ data: offer });
 		},
 	});
 
-	offerRoutesApp.route({
+	app.route({
 		method: "GET",
 		url: "/:offerId",
-		schema: getOfferByIdRouteSchema,
-		handler: async function getOfferById(request, reply) {
+		schema: getOfferByOfferIdRouteSchema,
+		handler: async function (request, reply) {
 			const offer = await app.offerService.getOfferByOfferId(request.params.offerId);
 			reply.ok({ data: offer });
 		},

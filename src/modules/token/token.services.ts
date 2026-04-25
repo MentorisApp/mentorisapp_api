@@ -1,14 +1,14 @@
 import { eq } from "drizzle-orm";
-import { FastifyInstance } from "fastify";
 
 import { env } from "~/env";
+import { App } from "~/types/app.types";
 import { parseDurationMs } from "~/utils/datetime.util";
 import { unwrapResult } from "~/utils/db.util";
 import { generateUuid } from "~/utils/uuid.util";
 
 import { Role } from "../auth/auth.constants";
 
-export function createTokenService(app: FastifyInstance) {
+export function createTokenService(app: App) {
 	const { db } = app;
 	const { refresh_tokens } = db;
 

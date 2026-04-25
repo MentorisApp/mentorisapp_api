@@ -1,13 +1,14 @@
+import { SwaggerTags } from "~/constants/swaggerTags";
 import { HttpStatus } from "~/enums/httpStatus.enum";
 import { ApiResponseSchema } from "~/shared/schemas/responseSuccess.schema";
 import { createRouteSchema } from "~/utils/createRouteSchema.util";
 
-import { CreateProfileRequestSchema } from "../dto/create-profile.request";
+import { CreateProfileRequestSchema } from "../dto/create-profile.schema";
 import { ProfileDtoSchema } from "../dto/profile.dto";
-import { UpdateProfileRequestSchema } from "../dto/update-profile.request";
+import { UpdateProfileRequestSchema } from "../dto/update-profile.schema";
 
 export const createProfileRouteSchema = createRouteSchema({
-	tags: ["Profile"],
+	tags: [SwaggerTags.PROFILE],
 	summary: "Creates profile",
 	body: CreateProfileRequestSchema,
 	response: {
@@ -16,7 +17,7 @@ export const createProfileRouteSchema = createRouteSchema({
 });
 
 export const updateProfileRouteSchema = createRouteSchema({
-	tags: ["Profile"],
+	tags: [SwaggerTags.PROFILE],
 	summary: "Updates profile",
 	body: UpdateProfileRequestSchema,
 	response: {
@@ -25,7 +26,7 @@ export const updateProfileRouteSchema = createRouteSchema({
 });
 
 export const getProfileRouteSchema = createRouteSchema({
-	tags: ["Profile"],
+	tags: [SwaggerTags.PROFILE],
 	summary: "Fetches profile data",
 	response: {
 		[HttpStatus.OK]: ApiResponseSchema(ProfileDtoSchema),

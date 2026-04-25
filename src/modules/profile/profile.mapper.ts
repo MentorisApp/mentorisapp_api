@@ -1,6 +1,6 @@
 import { profiles } from "~/db/schema";
 
-import { ProfileDto } from "./profile.schema";
+import { ProfileDto } from "./schemas/dto/profile.dto";
 
 type Profile = typeof profiles.$inferSelect;
 

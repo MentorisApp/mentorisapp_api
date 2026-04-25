@@ -1,14 +1,14 @@
 import { eq } from "drizzle-orm";
-import { FastifyInstance } from "fastify";
 
 import { offers_categories } from "~/db/schema/junctions/offer_category.table";
 import { ConflictError } from "~/shared/errors/generic/ConflictError";
 import { NotFoundError } from "~/shared/errors/generic/NotFoundError";
+import { App } from "~/types/app.types";
 
-import type { CreateOfferRequest } from "./schemas/createOffer.schema";
-import type { UpdateOfferRequest } from "./schemas/updateOffer.schema";
+import type { CreateOfferRequest } from "./schemas/dto/create-offer.schema";
+import type { UpdateOfferRequest } from "./schemas/dto/update-offer.schema";
 
-export function createOfferService(app: FastifyInstance) {
+export function createOfferService(app: App) {
 	const { db } = app;
 	const { offers } = db;
 

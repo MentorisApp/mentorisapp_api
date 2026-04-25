@@ -12,7 +12,7 @@ export const users = pgTable("users", {
 	roleId: integer("role_id")
 		.notNull()
 		.references(() => roles.id, { onDelete: "restrict" }),
-	isVerified: boolean().default(false),
+	isVerified: boolean().default(false).notNull(),
 	...timestampColumns,
 });
 

@@ -1,6 +1,6 @@
 import { FastifyPluginAsync } from "fastify";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
 
+import { App } from "~/types/app.types";
 import { createAuthGuards } from "~/utils/createAuthGuards.util";
 
 import { ProfileDtoSchema } from "./schemas/dto/profile.dto";
@@ -10,11 +10,10 @@ import {
 	updateProfileRouteSchema,
 } from "./schemas/route/profile-routes.schema";
 
-export const profileRoutes: FastifyPluginAsync = async (app) => {
-	const profileRoutesApp = app.withTypeProvider<ZodTypeProvider>();
+export const profileRoutes: FastifyPluginAsync = async (app: App) => {
 	const { authorizeUser } = createAuthGuards(app);
 
-	profileRoutesApp.route({
+	app.route({
 		method: "POST",
 		url: "",
 		schema: createProfileRouteSchema,
@@ -26,7 +25,7 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
 		},
 	});
 
-	profileRoutesApp.route({
+	app.route({
 		method: "PUT",
 		url: "",
 		schema: updateProfileRouteSchema,
@@ -38,7 +37,7 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
 		},
 	});
 
-	profileRoutesApp.route({
+	app.route({
 		method: "GET",
 		url: "/me",
 		onRequest: authorizeUser,
