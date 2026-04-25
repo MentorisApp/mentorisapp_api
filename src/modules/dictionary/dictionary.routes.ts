@@ -9,7 +9,7 @@ export const dictionaryRoutes: FastifyPluginAsync = async (app) => {
 		url: "/cities",
 		handler: async function getCities(_request, reply) {
 			const cities = await app.dictionaryService.getCitiesDictionary();
-			reply.success({ data: cities });
+			reply.ok({ data: cities });
 		},
 	});
 
@@ -18,7 +18,7 @@ export const dictionaryRoutes: FastifyPluginAsync = async (app) => {
 		url: "/categories",
 		handler: async function getCategories(_request, reply) {
 			const categories = await app.dictionaryService.getCategoriesDictionary();
-			reply.success({ data: categories });
+			reply.ok({ data: categories });
 		},
 	});
 };

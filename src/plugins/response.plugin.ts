@@ -5,29 +5,34 @@ import { HttpStatus } from "~/enums/httpStatus.enum";
 
 const responseHandler: FastifyPluginAsync = async (app) => {
 	app.decorateReply(
-		"success",
+		"ok",
 		function <TData = unknown, TMeta = unknown>(
 			this: FastifyReply,
 			options: {
-				data?: TData;
+				data: TData;
 				meta?: TMeta;
-			} = {},
+			},
 		) {
-			const hasData = options.data !== undefined && options.data !== null;
-
-			// 204 No Content
-			if (!hasData) {
-				this.code(HttpStatus.NO_CONTENT);
-				return this.send();
-			}
-
 			// 200 OK
-			return this.status(HttpStatus.OK).send({
+			return this.code(HttpStatus.OK).send({
 				data: options.data,
 				meta: options.meta,
 			});
 		},
 	);
+
+	app.decorateReply("created", function <
+		TData = unknown,
+	>(this: FastifyReply, options: { data: TData }) {
+		return this.code(HttpStatus.CREATED).send({
+			data: options.data,
+		});
+	});
+
+	app.decorateReply("noContent", function (this: FastifyReply) {
+		// 200 OK
+		return this.code(HttpStatus.NO_CONTENT).send();
+	});
 };
 
 export const responsePlugin = fp(responseHandler, {

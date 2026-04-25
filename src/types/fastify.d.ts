@@ -12,8 +12,8 @@ import { createVerificationTokensService } from "~/modules/token/verificationTok
 import { createUserService } from "~/modules/user/user.services";
 
 import { AppDb } from "./db.types";
-import { EmailPlugin } from "./email.types";
 import { JwtPayload } from "./jwt.types";
+import { EmailPlugin } from "../modules/email/email.types";
 
 declare module "fastify" {
 	interface FastifyInstance {
@@ -34,7 +34,9 @@ declare module "fastify" {
 		userId: number;
 	}
 	interface FastifyReply {
-		success(options?: { data?: TData | undefined; meta?: TMeta | undefined }): FastifyReply;
+		ok(options: { data: TData | undefined; meta?: TMeta | undefined }): FastifyReply;
+		created(options: { data: TData | undefined }): FastifyReply;
+		noContent(): FastifyReply;
 	}
 }
 

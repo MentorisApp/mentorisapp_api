@@ -6,8 +6,8 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const srcDir = path.join(__dirname, "..", "src", "templates", "emails");
-const outDir = path.join(__dirname, "..", "dist", "templates");
+const srcDir = path.join(__dirname, "..", "modules", "email", "mjml");
+const outDir = path.join(__dirname, "../..", "dist", "templates");
 
 // Ensure output directory exists
 if (!fs.existsSync(outDir)) {

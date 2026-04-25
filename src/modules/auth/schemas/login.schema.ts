@@ -1,7 +1,9 @@
-import { FastifySchema } from "fastify";
 import z from "zod";
 
+import { HttpStatus } from "~/enums/httpStatus.enum";
 import { EmailSchema, PasswordSchema } from "~/shared/schemas/general.schema";
+import { ApiResponseNoContentSchema } from "~/shared/schemas/responseSuccess.schema";
+import { createRouteSchema } from "~/utils/createRouteSchema.util";
 
 export const LoginRequestSchema = z
 	.object({
@@ -10,19 +12,13 @@ export const LoginRequestSchema = z
 	})
 	.strict();
 
-export const LoginResponseSchema = z.object({
-	success: z.boolean(),
-	data: z.null(),
-	message: z.string(),
-	code: z.string(),
-	domainCode: z.null(),
-});
-
-export const loginRouteSchema = {
-	body: LoginRequestSchema,
-	// response: {
-	// 	[HttpStatus.NO_CONTENT]: LoginResponseSchema,
-	// },
-} satisfies FastifySchema;
-
 export type LoginRequest = z.infer<typeof LoginRequestSchema>;
+
+export const loginRouteSchema = createRouteSchema({
+	tags: ["Auth"],
+	summary: "Log in user",
+	body: LoginRequestSchema,
+	response: {
+		[HttpStatus.NO_CONTENT]: ApiResponseNoContentSchema,
+	},
+});

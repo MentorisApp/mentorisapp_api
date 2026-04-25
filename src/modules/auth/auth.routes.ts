@@ -14,7 +14,6 @@ import { getSignedCookieOrThrow } from "~/utils/cookie.util";
 import { parseDurationMs } from "~/utils/datetime.util";
 
 export const authRoutes: FastifyPluginAsync = async (app) => {
-	const authorizeUser = app.authorize("USER");
 	const authRoutesApp = app.withTypeProvider<ZodTypeProvider>();
 
 	authRoutesApp.route({
@@ -23,7 +22,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 		schema: registerUserRouteSchema,
 		handler: async function registerUser(request, reply) {
 			const { email } = await app.authService.register(request.body);
-			reply.success({ data: email });
+			reply.ok({ data: email });
 		},
 	});
 
@@ -42,28 +41,22 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 					maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
 				});
 
-			reply.success();
+			reply.noContent();
 		},
 	});
 
 	authRoutesApp.route({
 		method: "POST",
 		url: "/logout",
-		onRequest: authorizeUser,
 		handler: async function logout(request, reply) {
 			const refreshToken = getSignedCookieOrThrow(app, request.cookies.refreshToken, {
 				missingMessage: "No refresh token cookie",
 				invalidMessage: "Invalid refresh token cookie",
 			});
 
-			const { cleared } = await app.authService.logout(refreshToken);
+			await app.authService.logout(refreshToken);
 
-			if (cleared) {
-				reply.clearCookie("refreshToken").clearCookie("accessToken");
-			}
-
-			// TODO might not be success response?
-			return reply.success();
+			reply.clearCookie("refreshToken").clearCookie("accessToken").noContent();
 		},
 	});
 
@@ -87,7 +80,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 					maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
 				});
 
-			reply.success();
+			reply.noContent();
 		},
 	});
 
@@ -107,7 +100,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 					maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
 				});
 
-			reply.success();
+			reply.noContent();
 		},
 	});
 
@@ -119,7 +112,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 			const body = request.body;
 			await app.authService.requestResetPassword(body.email);
 
-			reply.success({ data: body.email });
+			reply.ok({ data: body.email });
 		},
 	});
 
@@ -129,7 +122,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 		schema: resetPasswordRouteSchema,
 		handler: async function resetPassword(request, reply) {
 			await app.authService.resetPassword(request.body);
-			reply.success();
+			reply.noContent();
 		},
 	});
 
@@ -140,17 +133,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 		handler: async function resendVerificationLink(request, reply) {
 			const body = request.body as ResendVerificationLinkRequest;
 			await app.authService.resendVerificationLink(body.email);
-			reply.success({ data: body.email });
-		},
-	});
-
-	authRoutesApp.route({
-		method: "GET",
-		url: "/me",
-		onRequest: authorizeUser,
-		handler: async function getCurrentUser(request, reply) {
-			const userProfile = await app.userService.getUserWithProfile(request.userId);
-			reply.success({ data: userProfile });
+			reply.ok({ data: body.email });
 		},
 	});
 };

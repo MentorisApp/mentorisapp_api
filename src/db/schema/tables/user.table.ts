@@ -1,8 +1,8 @@
 import { relations } from "drizzle-orm";
 import { boolean, integer, pgTable, serial, varchar } from "drizzle-orm/pg-core";
 
-import { profiles } from "./profiles.schema";
-import { roles } from "./roles.schema";
+import { profiles } from "./profile.table";
+import { roles } from "./role.table";
 import { timestampColumns } from "../partials/timestampColumns";
 
 export const users = pgTable("users", {

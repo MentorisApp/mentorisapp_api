@@ -1,11 +1,12 @@
 import { eq } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
 
-import { Role } from "~/constants/roles";
 import { env } from "~/env";
 import { parseDurationMs } from "~/utils/datetime.util";
 import { unwrapResult } from "~/utils/db.util";
 import { generateUuid } from "~/utils/uuid.util";
+
+import { Role } from "../auth/auth.constants";
 
 export function createTokenService(app: FastifyInstance) {
 	const { db } = app;
@@ -40,12 +41,13 @@ export function createTokenService(app: FastifyInstance) {
 	}
 
 	async function revokeRefreshToken(refreshToken: string) {
-		const { jti } = await verifyRefreshToken(refreshToken);
+		const { jti } = verifyRefreshToken(refreshToken);
 
 		await db
 			.update(refresh_tokens)
 			.set({ revoked: true, updatedAt: new Date() })
-			.where(eq(refresh_tokens.jti, jti));
+			.where(eq(refresh_tokens.jti, jti))
+			.returning();
 	}
 
 	function verifyRefreshToken(token: string) {

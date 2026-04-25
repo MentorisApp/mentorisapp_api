@@ -1,13 +1,13 @@
 import { and, eq, gt } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
 
-import { Role } from "~/constants/roles";
 import { VerificationTokenContext } from "~/db/schema/enums/db.enum.schema";
-import { NotFoundError } from "~/errors/generic/NotFoundError";
+import { NotFoundError } from "~/shared/errors/generic/NotFoundError";
 import { unwrapResult } from "~/utils/db.util";
 import { hashUtil } from "~/utils/hash.util";
 
 import { CreateUserInput } from "./user.types";
+import { Role } from "../auth/auth.constants";
 
 export function createUserService(app: FastifyInstance) {
 	const { db } = app;
@@ -23,9 +23,7 @@ export function createUserService(app: FastifyInstance) {
 
 			const roleId = role?.id;
 
-			if (!roleId) {
-				throw new NotFoundError("User role assignment went wrong.");
-			}
+			if (!roleId) throw new NotFoundError("User role assignment went wrong.");
 
 			const createdUser = await tx
 				.insert(users)
@@ -46,7 +44,7 @@ export function createUserService(app: FastifyInstance) {
 	}
 
 	async function getUserWithProfile(userId: number) {
-		const user = await db
+		const [user] = await db
 			.select({
 				id: users.id,
 				email: users.email,
@@ -59,11 +57,9 @@ export function createUserService(app: FastifyInstance) {
 			.where(eq(users.id, userId))
 			.limit(1);
 
-		if (!user[0]) {
-			throw new NotFoundError("User not found.");
-		}
+		if (!user) throw new NotFoundError("User not found.");
 
-		return user[0];
+		return user;
 	}
 
 	async function checkUserExistsByEmail(email: CreateUserInput["email"]) {

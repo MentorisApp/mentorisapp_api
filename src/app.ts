@@ -21,6 +21,7 @@ async function buildApp() {
 
 	app.setValidatorCompiler(validatorCompiler);
 	app.setSerializerCompiler(serializerCompiler);
+
 	app.register(dbClientPlugin);
 	app.register(servicesPlugin);
 	app.register(emailPlugin);

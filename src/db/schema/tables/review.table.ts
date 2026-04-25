@@ -1,8 +1,8 @@
 import { relations } from "drizzle-orm";
 import { integer, numeric, pgTable, serial, text } from "drizzle-orm/pg-core";
 
-import { offers } from "./offers.schema";
-import { users } from "./users.schema";
+import { offers } from "./offer.table";
+import { users } from "./user.table";
 import { modColumns } from "../partials/modColumns";
 import { timestampColumns } from "../partials/timestampColumns";
 

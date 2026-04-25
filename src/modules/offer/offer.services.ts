@@ -1,9 +1,9 @@
 import { eq } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
 
-import { offers_categories } from "~/db/schema/junctions/offers_categories.schema";
-import { ConflictError } from "~/errors/generic/ConflictError";
-import { NotFoundError } from "~/errors/generic/NotFoundError";
+import { offers_categories } from "~/db/schema/junctions/offer_category.table";
+import { ConflictError } from "~/shared/errors/generic/ConflictError";
+import { NotFoundError } from "~/shared/errors/generic/NotFoundError";
 
 import type { CreateOfferRequest } from "./schemas/createOffer.schema";
 import type { UpdateOfferRequest } from "./schemas/updateOffer.schema";

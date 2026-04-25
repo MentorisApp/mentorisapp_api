@@ -1,6 +1,5 @@
 import { ApiCode, DomainCode, ErrorCodeType } from "~/enums/apiCode.enum";
 import { HttpStatus } from "~/enums/httpStatus.enum";
-import { ErrorResponse } from "~/shared/schemas/apiResponse.schema";
 
 export function buildErrorResponse(error: Partial<ErrorResponse>): ErrorResponse {
 	return {

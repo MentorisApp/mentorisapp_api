@@ -8,8 +8,7 @@
 		"dev": "tsx --watch --env-file .env.dev ./src/app.ts",
 		"build": "tsc && tsc-alias -p tsconfig.json && yarn build:emails",
 		"start": "node dist/app.js",
-		"dev:emails": "tsx --env-file .env.dev scripts/build-email-templates.ts",
-		"build:emails": "tsx scripts/build-email-templates.ts",
+		"build:emails": "tsx ./src/scripts/build-email-templates.ts",
 		"typecheck": "tsc --noEmit",
 		"biome:check": "biome check --no-errors-on-unmatched --files-ignore-unknown=true",
 		"pre-commit": "lint-staged && yarn typecheck",
@@ -47,7 +46,7 @@
 		"@types/bcrypt": "^5.0.2",
 		"@types/jsonwebtoken": "^9.0.10",
 		"@types/mjml": "^4.7.4",
-		"@types/node": "^24.0.10",
+		"@types/node": "^25.6.0",
 		"@types/nodemailer": "^7.0.1",
 		"@types/pg": "^8.15.5",
 		"drizzle-kit": "^0.31.4",
@@ -62,7 +61,7 @@
 			"yarn biome:check"
 		]
 	},
-  	"resolutions": {
-    	"@fastify/static": "9.1.0"
-  	}
+	"resolutions": {
+		"@fastify/static": "9.1.0"
+	}
 }

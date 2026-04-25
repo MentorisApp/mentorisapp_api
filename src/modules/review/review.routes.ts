@@ -14,7 +14,7 @@ export const reviewRoutes: FastifyPluginAsync = async (app) => {
 		onRequest: app.authorize("USER"),
 		handler: async function createReview(request, reply) {
 			const review = await app.reviewService.createReview(request.body, request.userId);
-			reply.success({ data: review });
+			reply.created({ data: review });
 		},
 	});
 
@@ -24,7 +24,7 @@ export const reviewRoutes: FastifyPluginAsync = async (app) => {
 		schema: getOfferReviewsRouteSchema,
 		handler: async function getOfferReviews(request, reply) {
 			const reviews = await app.reviewService.getAllActiveOfferReviews(request.params.offerId);
-			reply.success({ data: reviews });
+			reply.ok({ data: reviews });
 		},
 	});
 };

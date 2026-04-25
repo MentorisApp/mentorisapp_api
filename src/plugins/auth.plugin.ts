@@ -5,8 +5,8 @@ import z from "zod";
 
 import { Role } from "~/constants/roles";
 import { env } from "~/env";
-import { ForbiddenError } from "~/errors/generic/ForbiddenError";
-import { UnauthorizedError } from "~/errors/generic/UnauthorizedError";
+import { ForbiddenError } from "~/shared/errors/generic/ForbiddenError";
+import { UnauthorizedError } from "~/shared/errors/generic/UnauthorizedError";
 
 const UserIdSchema = z.coerce
 	.number("userId in token payload must be a valid number")

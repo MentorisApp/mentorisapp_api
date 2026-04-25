@@ -1,10 +1,10 @@
 import { relations } from "drizzle-orm";
 import { integer, numeric, pgTable, serial, text, varchar } from "drizzle-orm/pg-core";
 
-import { offer_format } from "./offer_format.schema";
-import { users } from "./users.schema";
+import { offer_format } from "./offer_format.table";
+import { users } from "./user.table";
 import { OFFER_LEVEL_ENUM, PRICE_TYPE_ENUM } from "../enums/db.enum.schema";
-import { offers_categories } from "../junctions/offers_categories.schema";
+import { offers_categories } from "../junctions/offer_category.table";
 import { modColumns } from "../partials/modColumns";
 import { timestampColumns } from "../partials/timestampColumns";
 

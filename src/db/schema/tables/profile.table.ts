@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm";
 import { date, integer, pgTable, serial, text, varchar } from "drizzle-orm/pg-core";
 
-import { users } from "./users.schema";
+import { users } from "./user.table";
 import { modColumns } from "../partials/modColumns";
 import { timestampColumns } from "../partials/timestampColumns";
 
@@ -15,7 +15,6 @@ export const profiles = pgTable("profiles", {
 		.notNull()
 		.references(() => users.id, { onDelete: "cascade" })
 		.unique(),
-
 	...modColumns,
 	...timestampColumns,
 });

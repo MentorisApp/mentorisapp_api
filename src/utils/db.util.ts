@@ -2,7 +2,7 @@ import { DatabaseError } from "pg";
 
 import { ApiCode, ErrorCodeType } from "~/enums/apiCode.enum";
 import { PostgresErrorCode } from "~/enums/postgresErrorCode.enum";
-import { NotFoundError } from "~/errors/generic/NotFoundError";
+import { NotFoundError } from "~/shared/errors/generic/NotFoundError";
 
 export function unwrapResult<T>(rows: T[], message: string = "Resource not found"): T {
 	if (rows.length === 0) {

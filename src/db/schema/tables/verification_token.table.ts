@@ -1,6 +1,6 @@
 import { boolean, integer, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
 
-import { users } from "./users.schema";
+import { users } from "./user.table";
 import { VERIFICATION_TOKEN_CONTEXT_ENUM } from "../enums/db.enum.schema";
 import { timestampColumns } from "../partials/timestampColumns";
 

@@ -1,12 +1,11 @@
 import { eq } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
 
-import { ConflictError } from "~/errors/generic/ConflictError";
-import { NotFoundError } from "~/errors/generic/NotFoundError";
+import { ConflictError } from "~/shared/errors/generic/ConflictError";
+import { NotFoundError } from "~/shared/errors/generic/NotFoundError";
 import { unwrapResult } from "~/utils/db.util";
 
-import type { CreateProfileRequest } from "./schemas/createProfile.schema";
-import type { UpdateProfileRequest } from "./schemas/updateProfile.schema";
+import { CreateProfileRequest, UpdateProfileRequest } from "./profile.schema";
 
 export function createProfileService(app: FastifyInstance) {
 	const { db } = app;
@@ -18,13 +17,9 @@ export function createProfileService(app: FastifyInstance) {
 
 		if (existingProfile) throw new ConflictError("Profile already exists");
 
-		const profile = await db
+		const [profile] = await db
 			.insert(profiles)
-			.values({
-				...body,
-				profilePictureUrl: body.profilePicture,
-				userId: userId,
-			})
+			.values({ userId: userId, ...body, dob: undefined })
 			.returning();
 
 		return profile;
@@ -42,33 +37,24 @@ export function createProfileService(app: FastifyInstance) {
 			throw new NotFoundError("Profile you are trying to update does not exist");
 		}
 
-		const record = await db
+		const updatedProfile = await db
 			.update(profiles)
 			.set({
 				...body,
-
 				profilePictureUrl: body.profilePicture,
-				updatedAt: new Date(),
 			})
 			.where(eq(profiles.userId, userId))
 			.returning();
 
-		return unwrapResult(record);
+		return unwrapResult(updatedProfile);
 	}
 
 	async function getProfile(userId: number) {
 		const profile = await db.query.profiles.findFirst({
 			where: eq(profiles.userId, userId),
-			columns: {
-				id: true,
-				userId: true,
-				profilePictureUrl: true,
-			},
 		});
 
-		if (!profile) {
-			throw new NotFoundError("Profile not found.");
-		}
+		if (!profile) throw new NotFoundError("Profile not found.");
 
 		return profile;
 	}
@@ -80,3 +66,5 @@ export function createProfileService(app: FastifyInstance) {
 		checkExistsProfileByUserId,
 	};
 }
+
+export type ProfileService = ReturnType<typeof createProfileService>;

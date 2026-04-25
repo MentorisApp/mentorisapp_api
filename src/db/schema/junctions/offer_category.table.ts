@@ -1,8 +1,8 @@
 import { relations } from "drizzle-orm";
 import { integer, pgTable, primaryKey } from "drizzle-orm/pg-core";
 
-import { categories } from "../tables/categories.schema";
-import { offers } from "../tables/offers.schema";
+import { categories } from "../tables/category.table";
+import { offers } from "../tables/offer.table";
 
 export const offers_categories = pgTable(
 	"offers_categories",

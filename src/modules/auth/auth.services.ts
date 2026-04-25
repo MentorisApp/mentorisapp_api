@@ -1,18 +1,18 @@
 import { FastifyInstance } from "fastify";
 
-import { AccountNotVerifiedError } from "~/errors/domain/AccountNotVerifiedError";
-import { AlreadyVerifiedError } from "~/errors/domain/AlreadyVerifiedError";
-import { InvalidCredentialsError } from "~/errors/domain/InvalidCredentialsError";
-import { BadRequestError } from "~/errors/generic/BadRequestError";
-import { ConflictError } from "~/errors/generic/ConflictError";
-import { NotFoundError } from "~/errors/generic/NotFoundError";
 import { createTokenService } from "~/modules/token/token.services";
 import { createVerificationTokensService } from "~/modules/token/verificationToken.services";
 import { createUserService } from "~/modules/user/user.services";
+import { AccountNotVerifiedError } from "~/shared/errors/domain/AccountNotVerifiedError";
+import { AlreadyVerifiedError } from "~/shared/errors/domain/AlreadyVerifiedError";
+import { InvalidCredentialsError } from "~/shared/errors/domain/InvalidCredentialsError";
+import { BadRequestError } from "~/shared/errors/generic/BadRequestError";
+import { ConflictError } from "~/shared/errors/generic/ConflictError";
+import { NotFoundError } from "~/shared/errors/generic/NotFoundError";
 import { hashUtil } from "~/utils/hash.util";
 
 import type { LoginRequest } from "./schemas/login.schema";
-import { RegisterUserPayload } from "./schemas/registerUser.schema";
+import { RegisterUserRequest } from "./schemas/registerUser.schema";
 import type { ResetPasswordRequest } from "./schemas/resetPassword.schema";
 
 export function createAuthService(app: FastifyInstance) {
@@ -20,7 +20,7 @@ export function createAuthService(app: FastifyInstance) {
 	const verificationTokenService = createVerificationTokensService(app);
 	const tokenService = createTokenService(app);
 
-	async function register(payload: RegisterUserPayload) {
+	async function register(payload: RegisterUserRequest) {
 		const isUserExisting = await userService.checkUserExistsByEmail(payload.email);
 
 		if (isUserExisting) throw new ConflictError("Email already in use");
@@ -83,10 +83,10 @@ export function createAuthService(app: FastifyInstance) {
 		if (!user.isVerified) throw new AccountNotVerifiedError();
 
 		const jti = tokenService.generateJti();
+
 		const userRole = await userService.getUserRole(user.id);
 
 		const accessToken = tokenService.issueAccessToken(user.id, userRole.role);
-
 		const refreshToken = await tokenService.issueRefreshToken(user.id, jti);
 
 		return { accessToken, refreshToken };
@@ -101,23 +101,19 @@ export function createAuthService(app: FastifyInstance) {
 		if (isTokenInvalid) throw new InvalidCredentialsError("Token has been revoked or is expired");
 
 		const newJti = tokenService.generateJti();
+
 		const { role } = await userService.getUserRole(storedToken.userId);
 
 		const accessToken = tokenService.issueAccessToken(storedToken.userId, role);
-		const refreshToken = await tokenService.issueRefreshToken(storedToken.userId, newJti);
+		const newRefreshToken = await tokenService.issueRefreshToken(storedToken.userId, newJti);
 
 		await tokenService.revokeRefreshToken(oldRefreshToken);
 
-		return { accessToken, refreshToken };
+		return { accessToken, refreshToken: newRefreshToken };
 	}
 
 	async function logout(refreshToken: string) {
-		if (!refreshToken) {
-			return { cleared: false };
-		}
-
 		await tokenService.revokeRefreshToken(refreshToken);
-		return { cleared: true };
 	}
 
 	async function requestResetPassword(email: string) {

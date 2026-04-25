@@ -1,9 +1,9 @@
 import { and, desc, eq } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
 
-import { ConflictError } from "~/errors/generic/ConflictError";
-import { ForbiddenError } from "~/errors/generic/ForbiddenError";
-import { NotFoundError } from "~/errors/generic/NotFoundError";
+import { ConflictError } from "~/shared/errors/generic/ConflictError";
+import { ForbiddenError } from "~/shared/errors/generic/ForbiddenError";
+import { NotFoundError } from "~/shared/errors/generic/NotFoundError";
 import { unwrapResult } from "~/utils/db.util";
 
 import type { CreateReviewRequest } from "./schemas/createReview.schema";

@@ -2,7 +2,7 @@ import { and, eq, gt, sql } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
 
 import { VerificationTokenContext } from "~/db/schema/enums/db.enum.schema";
-import { TooManyRequestsError } from "~/errors/domain/TooManyRequestsError";
+import { TooManyRequestsError } from "~/shared/errors/domain/TooManyRequestsError";
 import { minutesFromNow } from "~/utils/datetime.util";
 import { hashUtil } from "~/utils/hash.util";
 import { generateUuid } from "~/utils/uuid.util";
