@@ -4,6 +4,8 @@ import { FastifyPluginAsync } from "fastify";
 import fp from "fastify-plugin";
 import { jsonSchemaTransform, jsonSchemaTransformObject } from "fastify-type-provider-zod";
 
+import pkg from "../../package.json";
+
 const swaggerConfig: FastifyPluginAsync = async (app) => {
 	// 1. Register OpenAPI
 	await app.register(swagger, {
@@ -12,7 +14,7 @@ const swaggerConfig: FastifyPluginAsync = async (app) => {
 		openapi: {
 			info: {
 				title: "Mentoris API",
-				version: "1.0.0",
+				version: pkg.version,
 			},
 		},
 	});
