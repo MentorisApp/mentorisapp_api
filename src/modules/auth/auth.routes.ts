@@ -33,8 +33,9 @@ export const authRoutes: FastifyPluginAsync = async (app: App) => {
 		url: "/login",
 		schema: loginRouteSchema,
 		handler: async function login(request, reply) {
-			// TODO response
-			const { accessToken, refreshToken } = await app.authService.login(request.body);
+			const { accessToken, refreshToken, email, isVerified } = await app.authService.login(
+				request.body,
+			);
 
 			reply
 				.setCookie("accessToken", accessToken, {
@@ -44,7 +45,7 @@ export const authRoutes: FastifyPluginAsync = async (app: App) => {
 					maxAge: parseDurationMs(env.JWT_REFRESH_TOKEN_EXPIRES_IN),
 				});
 
-			reply.noContent();
+			reply.ok({ data: { email, isVerified } });
 		},
 	});
 

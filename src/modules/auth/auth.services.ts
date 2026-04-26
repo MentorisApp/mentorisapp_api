@@ -88,7 +88,7 @@ export function createAuthService(app: App) {
 		const accessToken = tokenService.issueAccessToken(user.id, userRole.role);
 		const refreshToken = await tokenService.issueRefreshToken(user.id, jti);
 
-		return { accessToken, refreshToken };
+		return { accessToken, refreshToken, isVerified: user.isVerified, email: user.email };
 	}
 
 	async function refresh(oldRefreshToken: string) {
