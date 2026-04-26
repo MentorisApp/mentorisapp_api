@@ -8,8 +8,4 @@ export const ResendVerificationLinkRequestSchema = z
 	})
 	.strict();
 
-export const resendVerificationLinkRouteSchema = {
-	body: ResendVerificationLinkRequestSchema,
-};
-
 export type ResendVerificationLinkRequest = z.infer<typeof ResendVerificationLinkRequestSchema>;

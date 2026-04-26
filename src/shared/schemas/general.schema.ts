@@ -13,6 +13,10 @@ export const UuidSchema = z.uuid("Invalid token format.");
 
 export const EmailSchema = z.email("Email format is invalid.");
 
+export const EmailDtoSchema = z.object({
+	email: z.email(),
+});
+
 export const PasswordSchema = z
 	.string()
 	.min(8, "Password must be at least 8 characters long.")

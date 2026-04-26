@@ -7,8 +7,10 @@ import { CreateProfileRequestSchema } from "../dto/create-profile.schema";
 import { ProfileDtoSchema } from "../dto/profile.dto";
 import { UpdateProfileRequestSchema } from "../dto/update-profile.schema";
 
+const TAG = SwaggerTags.PROFILE;
+
 export const createProfileRouteSchema = createRouteSchema({
-	tags: [SwaggerTags.PROFILE],
+	tags: [TAG],
 	summary: "Creates profile",
 	body: CreateProfileRequestSchema,
 	response: {
@@ -17,7 +19,7 @@ export const createProfileRouteSchema = createRouteSchema({
 });
 
 export const updateProfileRouteSchema = createRouteSchema({
-	tags: [SwaggerTags.PROFILE],
+	tags: [TAG],
 	summary: "Updates profile",
 	body: UpdateProfileRequestSchema,
 	response: {
@@ -26,7 +28,7 @@ export const updateProfileRouteSchema = createRouteSchema({
 });
 
 export const getProfileRouteSchema = createRouteSchema({
-	tags: [SwaggerTags.PROFILE],
+	tags: [TAG],
 	summary: "Fetches profile data",
 	response: {
 		[HttpStatus.OK]: ApiResponseSchema(ProfileDtoSchema),

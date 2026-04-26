@@ -8,8 +8,4 @@ export const RequestPasswordResetRequestSchema = z
 	})
 	.strict();
 
-export const requestPasswordResetRouteSchema = {
-	body: RequestPasswordResetRequestSchema,
-};
-
 export type RequestPasswordResetRequest = z.infer<typeof RequestPasswordResetRequestSchema>;

@@ -7,8 +7,10 @@ import { createRouteSchema } from "~/utils/createRouteSchema.util";
 import { CreateReviewRequestSchema } from "../dto/create-review.schema";
 import { ReviewDtoSchema } from "../dto/review.dto";
 
+const TAG = SwaggerTags.OFFER;
+
 export const createReviewRouteSchema = createRouteSchema({
-	tags: [SwaggerTags.OFFER],
+	tags: [TAG],
 	summary: "Creates a review for an offer",
 	body: CreateReviewRequestSchema,
 	response: {
@@ -17,7 +19,7 @@ export const createReviewRouteSchema = createRouteSchema({
 });
 
 export const getOfferReviewsRouteSchema = createRouteSchema({
-	tags: [SwaggerTags.OFFER],
+	tags: [TAG],
 	summary: "Fetches all reviews for an offer",
 	params: offerIdParamsSchema,
 	response: {

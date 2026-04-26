@@ -41,7 +41,7 @@ export const offerRoutes: FastifyPluginAsync = async (app: App) => {
 
 	app.route({
 		method: "GET",
-		url: "/user",
+		url: "/me",
 		onRequest: authorizeUser,
 		schema: getMyOfferRouteSchema,
 		handler: async function getMyOffer(request, reply) {

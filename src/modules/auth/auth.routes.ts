@@ -1,23 +1,27 @@
 import { FastifyPluginAsync } from "fastify";
 
 import { env } from "~/env";
-import { loginRouteSchema } from "~/modules/auth/schemas/login.schema";
-import { registerUserRouteSchema } from "~/modules/auth/schemas/registerUser.schema";
-import { requestPasswordResetRouteSchema } from "~/modules/auth/schemas/requestPasswordReset.schema";
-import type { ResendVerificationLinkRequest } from "~/modules/auth/schemas/resendVerificationLink.schema";
-import { resendVerificationLinkRouteSchema } from "~/modules/auth/schemas/resendVerificationLink.schema";
-import { resetPasswordRouteSchema } from "~/modules/auth/schemas/resetPassword.schema";
-import type { VerifyAccountQuery } from "~/modules/auth/schemas/verifyAccount.schema";
-import { verifyAccountRouteSchema } from "~/modules/auth/schemas/verifyAccount.schema";
+import type { ResendVerificationLinkRequest } from "~/modules/auth/schemas/dto/resend-verification-link.schema";
 import { App } from "~/types/app.types";
 import { getSignedCookieOrThrow } from "~/utils/cookie.util";
 import { parseDurationMs } from "~/utils/datetime.util";
+
+import {
+	loginRouteSchema,
+	logoutRouteSchema,
+	refreshAccessTokenRouteSchema,
+	registerRouteSchema,
+	requestPasswordResetRouteSchema,
+	resendVerificationLinkRouteSchema,
+	resetPasswordRouteSchema,
+	verifyAccountRouteSchema,
+} from "./schemas/route/auth-routes.schema";
 
 export const authRoutes: FastifyPluginAsync = async (app: App) => {
 	app.route({
 		method: "POST",
 		url: "/register",
-		schema: registerUserRouteSchema,
+		schema: registerRouteSchema,
 		handler: async function registerUser(request, reply) {
 			const { email } = await app.authService.register(request.body);
 			reply.ok({ data: email });
@@ -29,6 +33,7 @@ export const authRoutes: FastifyPluginAsync = async (app: App) => {
 		url: "/login",
 		schema: loginRouteSchema,
 		handler: async function login(request, reply) {
+			// TODO response
 			const { accessToken, refreshToken } = await app.authService.login(request.body);
 
 			reply
@@ -46,6 +51,7 @@ export const authRoutes: FastifyPluginAsync = async (app: App) => {
 	app.route({
 		method: "POST",
 		url: "/logout",
+		schema: logoutRouteSchema,
 		handler: async function logout(request, reply) {
 			const refreshToken = getSignedCookieOrThrow(app, request.cookies.refreshToken, {
 				missingMessage: "No refresh token cookie",
@@ -61,6 +67,7 @@ export const authRoutes: FastifyPluginAsync = async (app: App) => {
 	app.route({
 		method: "POST",
 		url: "/refresh",
+		schema: refreshAccessTokenRouteSchema,
 		handler: async function refreshToken(request, reply) {
 			const refreshToken = getSignedCookieOrThrow(app, request.cookies.refreshToken, {
 				missingMessage: "No refresh token in cookie",
@@ -87,8 +94,9 @@ export const authRoutes: FastifyPluginAsync = async (app: App) => {
 		url: "/verify-account",
 		schema: verifyAccountRouteSchema,
 		handler: async function verifyAccount(request, reply) {
-			const query = request.query as VerifyAccountQuery;
-			const { accessToken, refreshToken } = await app.authService.verifyUserAndLogin(query.token);
+			const { accessToken, refreshToken } = await app.authService.verifyUserAndLogin(
+				request.query.token,
+			);
 
 			reply
 				.setCookie("accessToken", accessToken, {
@@ -115,7 +123,7 @@ export const authRoutes: FastifyPluginAsync = async (app: App) => {
 	});
 
 	app.route({
-		method: "POST",
+		method: "PUT",
 		url: "/reset-password",
 		schema: resetPasswordRouteSchema,
 		handler: async function resetPassword(request, reply) {
@@ -131,6 +139,7 @@ export const authRoutes: FastifyPluginAsync = async (app: App) => {
 		handler: async function resendVerificationLink(request, reply) {
 			const body = request.body as ResendVerificationLinkRequest;
 			await app.authService.resendVerificationLink(body.email);
+
 			reply.ok({ data: body.email });
 		},
 	});

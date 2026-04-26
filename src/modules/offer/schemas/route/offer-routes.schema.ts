@@ -8,8 +8,10 @@ import { CreateOfferRequestSchema } from "../dto/create-offer.schema";
 import { OfferDtoSchema } from "../dto/offer.dto";
 import { UpdateOfferRequestSchema } from "../dto/update-offer.schema";
 
+const TAG = SwaggerTags.OFFER;
+
 export const createOfferRouteSchema = createRouteSchema({
-	tags: [SwaggerTags.OFFER],
+	tags: [TAG],
 	summary: "Creates offer",
 	body: CreateOfferRequestSchema,
 	response: {
@@ -18,7 +20,7 @@ export const createOfferRouteSchema = createRouteSchema({
 });
 
 export const updateOfferRouteSchema = createRouteSchema({
-	tags: [SwaggerTags.OFFER],
+	tags: [TAG],
 	summary: "Updates offer",
 	body: UpdateOfferRequestSchema,
 	response: {
@@ -27,7 +29,7 @@ export const updateOfferRouteSchema = createRouteSchema({
 });
 
 export const getMyOfferRouteSchema = createRouteSchema({
-	tags: [SwaggerTags.OFFER],
+	tags: [TAG],
 	summary: "Fetch user offer",
 	response: {
 		[HttpStatus.OK]: ApiResponseSchema(OfferDtoSchema),
@@ -35,7 +37,7 @@ export const getMyOfferRouteSchema = createRouteSchema({
 });
 
 export const getOfferByOfferIdRouteSchema = createRouteSchema({
-	tags: [SwaggerTags.OFFER],
+	tags: [TAG],
 	summary: "Fetches offer by offer id",
 	params: offerIdParamsSchema,
 	response: {

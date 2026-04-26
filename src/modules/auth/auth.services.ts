@@ -10,9 +10,9 @@ import { NotFoundError } from "~/shared/errors/generic/NotFoundError";
 import { App } from "~/types/app.types";
 import { hashUtil } from "~/utils/hash.util";
 
-import type { LoginRequest } from "./schemas/login.schema";
-import { RegisterUserRequest } from "./schemas/registerUser.schema";
-import type { ResetPasswordRequest } from "./schemas/resetPassword.schema";
+import type { LoginRequest } from "./schemas/dto/login.schema";
+import { RegisterUserRequest } from "./schemas/dto/register-user.schema";
+import type { ResetPasswordRequest } from "./schemas/dto/reset-password.schema";
 
 export function createAuthService(app: App) {
 	const userService = createUserService(app);
@@ -159,7 +159,7 @@ export function createAuthService(app: App) {
 
 		await verificationTokenService.markTokenUsed(hashedPayloadToken);
 
-		const hashedNewPassword = await hashUtil.password.hash(payload.password);
+		const hashedNewPassword = await hashUtil.password.hash(payload.newPassword);
 
 		await userService.updateUserPassword(user.user.id, hashedNewPassword);
 	}
