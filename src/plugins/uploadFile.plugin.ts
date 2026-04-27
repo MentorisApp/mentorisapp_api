@@ -4,7 +4,7 @@ import { FastifyPluginAsync, FastifyRequest } from "fastify";
 import fp from "fastify-plugin";
 
 import { env } from "~/env";
-import { UnauthorizedError } from "~/errors/generic/UnauthorizedError";
+import { UnauthorizedError } from "~/shared/errors/generic/UnauthorizedError";
 import { generateUuid } from "~/utils/uuid.util";
 
 import { extname } from "node:path";

@@ -1,38 +1,50 @@
 import { eq } from "drizzle-orm";
-import { FastifyInstance } from "fastify";
 
-import { offers_categories } from "~/db/schema/junctions/offers_categories.schema";
-import { ConflictError } from "~/errors/generic/ConflictError";
-import { NotFoundError } from "~/errors/generic/NotFoundError";
+import { offers, offersOfferLevels } from "~/db/schema";
+import { ConflictError } from "~/shared/errors/generic/ConflictError";
+import { NotFoundError } from "~/shared/errors/generic/NotFoundError";
+import { App } from "~/types/app.types";
 
-import type { CreateOfferRequest } from "./schemas/createOffer.schema";
-import type { UpdateOfferRequest } from "./schemas/updateOffer.schema";
+import type { CreateOfferRequest } from "./schemas/dto/create-offer.schema";
+import type { UpdateOfferRequest } from "./schemas/dto/update-offer.schema";
 
-export function createOfferService(app: FastifyInstance) {
+export function createOfferService(app: App) {
 	const { db } = app;
-	const { offers } = db;
 
 	async function createOffer(body: CreateOfferRequest, userId: number) {
 		const existingOffer = await checkOfferExistsByUserId(userId);
 
 		if (existingOffer) throw new ConflictError("Offer already exists for this user");
 
-		const { categoryIds, ...offerData } = body;
+		const { categoryIdList, levelIdList, ...offerData } = body;
 
 		const newOffer = await db.transaction(async (tx) => {
 			const [offer] = await tx
 				.insert(offers)
 				.values({
-					...offerData,
-					userId,
+					title: offerData.title,
+					description: offerData.description,
+					price_from_cents: offerData.priceFromCents,
+					price_to_cents: offerData.priceToCents,
+					user_id: userId,
 				})
 				.returning();
 
-			if (categoryIds?.length) {
-				await tx.insert(offers_categories).values(
-					categoryIds.map((categoryId) => ({
-						offerId: offer.id,
-						categoryId,
+			// TODO fix
+			// if (categoryIdList.length) {
+			// 	await tx.insert(offersOfferCategories).values(
+			// 		categoryIdList.map((categoryId) => ({
+			// 			offer_id: offer.id,
+			// 			category_id: categoryId,
+			// 		})),
+			// 	);
+			// }
+
+			if (levelIdList?.length) {
+				await tx.insert(offersOfferLevels).values(
+					levelIdList.map((levelId) => ({
+						offer_id: offer.id,
+						offer_level_id: levelId,
 					})),
 				);
 			}
@@ -48,32 +60,29 @@ export function createOfferService(app: FastifyInstance) {
 
 		if (!existingOffer) throw new NotFoundError("Offer you are trying to update does not exist");
 
-		const { categoryIds, priceType, price, priceFrom, priceTo, ...restBody } = body;
+		const { categoryIds, ...restBody } = body;
 
 		const updatedOffer = await db.transaction(async (tx) => {
 			const [offer] = await tx
 				.update(offers)
 				.set({
 					...restBody,
-					price: priceType === "FIXED" ? price : null,
-					priceFrom: priceType === "RANGE" ? priceFrom : null,
-					priceTo: priceType === "RANGE" ? priceTo : null,
-					priceType,
-					updatedAt: new Date(),
 				})
-				.where(eq(offers.userId, userId))
+				.where(eq(offers.user_id, userId))
 				.returning();
 
-			if (categoryIds) {
-				await tx.delete(offers_categories).where(eq(offers_categories.offerId, offer.id));
+			// TODO fix
 
-				await tx.insert(offers_categories).values(
-					categoryIds.map((categoryId) => ({
-						offerId: offer.id,
-						categoryId,
-					})),
-				);
-			}
+			// if (categoryIds) {
+			// 	await tx.delete(offersOfferCategories).where(eq(offersOfferCategories.offer_id, offer.id));
+
+			// 	await tx.insert(offersOfferCategories).values(
+			// 		categoryIds.map((categoryId) => ({
+			// 			offer_id: offer.id,
+			// 			category_id: categoryId,
+			// 		})),
+			// 	);
+			// }
 
 			return offer;
 		});
@@ -82,17 +91,17 @@ export function createOfferService(app: FastifyInstance) {
 	}
 
 	async function checkOfferExistsByUserId(userId: number) {
-		const record = await db.select().from(offers).where(eq(offers.userId, userId)).limit(1);
+		const record = await db.select().from(offers).where(eq(offers.user_id, userId)).limit(1);
 		return record.length > 0;
 	}
 
 	async function getOfferByUserId(userId: number) {
 		const offer = await db.query.offers.findFirst({
-			where: eq(offers.userId, userId),
+			where: eq(offers.user_id, userId),
 			with: {
-				offersCategories: {
+				offersOfferCategories: {
 					with: {
-						category: true,
+						offerCategory: true,
 					},
 				},
 			},
@@ -100,11 +109,11 @@ export function createOfferService(app: FastifyInstance) {
 
 		if (!offer) throw new NotFoundError("Offer does not exist");
 
-		const { offersCategories, ...restOffer } = offer;
+		const { offersOfferCategories, ...restOffer } = offer;
 
 		const transformedOffer = {
 			...restOffer,
-			categories: offersCategories.map((oc) => oc.category),
+			categories: offersOfferCategories.map((oc) => oc.offerCategory),
 		};
 
 		return transformedOffer;
@@ -114,9 +123,9 @@ export function createOfferService(app: FastifyInstance) {
 		const offer = await db.query.offers.findFirst({
 			where: eq(offers.id, offerId),
 			with: {
-				offersCategories: {
-					with: { category: { columns: { id: true, name: true } } },
-					columns: { offerId: false, categoryId: false },
+				offersOfferCategories: {
+					with: { offerCategory: { columns: { id: true, label: true } } },
+					columns: { offer_id: false, category_id: false },
 				},
 			},
 		});
@@ -128,127 +137,3 @@ export function createOfferService(app: FastifyInstance) {
 
 	return { createOffer, updateOffer, getOfferByUserId, getOfferByOfferId };
 }
-
-// TODO USE THISSSSSS IN MAPPER AND DTO
-type OfferService = ReturnType<typeof createOfferService>;
-
-// TODO USE THISSSSSS IN MAPPER AND DTO
-export type OfferWithRelations = NonNullable<
-	Awaited<ReturnType<OfferService["getOfferByOfferId"]>>
->;
-
-/**
- * 🧠 PROJECT STRUCTURE GUIDELINE (DTO + MAPPERS + DOMAIN LAYER)
- *
- * This project uses a feature-based architecture.
- *
- * Each feature/module (e.g. profile, offers, users) contains its own:
- *
- * ┌─────────────────────────────────────────────┐
- * │ MODULE (e.g. offers/)                      │
- * ├─────────────────────────────────────────────┤
- * │ controller.ts   → HTTP layer (Fastify)     │
- * │ service.ts      → business logic + DB      │
- * │ repository.ts   → (optional) DB abstraction│
- * │                                             │
- * │ dtos/                                      │
- * │   offer.dto.ts  → API response types       │
- * │                                             │
- * │ mappers/                                   │
- * │   offer.mapper.ts → DB/domain → DTO shape  │
- * │                                             │
- * │ schemas/ (optional)                        │
- * │   zod validation for request bodies        │
- * └─────────────────────────────────────────────┘
- *
- *
- * ─────────────────────────────────────────────
- * 🧩 RESPONSIBILITY RULES
- * ─────────────────────────────────────────────
- *
- * 1. Controller
- *    - ONLY handles HTTP (request/response)
- *    - NO business logic
- *    - NO DB calls
- *    - calls service + returns DTO
- *
- *
- * 2. Service
- *    - contains business logic
- *    - handles validation rules (e.g. "exists", "conflict")
- *    - interacts with DB (directly or via repository)
- *    - returns RAW DB shape OR domain object (NOT API shape)
- *
- *
- * 3. Mapper
- *    - converts DB/domain → DTO
- *    - handles:
- *        - renaming fields (snake_case → camelCase)
- *        - flattening relations
- *        - shaping API response
- *    - MUST NOT contain business logic
- *
- *
- * 4. DTO
- *    - defines API response contract
- *    - should be stable and frontend-focused
- *    - NEVER contains DB structure
- *    - can be defined using Zod inference OR TS types
- *
- *
- * ─────────────────────────────────────────────
- * 🧠 DATA FLOW
- * ─────────────────────────────────────────────
- *
- * DB (Drizzle)
- *   ↓
- * Service (business logic)
- *   ↓
- * Mapper (shape transformation)
- *   ↓
- * DTO (API contract)
- *   ↓
- * Controller response
- *
- *
- * ─────────────────────────────────────────────
- * 🧪 EXAMPLE FLOW (offers)
- * ─────────────────────────────────────────────
- *
- * service:
- *   const offer = await db.query.offers.findFirst(...)
- *   return offer;
- *
- * mapper:
- *   return {
- *     id: offer.id,
- *     categories: offer.offersCategories.map(...)
- *   }
- *
- * controller:
- *   reply.ok({
- *     data: toOfferDto(offer)
- *   })
- *
- *
- * ─────────────────────────────────────────────
- * 🚫 ANTI-PATTERNS
- * ─────────────────────────────────────────────
- *
- * ❌ DB shape returned directly to frontend
- * ❌ mapping inside controllers
- * ❌ business logic inside mappers
- * ❌ leaking DB join structure into API
- *
- *
- * ─────────────────────────────────────────────
- * 🚀 DESIGN GOAL
- * ─────────────────────────────────────────────
- *
- * - DB = efficient data access
- * - Service = business rules
- * - Mapper = transformation logic
- * - DTO = stable API contract
- *
- * Keep controllers thin, services meaningful, mappers pure.
- */

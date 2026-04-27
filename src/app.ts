@@ -4,19 +4,19 @@ import { serializerCompiler, validatorCompiler, ZodTypeProvider } from "fastify-
 import { registerAppRoutes } from "~/app.router";
 import { env } from "~/env";
 import { dbClientPlugin } from "~/plugins/db.plugin";
-import { globalExceptionPlugin } from "~/plugins/globalException.plugin";
 
 import { authPlugin } from "./plugins/auth.plugin";
 import { cookiePlugin } from "./plugins/cookie.plugin";
 import { corsPlugin } from "./plugins/cors.plugin";
 import { emailPlugin } from "./plugins/email.plugin";
+import { globalExceptionPlugin } from "./plugins/globalException.plugin";
 import { responsePlugin } from "./plugins/response.plugin";
 import { servicesPlugin } from "./plugins/services.plugin";
+import { swaggerPlugin } from "./plugins/swagger.plugin";
 import { uploadFilePlugin } from "./plugins/uploadFile.plugin";
 
-async function buildApp() {
+export async function buildApp() {
 	const baseApp = Fastify({ keepAliveTimeout: 30000 });
-
 	const app = baseApp.withTypeProvider<ZodTypeProvider>();
 
 	app.setValidatorCompiler(validatorCompiler);
@@ -31,6 +31,8 @@ async function buildApp() {
 	app.register(responsePlugin);
 	app.register(globalExceptionPlugin);
 	app.register(uploadFilePlugin);
+	app.register(swaggerPlugin);
+
 	app.register(registerAppRoutes, { prefix: "/api" });
 
 	return app;

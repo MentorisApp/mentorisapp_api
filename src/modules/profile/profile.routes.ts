@@ -1,42 +1,51 @@
 import { FastifyPluginAsync } from "fastify";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
 
-import { createProfileRouteSchema } from "~/modules/profile/schemas/createProfile.schema";
-import { updateProfileRouteSchema } from "~/modules/profile/schemas/updateProfile.schema";
+import { App } from "~/types/app.types";
+import { createAuthGuards } from "~/utils/createAuthGuards.util";
 
-export const profileRoutes: FastifyPluginAsync = async (app) => {
-	const profileRoutesApp = app.withTypeProvider<ZodTypeProvider>();
-	const authorizeUser = app.authorize("USER");
+import { ProfileDtoSchema } from "./schemas/dto/profile.dto";
+import {
+	createProfileRouteSchema,
+	getProfileRouteSchema,
+	updateProfileRouteSchema,
+} from "./schemas/route/profile-routes.schema";
 
-	profileRoutesApp.route({
+export const profileRoutes: FastifyPluginAsync = async (app: App) => {
+	const { authorizeUser } = createAuthGuards(app);
+
+	app.route({
 		method: "POST",
-		url: "/",
+		url: "",
 		schema: createProfileRouteSchema,
 		onRequest: authorizeUser,
 		handler: async function createProfile(request, reply) {
-			const profileId = await app.profileService.createProfile(request.body, request.userId);
-			reply.created({ id: profileId });
+			const createdProfile = await app.profileService.createProfile(request.body, request.userId);
+			const data = ProfileDtoSchema.parse(createdProfile);
+			reply.created({ data });
 		},
 	});
 
-	profileRoutesApp.route({
+	app.route({
 		method: "PUT",
-		url: "/",
+		url: "",
 		schema: updateProfileRouteSchema,
 		onRequest: authorizeUser,
 		handler: async function updateProfile(request, reply) {
-			const profile = await app.profileService.updateProfile(request.body, request.userId);
-			reply.ok({ data: profile });
+			const updatedProfile = await app.profileService.updateProfile(request.body, request.userId);
+			const data = ProfileDtoSchema.parse(updatedProfile);
+			reply.ok({ data });
 		},
 	});
 
-	profileRoutesApp.route({
+	app.route({
 		method: "GET",
-		url: "/",
+		url: "/me",
 		onRequest: authorizeUser,
-		handler: async function getProfile(request, reply) {
+		schema: getProfileRouteSchema,
+		handler: async function getUserProfile(request, reply) {
 			const profile = await app.profileService.getProfile(request.userId);
-			reply.ok({ data: profile });
+			const data = ProfileDtoSchema.parse(profile);
+			reply.ok({ data });
 		},
 	});
 };

@@ -1,15 +1,16 @@
-/* -------------------------------- Junctions ------------------------------- */
-export * from "./junctions/offers_categories.schema";
-/* --------------------------------- Tables --------------------------------- */
-export * from "./tables/categories.schema";
-export * from "./tables/cities.schema";
-// export * from "./tables/education_levels.schema";
-// export * from "./tables/genders.schema";
-export * from "./tables/offer_format.schema";
-export * from "./tables/offers.schema";
-export * from "./tables/profiles.schema";
-export * from "./tables/refresh_tokens.schema";
-export * from "./tables/reviews.schema";
-export * from "./tables/roles.schema";
-export * from "./tables/users.schema";
-export * from "./tables/verification_tokens.schema";
+export * from "./enums/db.enum.schema";
+export * from "./junctions/offers-offer-categories.table";
+export * from "./junctions/offers-offer-formats.table";
+export * from "./junctions/offers-offer-levels.table";
+export * from "./tables/dictionary/cities.table";
+export * from "./tables/dictionary/genders.table";
+export * from "./tables/dictionary/offer-categories.table";
+export * from "./tables/dictionary/offer-formats.table";
+export * from "./tables/dictionary/offer-levels.table";
+export * from "./tables/dictionary/user-roles.table";
+export * from "./tables/offer-reviews.table";
+export * from "./tables/offers.table";
+export * from "./tables/profiles.table";
+export * from "./tables/refresh-tokens.table";
+export * from "./tables/users.table";
+export * from "./tables/verification-tokens.table";

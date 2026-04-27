@@ -6,8 +6,7 @@ import { Pool } from "pg";
 import * as schema from "~/db/schema";
 import { env } from "~/env";
 
-import { AppDb } from "../types/db.types";
-
+// TODO remove schemas from db plugin
 const databaseClient = async (fastify: FastifyInstance) => {
 	// Create pool
 	const pool = new Pool({ connectionString: env.DATABASE_URL });
@@ -15,11 +14,8 @@ const databaseClient = async (fastify: FastifyInstance) => {
 	// Create db client
 	const dbRaw = drizzle(pool, { schema });
 
-	// Add/merge schema tables
-	const dbClientWithTables = Object.assign(dbRaw, schema) as unknown as AppDb; //tell TS to trust
-
 	// Attach drizzle database client to Fastify
-	fastify.decorate("db", dbClientWithTables);
+	fastify.decorate("db", dbRaw);
 
 	// Cleanup when server closes
 	fastify.addHook("onClose", async () => {

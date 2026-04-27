@@ -1,17 +1,17 @@
-import { FastifyPluginAsync } from "fastify";
+import { FastifyError, FastifyPluginAsync } from "fastify";
 import fp from "fastify-plugin";
 
-import { ApiCode } from "~/constants/apiCode.enum";
-import { HttpStatus } from "~/constants/httpStatusCodes.enum";
-import { handleAppError } from "~/errors/handlers/handleAppError";
-import { handleAuthError } from "~/errors/handlers/handleAuthError";
-import { handleDbError } from "~/errors/handlers/handleDatabaseError";
-import { handleUnknownError } from "~/errors/handlers/handleUnknownError";
-import { handleValidationError } from "~/errors/handlers/handleValidationError";
+import { ApiErrorCode } from "~/enums/apiCode.enum";
+import { HttpStatus } from "~/enums/httpStatus.enum";
+import { handleAppError } from "~/shared/errors/handlers/handleAppError";
+import { handleAuthError } from "~/shared/errors/handlers/handleAuthError";
+import { handleDbError } from "~/shared/errors/handlers/handleDatabaseError";
+import { handleUnknownError } from "~/shared/errors/handlers/handleUnknownError";
+import { handleValidationError } from "~/shared/errors/handlers/handleValidationError";
 import { buildErrorResponse } from "~/utils/errorResponse.util";
 
 const globalExceptionHandler: FastifyPluginAsync = async (app) => {
-	app.setErrorHandler((error, _req, reply) => {
+	app.setErrorHandler((error: FastifyError, _req, reply) => {
 		console.log("🚀 ~ globalExceptionHandler ~ error:", error);
 		const handlers = [
 			handleAppError,
@@ -31,7 +31,7 @@ const globalExceptionHandler: FastifyPluginAsync = async (app) => {
 		return reply.status(HttpStatus.NOT_FOUND).send(
 			buildErrorResponse({
 				message: "Route not found",
-				code: ApiCode.NOT_FOUND,
+				code: ApiErrorCode.NOT_FOUND,
 			}),
 		);
 	});

@@ -1,29 +1,31 @@
 import { FastifyPluginAsync } from "fastify";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
 
-import { createReviewRouteSchema } from "~/modules/review/schemas/createReview.schema";
-import { getOfferReviewsRouteSchema } from "~/modules/review/schemas/getOfferReviews.schema";
+import { App } from "~/types/app.types";
 
-export const reviewRoutes: FastifyPluginAsync = async (app) => {
-	const reviewRoutesApp = app.withTypeProvider<ZodTypeProvider>();
+import {
+	createReviewRouteSchema,
+	getOfferReviewsRouteSchema,
+} from "./schemas/route/review-routes.schema";
 
-	reviewRoutesApp.route({
+export const reviewRoutes: FastifyPluginAsync = async (app: App) => {
+	app.route({
 		method: "POST",
-		url: "/",
+		url: "/:offerId/reviews",
 		schema: createReviewRouteSchema,
 		onRequest: app.authorize("USER"),
 		handler: async function createReview(request, reply) {
-			const { id } = await app.reviewService.createReview(request.body, request.userId);
-			reply.created({ id });
+			const review = await app.reviewService.createReview(request.body, request.userId);
+			reply.created({ data: review });
 		},
 	});
 
-	reviewRoutesApp.route({
+	app.route({
 		method: "GET",
 		url: "/:offerId/reviews",
 		schema: getOfferReviewsRouteSchema,
 		handler: async function getOfferReviews(request, reply) {
 			const reviews = await app.reviewService.getAllActiveOfferReviews(request.params.offerId);
+			// TODO here we will use meta to paginate reviews
 			reply.ok({ data: reviews });
 		},
 	});

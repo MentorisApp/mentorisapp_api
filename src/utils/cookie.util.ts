@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 
-import { BadRequestError } from "~/errors/generic/BadRequestError";
+import { BadRequestError } from "~/shared/errors/generic/BadRequestError";
 
 type SignedCookieOptions = {
 	missingMessage: string;
