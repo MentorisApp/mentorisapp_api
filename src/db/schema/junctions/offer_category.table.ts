@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm";
 import { integer, pgTable, primaryKey } from "drizzle-orm/pg-core";
 
-import { categories } from "../tables/category.table";
+import { offer_category } from "../tables/dictionary/category.table";
 import { offers } from "../tables/offer.table";
 
 export const offers_categories = pgTable(
@@ -9,7 +9,7 @@ export const offers_categories = pgTable(
 	{
 		categoryId: integer("category_id")
 			.notNull()
-			.references(() => categories.id, { onDelete: "cascade" }),
+			.references(() => offer_category.id, { onDelete: "cascade" }),
 		offerId: integer("offer_id")
 			.notNull()
 			.references(() => offers.id, { onDelete: "cascade" }),
@@ -22,8 +22,8 @@ export const offersCategoriesRelations = relations(offers_categories, ({ one }) 
 		fields: [offers_categories.offerId],
 		references: [offers.id],
 	}),
-	category: one(categories, {
+	category: one(offer_category, {
 		fields: [offers_categories.categoryId],
-		references: [categories.id],
+		references: [offer_category.id],
 	}),
 }));

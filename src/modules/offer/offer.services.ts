@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 
-import { offers_categories } from "~/db/schema/junctions/offer_category.table";
+import { offer_offer_level, offers, offers_categories } from "~/db/schema";
 import { ConflictError } from "~/shared/errors/generic/ConflictError";
 import { NotFoundError } from "~/shared/errors/generic/NotFoundError";
 import { App } from "~/types/app.types";
@@ -10,31 +10,37 @@ import type { UpdateOfferRequest } from "./schemas/dto/update-offer.schema";
 
 export function createOfferService(app: App) {
 	const { db } = app;
-	const { offers } = db;
 
 	async function createOffer(body: CreateOfferRequest, userId: number) {
 		const existingOffer = await checkOfferExistsByUserId(userId);
 
 		if (existingOffer) throw new ConflictError("Offer already exists for this user");
 
-		const { categoryIds, ...offerData } = body;
+		const { categoryIdList, levelIdList, formatIdList, ...offerData } = body;
 
 		const newOffer = await db.transaction(async (tx) => {
 			const [offer] = await tx
 				.insert(offers)
 				.values({
 					...offerData,
-					level: "OSNOVNA",
-					priceType: "FIXED",
 					userId,
 				})
 				.returning();
 
-			if (categoryIds?.length) {
+			if (categoryIdList.length) {
 				await tx.insert(offers_categories).values(
-					categoryIds.map((categoryId) => ({
+					categoryIdList.map((categoryId) => ({
 						offerId: offer.id,
 						categoryId,
+					})),
+				);
+			}
+
+			if (levelIdList?.length) {
+				await tx.insert(offer_offer_level).values(
+					levelIdList.map((levelId) => ({
+						offerId: offer.id,
+						offerLevelId: levelId,
 					})),
 				);
 			}
@@ -50,18 +56,13 @@ export function createOfferService(app: App) {
 
 		if (!existingOffer) throw new NotFoundError("Offer you are trying to update does not exist");
 
-		const { categoryIds, priceType, price, priceFrom, priceTo, ...restBody } = body;
+		const { categoryIds, ...restBody } = body;
 
 		const updatedOffer = await db.transaction(async (tx) => {
 			const [offer] = await tx
 				.update(offers)
 				.set({
 					...restBody,
-					price: priceType === "FIXED" ? price : null,
-					priceFrom: priceType === "RANGE" ? priceFrom : null,
-					priceTo: priceType === "RANGE" ? priceTo : null,
-					priceType,
-					updatedAt: new Date(),
 				})
 				.where(eq(offers.userId, userId))
 				.returning();
@@ -130,11 +131,3 @@ export function createOfferService(app: App) {
 
 	return { createOffer, updateOffer, getOfferByUserId, getOfferByOfferId };
 }
-
-// TODO USE THISSSSSS IN MAPPER AND DTO
-type OfferService = ReturnType<typeof createOfferService>;
-
-// TODO USE THISSSSSS IN MAPPER AND DTO
-export type OfferWithRelations = NonNullable<
-	Awaited<ReturnType<OfferService["getOfferByOfferId"]>>
->;

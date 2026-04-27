@@ -12,6 +12,11 @@ export const createPositiveIntParamsSchema = (name: string) =>
 export const UuidSchema = z.uuid("Invalid token format.");
 
 export const EmailSchema = z.email("Email format is invalid.");
+export const DictionaryResponseDTO = z.object({
+	id: z.number(),
+	name: z.string(),
+	code: z.string(),
+});
 
 export const EmailDtoSchema = z.object({
 	email: z.email(),

@@ -8,6 +8,7 @@ import { env } from "~/env";
 
 import { AppDb } from "../types/db.types";
 
+// TODO remove schemas from db plugin
 const databaseClient = async (fastify: FastifyInstance) => {
 	// Create pool
 	const pool = new Pool({ connectionString: env.DATABASE_URL });
