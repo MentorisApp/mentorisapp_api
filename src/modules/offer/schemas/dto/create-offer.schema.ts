@@ -4,15 +4,12 @@ export const CreateOfferRequestSchema = z
 	.object({
 		title: z.string(),
 		description: z.string(),
-		level: z.string(), // adjust enum if you have one
-		format: z.string(), // adjust enum if needed
-
+		level: z.number(),
+		format: z.number(),
 		priceType: z.enum(["FIXED", "RANGE"]),
-
 		price: z.number().positive().nullable().optional(),
 		priceFrom: z.number().positive().nullable().optional(),
 		priceTo: z.number().positive().nullable().optional(),
-
 		categoryIds: z.array(z.number()).min(1, "At least one category must be selected"),
 	})
 	.refine((payload) => !(payload.price && (payload.priceFrom || payload.priceTo)), {

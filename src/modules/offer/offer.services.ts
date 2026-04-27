@@ -24,6 +24,8 @@ export function createOfferService(app: App) {
 				.insert(offers)
 				.values({
 					...offerData,
+					level: "OSNOVNA",
+					priceType: "FIXED",
 					userId,
 				})
 				.returning();

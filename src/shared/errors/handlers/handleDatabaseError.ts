@@ -20,5 +20,6 @@ export function handleDbError(error: FastifyError, reply: FastifyReply) {
 	});
 
 	reply.status(errorCodeToHttpStatus[dbError.code]).send(response);
+
 	return true;
 }

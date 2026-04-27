@@ -1,12 +1,12 @@
-import { ErrorCodeType } from "~/enums/apiCode.enum";
+import { ApiErrorCode } from "~/enums/apiCode.enum";
 
 export class AppError extends Error {
-	public readonly code: ErrorCodeType;
+	public readonly code: ApiErrorCode;
 	public readonly fieldErrors: Record<string, string[]> | null;
 
 	constructor(
 		message: string | null,
-		code: ErrorCodeType,
+		code: ApiErrorCode,
 		fieldErrors: Record<string, string[]> | null = null,
 	) {
 		super(message ?? "");

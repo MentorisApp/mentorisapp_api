@@ -1,7 +1,7 @@
 import { FastifyError, FastifyPluginAsync } from "fastify";
 import fp from "fastify-plugin";
 
-import { ApiCode } from "~/enums/apiCode.enum";
+import { ApiErrorCode } from "~/enums/apiCode.enum";
 import { HttpStatus } from "~/enums/httpStatus.enum";
 import { handleAppError } from "~/shared/errors/handlers/handleAppError";
 import { handleAuthError } from "~/shared/errors/handlers/handleAuthError";
@@ -31,7 +31,7 @@ const globalExceptionHandler: FastifyPluginAsync = async (app) => {
 		return reply.status(HttpStatus.NOT_FOUND).send(
 			buildErrorResponse({
 				message: "Route not found",
-				code: ApiCode.NOT_FOUND,
+				code: ApiErrorCode.NOT_FOUND,
 			}),
 		);
 	});

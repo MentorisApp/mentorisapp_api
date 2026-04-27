@@ -1,6 +1,6 @@
 import { FastifyError, FastifyReply } from "fastify";
 
-import { ApiCode } from "~/enums/apiCode.enum";
+import { ApiErrorCode } from "~/enums/apiCode.enum";
 import { buildErrorResponse, errorCodeToHttpStatus } from "~/utils/errorResponse.util";
 
 const authCodes = [
@@ -15,7 +15,7 @@ export function handleAuthError(error: FastifyError, reply: FastifyReply) {
 
 	const authError = buildErrorResponse({
 		message: error.message,
-		code: ApiCode.UNAUTHORIZED,
+		code: ApiErrorCode.UNAUTHORIZED,
 	});
 
 	reply.status(errorCodeToHttpStatus[authError.code]).send(error);
