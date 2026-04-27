@@ -1,6 +1,12 @@
 import { and, eq, gt } from "drizzle-orm";
 
-import { VerificationTokenContext } from "~/db/schema/enums/db.enum.schema";
+import {
+	profiles,
+	userRoles,
+	users,
+	type VerificationTokenContext,
+	verificationTokens,
+} from "~/db/schema";
 import { NotFoundError } from "~/shared/errors/generic/NotFoundError";
 import { App } from "~/types/app.types";
 import { unwrapResult } from "~/utils/db.util";
@@ -11,14 +17,13 @@ import { Role } from "../auth/auth.constants";
 
 export function createUserService(app: App) {
 	const { db } = app;
-	const { users, userRoles, verificationTokens, profiles } = db;
 
 	async function createUser(user: CreateUserInput) {
 		return await db.transaction(async (tx) => {
 			const userRoleToAssign = "USER";
 
 			const role = await tx.query.userRoles.findFirst({
-				where: eq(userRoles.name, userRoleToAssign),
+				where: eq(userRoles.label, userRoleToAssign),
 			});
 
 			const roleId = role?.id;
@@ -77,7 +82,7 @@ export function createUserService(app: App) {
 			columns: {},
 			with: {
 				userRole: {
-					columns: { name: true },
+					columns: { label: true },
 				},
 			},
 		});
@@ -86,7 +91,7 @@ export function createUserService(app: App) {
 			throw new NotFoundError("User role not found");
 		}
 
-		const role = userRole.userRole.name as Role;
+		const role = userRole.userRole.label as Role;
 
 		return {
 			role,

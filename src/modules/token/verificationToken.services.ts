@@ -1,6 +1,6 @@
 import { and, eq, gt, sql } from "drizzle-orm";
 
-import { VerificationTokenContext } from "~/db/schema/enums/db.enum.schema";
+import { type VerificationTokenContext, verificationTokens } from "~/db/schema";
 import { TooManyRequestsError } from "~/shared/errors/domain/TooManyRequestsError";
 import { App } from "~/types/app.types";
 import { minutesFromNow } from "~/utils/datetime.util";
@@ -9,7 +9,6 @@ import { generateUuid } from "~/utils/uuid.util";
 
 export function createVerificationTokensService(app: App) {
 	const { db } = app;
-	const { verificationTokens } = db;
 
 	async function createVerificationToken(userId: number, context: VerificationTokenContext) {
 		const MAX_TOKENS_PER_HOUR = 3;

@@ -1,21 +1,21 @@
 {
-  "id": "093b4fa2-043a-4b88-bad8-f12a8bb6eba3",
-  "prevId": "abc7f7aa-d191-4c00-8ad2-0a072f716a0e",
+  "id": "11e7fdd2-92d6-408c-b822-c3e7e5d6b3bc",
+  "prevId": "efb38c43-ab82-4e35-84c6-ff5f25420eba",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.offers_categories": {
-      "name": "offers_categories",
+    "public.offers_offer_categories": {
+      "name": "offers_offer_categories",
       "schema": "",
       "columns": {
-        "category_id": {
-          "name": "category_id",
+        "offer_id": {
+          "name": "offer_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "offer_id": {
-          "name": "offer_id",
+        "offer_category_id": {
+          "name": "offer_category_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -23,22 +23,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "offers_categories_category_id_categories_id_fk": {
-          "name": "offers_categories_category_id_categories_id_fk",
-          "tableFrom": "offers_categories",
-          "tableTo": "categories",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "offers_categories_offer_id_offers_id_fk": {
-          "name": "offers_categories_offer_id_offers_id_fk",
-          "tableFrom": "offers_categories",
+        "offers_offer_categories_offer_id_offers_id_fk": {
+          "name": "offers_offer_categories_offer_id_offers_id_fk",
+          "tableFrom": "offers_offer_categories",
           "tableTo": "offers",
           "columnsFrom": [
             "offer_id"
@@ -48,14 +35,27 @@
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
+        },
+        "offers_offer_categories_offer_category_id_offer_categories_id_fk": {
+          "name": "offers_offer_categories_offer_category_id_offer_categories_id_fk",
+          "tableFrom": "offers_offer_categories",
+          "tableTo": "offer_categories",
+          "columnsFrom": [
+            "offer_category_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
-        "offers_categories_category_id_offer_id_pk": {
-          "name": "offers_categories_category_id_offer_id_pk",
+        "offers_offer_categories_offer_id_offer_category_id_pk": {
+          "name": "offers_offer_categories_offer_id_offer_category_id_pk",
           "columns": [
-            "category_id",
-            "offer_id"
+            "offer_id",
+            "offer_category_id"
           ]
         }
       },
@@ -64,35 +64,122 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.categories": {
-      "name": "categories",
+    "public.offers_offer_formats": {
+      "name": "offers_offer_formats",
       "schema": "",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
+        "offer_id": {
+          "name": "offer_id",
+          "type": "integer",
+          "primaryKey": false,
           "notNull": true
         },
-        "name": {
-          "name": "name",
-          "type": "varchar(50)",
+        "offer_format_id": {
+          "name": "offer_format_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         }
       },
       "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "categories_name_unique": {
-          "name": "categories_name_unique",
-          "nullsNotDistinct": false,
+      "foreignKeys": {
+        "offers_offer_formats_offer_id_offers_id_fk": {
+          "name": "offers_offer_formats_offer_id_offers_id_fk",
+          "tableFrom": "offers_offer_formats",
+          "tableTo": "offers",
+          "columnsFrom": [
+            "offer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "offers_offer_formats_offer_format_id_offer_formats_id_fk": {
+          "name": "offers_offer_formats_offer_format_id_offer_formats_id_fk",
+          "tableFrom": "offers_offer_formats",
+          "tableTo": "offer_formats",
+          "columnsFrom": [
+            "offer_format_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "offers_offer_formats_offer_id_offer_format_id_pk": {
+          "name": "offers_offer_formats_offer_id_offer_format_id_pk",
           "columns": [
-            "name"
+            "offer_id",
+            "offer_format_id"
           ]
         }
       },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.offers_offer_levels": {
+      "name": "offers_offer_levels",
+      "schema": "",
+      "columns": {
+        "offer_id": {
+          "name": "offer_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "offer_level_id": {
+          "name": "offer_level_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "offers_offer_levels_offer_id_offers_id_fk": {
+          "name": "offers_offer_levels_offer_id_offers_id_fk",
+          "tableFrom": "offers_offer_levels",
+          "tableTo": "offers",
+          "columnsFrom": [
+            "offer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "offers_offer_levels_offer_level_id_offer_levels_id_fk": {
+          "name": "offers_offer_levels_offer_level_id_offer_levels_id_fk",
+          "tableFrom": "offers_offer_levels",
+          "tableTo": "offer_levels",
+          "columnsFrom": [
+            "offer_level_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "offers_offer_levels_offer_id_offer_level_id_pk": {
+          "name": "offers_offer_levels_offer_id_offer_level_id_pk",
+          "columns": [
+            "offer_id",
+            "offer_level_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -107,22 +194,56 @@
           "primaryKey": true,
           "notNull": true
         },
-        "name": {
-          "name": "name",
+        "code": {
+          "name": "code",
           "type": "varchar(50)",
           "primaryKey": false,
           "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "cities_name_unique": {
-          "name": "cities_name_unique",
+        "cities_code_unique": {
+          "name": "cities_code_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "name"
+            "code"
+          ]
+        },
+        "cities_label_unique": {
+          "name": "cities_label_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "label"
           ]
         }
       },
@@ -140,22 +261,56 @@
           "primaryKey": true,
           "notNull": true
         },
-        "name": {
-          "name": "name",
+        "code": {
+          "name": "code",
           "type": "varchar(50)",
           "primaryKey": false,
           "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "genders_name_unique": {
-          "name": "genders_name_unique",
+        "genders_code_unique": {
+          "name": "genders_code_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "name"
+            "code"
+          ]
+        },
+        "genders_label_unique": {
+          "name": "genders_label_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "label"
           ]
         }
       },
@@ -163,8 +318,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.offer_format": {
-      "name": "offer_format",
+    "public.offer_categories": {
+      "name": "offer_categories",
       "schema": "",
       "columns": {
         "id": {
@@ -173,22 +328,56 @@
           "primaryKey": true,
           "notNull": true
         },
-        "name": {
-          "name": "name",
+        "code": {
+          "name": "code",
           "type": "varchar(50)",
           "primaryKey": false,
           "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "offer_format_name_unique": {
-          "name": "offer_format_name_unique",
+        "offer_categories_code_unique": {
+          "name": "offer_categories_code_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "name"
+            "code"
+          ]
+        },
+        "offer_categories_label_unique": {
+          "name": "offer_categories_label_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "label"
           ]
         }
       },
@@ -196,8 +385,209 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.offers": {
-      "name": "offers",
+    "public.offer_formats": {
+      "name": "offer_formats",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "offer_formats_code_unique": {
+          "name": "offer_formats_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "code"
+          ]
+        },
+        "offer_formats_label_unique": {
+          "name": "offer_formats_label_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "label"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.offer_levels": {
+      "name": "offer_levels",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "offer_levels_code_unique": {
+          "name": "offer_levels_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "code"
+          ]
+        },
+        "offer_levels_label_unique": {
+          "name": "offer_levels_label_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "label"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.user_roles": {
+      "name": "user_roles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "user_roles_code_unique": {
+          "name": "user_roles_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "code"
+          ]
+        },
+        "user_roles_label_unique": {
+          "name": "user_roles_label_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "label"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.offer_reviews": {
+      "name": "offer_reviews",
       "schema": "",
       "columns": {
         "id": {
@@ -212,6 +602,110 @@
           "primaryKey": false,
           "notNull": true
         },
+        "offer_id": {
+          "name": "offer_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rating": {
+          "name": "rating",
+          "type": "numeric(2, 1)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "mod_status": {
+          "name": "mod_status",
+          "type": "mod_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PENDING'"
+        },
+        "mod_by": {
+          "name": "mod_by",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mod_at": {
+          "name": "mod_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mod_reason": {
+          "name": "mod_reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "offer_reviews_user_id_users_id_fk": {
+          "name": "offer_reviews_user_id_users_id_fk",
+          "tableFrom": "offer_reviews",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "offer_reviews_offer_id_offers_id_fk": {
+          "name": "offer_reviews_offer_id_offers_id_fk",
+          "tableFrom": "offer_reviews",
+          "tableTo": "offers",
+          "columnsFrom": [
+            "offer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.offers": {
+      "name": "offers",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
         "title": {
           "name": "title",
           "type": "varchar(255)",
@@ -224,43 +718,23 @@
           "primaryKey": false,
           "notNull": true
         },
-        "price_type": {
-          "name": "price_type",
-          "type": "price_type",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "price": {
-          "name": "price",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "price_from": {
-          "name": "price_from",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "price_to": {
-          "name": "price_to",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "level": {
-          "name": "level",
-          "type": "offer_level",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "offer_format_id": {
-          "name": "offer_format_id",
+        "user_id": {
+          "name": "user_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
+        },
+        "price_from_cents": {
+          "name": "price_from_cents",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "price_to_cents": {
+          "name": "price_to_cents",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         },
         "mod_status": {
           "name": "mod_status",
@@ -317,19 +791,6 @@
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
-        },
-        "offers_offer_format_id_offer_format_id_fk": {
-          "name": "offers_offer_format_id_offer_format_id_fk",
-          "tableFrom": "offers",
-          "tableTo": "offer_format",
-          "columnsFrom": [
-            "offer_format_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -385,32 +846,6 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true
-        },
-        "mod_status": {
-          "name": "mod_status",
-          "type": "mod_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'PENDING'"
-        },
-        "mod_by": {
-          "name": "mod_by",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "mod_at": {
-          "name": "mod_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "mod_reason": {
-          "name": "mod_reason",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -537,149 +972,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.reviews": {
-      "name": "reviews",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "offer_id": {
-          "name": "offer_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "rating": {
-          "name": "rating",
-          "type": "numeric(2, 1)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "mod_status": {
-          "name": "mod_status",
-          "type": "mod_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'PENDING'"
-        },
-        "mod_by": {
-          "name": "mod_by",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "mod_at": {
-          "name": "mod_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "mod_reason": {
-          "name": "mod_reason",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "reviews_user_id_users_id_fk": {
-          "name": "reviews_user_id_users_id_fk",
-          "tableFrom": "reviews",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "reviews_offer_id_offers_id_fk": {
-          "name": "reviews_offer_id_offers_id_fk",
-          "tableFrom": "reviews",
-          "tableTo": "offers",
-          "columnsFrom": [
-            "offer_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.roles": {
-      "name": "roles",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "roles_name_unique": {
-          "name": "roles_name_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.users": {
       "name": "users",
       "schema": "",
@@ -708,11 +1000,11 @@
           "primaryKey": false,
           "notNull": true
         },
-        "isVerified": {
-          "name": "isVerified",
+        "is_verified": {
+          "name": "is_verified",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": false
         },
         "created_at": {
@@ -732,10 +1024,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "users_role_id_roles_id_fk": {
-          "name": "users_role_id_roles_id_fk",
+        "users_role_id_user_roles_id_fk": {
+          "name": "users_role_id_user_roles_id_fk",
           "tableFrom": "users",
-          "tableTo": "roles",
+          "tableTo": "user_roles",
           "columnsFrom": [
             "role_id"
           ],
@@ -849,24 +1141,6 @@
     }
   },
   "enums": {
-    "public.offer_level": {
-      "name": "offer_level",
-      "schema": "public",
-      "values": [
-        "OSNOVNA",
-        "SREDNJA",
-        "FAKULTET",
-        "MATURA"
-      ]
-    },
-    "public.price_type": {
-      "name": "price_type",
-      "schema": "public",
-      "values": [
-        "FIXED",
-        "RANGE"
-      ]
-    },
     "public.mod_status": {
       "name": "mod_status",
       "schema": "public",

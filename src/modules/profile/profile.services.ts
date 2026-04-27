@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
 
+import { profiles } from "~/db/schema";
 import { ConflictError } from "~/shared/errors/generic/ConflictError";
 import { NotFoundError } from "~/shared/errors/generic/NotFoundError";
 import { App } from "~/types/app.types";
@@ -10,7 +11,6 @@ import { UpdateProfileRequest } from "./schemas/dto/update-profile.schema";
 
 export function createProfileService(app: App) {
 	const { db } = app;
-	const { profiles } = db;
 
 	// TODO sanitize multipart fields, trim and clear up
 	async function createProfile(body: CreateProfileRequest, userId: number) {

@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 
-import { offers, offersOfferCategories, offersOfferLevels } from "~/db/schema";
+import { offers, offersOfferLevels } from "~/db/schema";
 import { ConflictError } from "~/shared/errors/generic/ConflictError";
 import { NotFoundError } from "~/shared/errors/generic/NotFoundError";
 import { App } from "~/types/app.types";
@@ -30,14 +30,15 @@ export function createOfferService(app: App) {
 				})
 				.returning();
 
-			if (categoryIdList.length) {
-				await tx.insert(offersOfferCategories).values(
-					categoryIdList.map((categoryId) => ({
-						offer_id: offer.id,
-						category_id: categoryId,
-					})),
-				);
-			}
+			// TODO fix
+			// if (categoryIdList.length) {
+			// 	await tx.insert(offersOfferCategories).values(
+			// 		categoryIdList.map((categoryId) => ({
+			// 			offer_id: offer.id,
+			// 			category_id: categoryId,
+			// 		})),
+			// 	);
+			// }
 
 			if (levelIdList?.length) {
 				await tx.insert(offersOfferLevels).values(
@@ -70,16 +71,18 @@ export function createOfferService(app: App) {
 				.where(eq(offers.user_id, userId))
 				.returning();
 
-			if (categoryIds) {
-				await tx.delete(offersOfferCategories).where(eq(offersOfferCategories.offer_id, offer.id));
+			// TODO fix
 
-				await tx.insert(offersOfferCategories).values(
-					categoryIds.map((categoryId) => ({
-						offer_id: offer.id,
-						category_id: categoryId,
-					})),
-				);
-			}
+			// if (categoryIds) {
+			// 	await tx.delete(offersOfferCategories).where(eq(offersOfferCategories.offer_id, offer.id));
+
+			// 	await tx.insert(offersOfferCategories).values(
+			// 		categoryIds.map((categoryId) => ({
+			// 			offer_id: offer.id,
+			// 			category_id: categoryId,
+			// 		})),
+			// 	);
+			// }
 
 			return offer;
 		});

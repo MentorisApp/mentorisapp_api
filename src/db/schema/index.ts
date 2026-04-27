@@ -1,3 +1,4 @@
+export * from "./enums/db.enum.schema";
 export * from "./junctions/offers-offer-categories.table";
 export * from "./junctions/offers-offer-formats.table";
 export * from "./junctions/offers-offer-levels.table";
@@ -6,10 +7,10 @@ export * from "./tables/dictionary/genders.table";
 export * from "./tables/dictionary/offer-categories.table";
 export * from "./tables/dictionary/offer-formats.table";
 export * from "./tables/dictionary/offer-levels.table";
+export * from "./tables/dictionary/user-roles.table";
 export * from "./tables/offer-reviews.table";
 export * from "./tables/offers.table";
 export * from "./tables/profiles.table";
 export * from "./tables/refresh-tokens.table";
-export * from "./tables/user-roles.table";
 export * from "./tables/users.table";
 export * from "./tables/verification-tokens.table";

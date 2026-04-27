@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
 
+import { refreshTokens } from "~/db/schema";
 import { env } from "~/env";
 import { App } from "~/types/app.types";
 import { parseDurationMs } from "~/utils/datetime.util";
@@ -10,7 +11,6 @@ import { Role } from "../auth/auth.constants";
 
 export function createTokenService(app: App) {
 	const { db } = app;
-	const { refreshTokens } = db;
 
 	function generateJti() {
 		return generateUuid();

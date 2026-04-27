@@ -10,11 +10,11 @@ export const offersOfferCategories = pgTable(
 		offer_id: integer("offer_id")
 			.notNull()
 			.references(() => offers.id, { onDelete: "cascade" }),
-		category_id: integer("category_id")
+		offer_category_id: integer("offer_category_id")
 			.notNull()
 			.references(() => offerCategories.id, { onDelete: "cascade" }),
 	},
-	(table) => [primaryKey({ columns: [table.offer_id, table.category_id] })],
+	(table) => [primaryKey({ columns: [table.offer_id, table.offer_category_id] })],
 );
 
 export const offersOfferCategoriesRelations = relations(offersOfferCategories, ({ one }) => ({
@@ -23,7 +23,7 @@ export const offersOfferCategoriesRelations = relations(offersOfferCategories, (
 		references: [offers.id],
 	}),
 	offerCategory: one(offerCategories, {
-		fields: [offersOfferCategories.category_id],
+		fields: [offersOfferCategories.offer_category_id],
 		references: [offerCategories.id],
 	}),
 }));
