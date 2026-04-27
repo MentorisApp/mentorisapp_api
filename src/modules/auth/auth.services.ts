@@ -31,6 +31,8 @@ export function createAuthService(app: App) {
 			password: hashedPassword,
 		});
 
+		await app.profileService.createProfile({ name: payload.name }, newUser.id);
+
 		const token = await verificationTokenService.createVerificationToken(
 			newUser.id,
 			"email_verification",

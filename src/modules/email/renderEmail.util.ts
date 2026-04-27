@@ -10,7 +10,6 @@ const __dirname = path.dirname(__filename);
 
 // Renders prebuilt mjml to hbs files
 export function renderEmail(template: EmailTemplateParams) {
-	console.log("🚀 ~ renderEmail ~ __dirname:", __dirname);
 	const templatesDir = path.join(__dirname, "templates");
 	const templatePath = path.join(templatesDir, `${template.name}.hbs`);
 
