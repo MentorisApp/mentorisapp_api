@@ -9,7 +9,7 @@ import { generateUuid } from "~/utils/uuid.util";
 
 export function createVerificationTokensService(app: App) {
 	const { db } = app;
-	const { verification_tokens } = db;
+	const { verificationTokens } = db;
 
 	async function createVerificationToken(userId: number, context: VerificationTokenContext) {
 		const MAX_TOKENS_PER_HOUR = 3;
@@ -17,12 +17,12 @@ export function createVerificationTokensService(app: App) {
 		// TODO Use redis in production
 		const [{ count: tokensCreatedCount }] = await db
 			.select({ count: sql<number>`COUNT(*)` })
-			.from(verification_tokens)
+			.from(verificationTokens)
 			.where(
 				and(
-					eq(verification_tokens.userId, userId),
-					eq(verification_tokens.context, context),
-					gt(verification_tokens.createdAt, sql`NOW() - INTERVAL '1 hour'`),
+					eq(verificationTokens.user_id, userId),
+					eq(verificationTokens.context, context),
+					gt(verificationTokens.created_at, sql`NOW() - INTERVAL '1 hour'`),
 				),
 			);
 
@@ -34,11 +34,11 @@ export function createVerificationTokensService(app: App) {
 		const hashedToken = hashUtil.token.hash(token);
 		const expiresAt = minutesFromNow(30);
 
-		await db.insert(verification_tokens).values({
-			userId,
+		await db.insert(verificationTokens).values({
+			user_id: userId,
 			context,
 			token: hashedToken,
-			expiresAt,
+			expires_at: expiresAt,
 		});
 
 		return token; // Return pure uuid, check against hashed when validating
@@ -46,12 +46,12 @@ export function createVerificationTokensService(app: App) {
 
 	async function markTokenUsed(token: string) {
 		await db
-			.update(verification_tokens)
+			.update(verificationTokens)
 			.set({
 				used: true,
-				updatedAt: new Date(),
+				updated_at: new Date(),
 			})
-			.where(eq(verification_tokens.token, token));
+			.where(eq(verificationTokens.token, token));
 	}
 
 	return {

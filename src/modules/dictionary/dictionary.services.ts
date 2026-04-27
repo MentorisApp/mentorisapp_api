@@ -8,7 +8,7 @@ export function createDictionaryService(app: App) {
 	}
 
 	async function getCategoriesDictionary() {
-		return await db.select().from(db.categories);
+		return await db.select().from(db.offerCategories);
 	}
 
 	return {

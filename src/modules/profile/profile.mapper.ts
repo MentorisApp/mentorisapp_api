@@ -10,7 +10,7 @@ export const profileMapper = {
 			bio: profile.bio,
 			dob: profile.dob,
 			name: profile.name,
-			profilePictureUrl: profile.profilePictureUrl,
+			profilePictureUrl: profile.profile_picture_url,
 		};
 	},
 };

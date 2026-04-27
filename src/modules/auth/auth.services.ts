@@ -81,7 +81,7 @@ export function createAuthService(app: App) {
 
 		if (!isPasswordValid) throw new InvalidCredentialsError();
 
-		if (!user.isVerified) throw new AccountNotVerifiedError();
+		if (!user.is_verified) throw new AccountNotVerifiedError();
 
 		const jti = tokenService.generateJti();
 
@@ -90,7 +90,7 @@ export function createAuthService(app: App) {
 		const accessToken = tokenService.issueAccessToken(user.id, userRole.role);
 		const refreshToken = await tokenService.issueRefreshToken(user.id, jti);
 
-		return { accessToken, refreshToken, isVerified: user.isVerified, email: user.email };
+		return { accessToken, refreshToken, isVerified: user.is_verified, email: user.email };
 	}
 
 	async function refresh(oldRefreshToken: string) {
@@ -103,10 +103,10 @@ export function createAuthService(app: App) {
 
 		const newJti = tokenService.generateJti();
 
-		const { role } = await userService.getUserRole(storedToken.userId);
+		const { role } = await userService.getUserRole(storedToken.user_id);
 
-		const accessToken = tokenService.issueAccessToken(storedToken.userId, role);
-		const newRefreshToken = await tokenService.issueRefreshToken(storedToken.userId, newJti);
+		const accessToken = tokenService.issueAccessToken(storedToken.user_id, role);
+		const newRefreshToken = await tokenService.issueRefreshToken(storedToken.user_id, newJti);
 
 		await tokenService.revokeRefreshToken(oldRefreshToken);
 
@@ -171,7 +171,7 @@ export function createAuthService(app: App) {
 
 		if (!user) throw new NotFoundError("User not found");
 
-		if (user.isVerified) throw new AlreadyVerifiedError();
+		if (user.is_verified) throw new AlreadyVerifiedError();
 
 		const token = await verificationTokenService.createVerificationToken(
 			user.id,

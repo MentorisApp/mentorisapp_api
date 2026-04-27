@@ -10,19 +10,19 @@ import type { CreateReviewRequest } from "./schemas/dto/create-review.schema";
 
 export function createReviewService(app: App) {
 	const { db } = app;
-	const { reviews, offers } = db;
+	const { offerReviews, offers } = db;
 
 	async function createReview(payload: CreateReviewRequest, userId: number) {
 		const offer = await db.query.offers.findFirst({
 			where: eq(offers.id, payload.offerId),
-			columns: { id: true, userId: true },
+			columns: { id: true, user_id: true },
 		});
 
 		if (!offer) {
 			throw new NotFoundError("Offer not found");
 		}
 
-		if (offer.userId === userId) {
+		if (offer.user_id === userId) {
 			throw new ForbiddenError("You cannot review your own offer!");
 		}
 
@@ -33,10 +33,12 @@ export function createReviewService(app: App) {
 		}
 
 		const result = await db
-			.insert(reviews)
+			.insert(offerReviews)
 			.values({
-				...payload,
-				userId: userId,
+				user_id: userId,
+				offer_id: payload.offerId,
+				rating: payload.rating,
+				description: payload.description,
 			})
 			.returning();
 
@@ -48,21 +50,21 @@ export function createReviewService(app: App) {
 	async function getAllActiveOfferReviews(offerId: number) {
 		// TODO pagination
 		// TODO show review full
-		const reviewsData = await db.query.reviews.findMany({
-			where: and(eq(reviews.offerId, offerId), eq(reviews.modStatus, "APPROVED")),
+		const reviewsData = await db.query.offerReviews.findMany({
+			where: and(eq(offerReviews.offer_id, offerId), eq(offerReviews.mod_status, "APPROVED")),
 			columns: {
 				rating: true,
 				id: true,
 				description: true,
-				offerId: true,
-				createdAt: true,
+				offer_id: true,
+				created_at: true,
 			},
-			orderBy: desc(reviews.createdAt),
+			orderBy: desc(offerReviews.created_at),
 			limit: 50,
 			with: {
 				user: {
 					with: {
-						profile: { columns: { profilePictureUrl: true } },
+						profile: { columns: { profile_picture_url: true } },
 					},
 				},
 			},
@@ -81,8 +83,8 @@ export function createReviewService(app: App) {
 	async function checkUserReviewExistsByOfferId(userId: number, offerId: number) {
 		const result = await db
 			.select()
-			.from(reviews)
-			.where(and(eq(reviews.offerId, offerId), eq(reviews.userId, userId)))
+			.from(offerReviews)
+			.where(and(eq(offerReviews.offer_id, offerId), eq(offerReviews.user_id, userId)))
 			.limit(1);
 
 		return result.length > 0;

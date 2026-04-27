@@ -1,15 +1,15 @@
 import { boolean, integer, pgTable, serial, timestamp, varchar } from "drizzle-orm/pg-core";
 
-import { users } from "./user.table";
+import { users } from "./users.table";
 import { timestampColumns } from "../partials/timestampColumns";
 
-export const refresh_tokens = pgTable("refresh_tokens", {
+export const refreshTokens = pgTable("refresh_tokens", {
 	id: serial("id").primaryKey(),
 	jti: varchar("jti", { length: 36 }).notNull().unique(),
-	userId: integer("user_id")
+	user_id: integer("user_id")
 		.notNull()
 		.references(() => users.id, { onDelete: "cascade" }),
 	revoked: boolean("revoked").default(false).notNull(),
-	expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+	expires_at: timestamp("expires_at", { withTimezone: true }).notNull(),
 	...timestampColumns,
 });

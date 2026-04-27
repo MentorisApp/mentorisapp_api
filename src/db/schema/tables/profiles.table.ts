@@ -1,16 +1,16 @@
 import { relations } from "drizzle-orm";
 import { date, integer, pgTable, serial, text, varchar } from "drizzle-orm/pg-core";
 
-import { users } from "./user.table";
+import { users } from "./users.table";
 import { timestampColumns } from "../partials/timestampColumns";
 
 export const profiles = pgTable("profiles", {
 	id: serial("id").primaryKey(),
-	profilePictureUrl: varchar("profile_picture_url", { length: 255 }),
+	profile_picture_url: varchar("profile_picture_url", { length: 255 }),
 	name: varchar("name", { length: 255 }).notNull(),
 	bio: text("bio"),
 	dob: date("dob"),
-	userId: integer("user_id")
+	user_id: integer("user_id")
 		.notNull()
 		.references(() => users.id, { onDelete: "cascade" })
 		.unique(),
@@ -19,7 +19,7 @@ export const profiles = pgTable("profiles", {
 
 export const profilesRelations = relations(profiles, ({ one }) => ({
 	user: one(users, {
-		fields: [profiles.userId],
+		fields: [profiles.user_id],
 		references: [users.id],
 	}),
 }));

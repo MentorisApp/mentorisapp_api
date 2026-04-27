@@ -20,14 +20,14 @@ export function createProfileService(app: App) {
 
 		const [profile] = await db
 			.insert(profiles)
-			.values({ userId: userId, ...body, dob: undefined })
+			.values({ user_id: userId, ...body, dob: undefined })
 			.returning();
 
 		return profile;
 	}
 
 	async function checkExistsProfileByUserId(userId: number) {
-		const result = await db.select().from(profiles).where(eq(profiles.userId, userId)).limit(1);
+		const result = await db.select().from(profiles).where(eq(profiles.user_id, userId)).limit(1);
 		return result.length > 0;
 	}
 
@@ -42,10 +42,10 @@ export function createProfileService(app: App) {
 			.update(profiles)
 			.set({
 				...body,
-				profilePictureUrl: body.profilePicture,
+				profile_picture_url: body.profilePicture,
 				dob: body.dob?.toISOString(),
 			})
-			.where(eq(profiles.userId, userId))
+			.where(eq(profiles.user_id, userId))
 			.returning();
 
 		return unwrapResult(updatedProfile);
@@ -53,7 +53,7 @@ export function createProfileService(app: App) {
 
 	async function getProfile(userId: number) {
 		const profile = await db.query.profiles.findFirst({
-			where: eq(profiles.userId, userId),
+			where: eq(profiles.user_id, userId),
 		});
 
 		if (!profile) throw new NotFoundError("Profile not found.");

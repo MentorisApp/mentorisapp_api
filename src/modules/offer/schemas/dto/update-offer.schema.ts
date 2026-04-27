@@ -7,29 +7,23 @@ export const UpdateOfferRequestSchema = createUpdateSchema(offers)
 	.pick({
 		title: true,
 		description: true,
-		level: true,
-		format: true,
-		price: true,
-		priceFrom: true,
-		priceTo: true,
-		priceType: true,
-		updatedAt: true,
+		price_from_cents: true,
+		price_to_cents: true,
+		updated_at: true,
 	})
 	.extend({
 		categoryIds: z.array(z.number()).min(1, "At least one category must be selected").optional(),
 	})
-	.refine((payload) => !(payload.price && (payload.priceFrom || payload.priceTo)), {
-		message: "Cannot set fixed price and range together",
-		path: ["price", "priceFrom", "priceTo"],
-	})
-	.refine((payload) => payload.priceType !== "FIXED" || payload.price, {
-		message: "Price must be defined if price type is set as: FIXED",
-		path: ["price"],
-	})
-	.refine((payload) => payload.priceType !== "RANGE" || (payload.priceFrom && payload.priceTo), {
-		message: "Price from/to must be defined if price type is set as: RANGE",
-		path: ["priceFrom", "priceTo"],
-	})
+	.refine(
+		(payload) => {
+			if (payload.price_from_cents == null || payload.price_to_cents == null) return true;
+			return payload.price_from_cents <= payload.price_to_cents;
+		},
+		{
+			message: "Price range is invalid",
+			path: ["price_to_cents"],
+		},
+	)
 	.strict();
 
 export type UpdateOfferRequest = z.infer<typeof UpdateOfferRequestSchema>;

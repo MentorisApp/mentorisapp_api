@@ -11,14 +11,14 @@ import { Role } from "../auth/auth.constants";
 
 export function createUserService(app: App) {
 	const { db } = app;
-	const { users, roles, verification_tokens, profiles } = db;
+	const { users, userRoles, verificationTokens, profiles } = db;
 
 	async function createUser(user: CreateUserInput) {
 		return await db.transaction(async (tx) => {
 			const userRoleToAssign = "USER";
 
-			const role = await tx.query.roles.findFirst({
-				where: eq(roles.name, userRoleToAssign),
+			const role = await tx.query.userRoles.findFirst({
+				where: eq(userRoles.name, userRoleToAssign),
 			});
 
 			const roleId = role?.id;
@@ -30,7 +30,7 @@ export function createUserService(app: App) {
 				.values({
 					email: user.email,
 					password: user.password,
-					roleId: roleId,
+					role_id: roleId,
 				})
 				.returning();
 
@@ -51,13 +51,13 @@ export function createUserService(app: App) {
 			.select({
 				id: users.id,
 				email: users.email,
-				isVerified: users.isVerified,
+				isVerified: users.is_verified,
 				// profile fields
 				name: profiles.name,
-				profilePictureUrl: profiles.profilePictureUrl,
+				profilePictureUrl: profiles.profile_picture_url,
 			})
 			.from(users)
-			.innerJoin(profiles, eq(profiles.userId, users.id))
+			.innerJoin(profiles, eq(profiles.user_id, users.id))
 			.where(eq(users.id, userId))
 			.limit(1);
 
@@ -76,7 +76,7 @@ export function createUserService(app: App) {
 			where: eq(users.id, userId),
 			columns: {},
 			with: {
-				role: {
+				userRole: {
 					columns: { name: true },
 				},
 			},
@@ -86,7 +86,7 @@ export function createUserService(app: App) {
 			throw new NotFoundError("User role not found");
 		}
 
-		const role = userRole.role.name as Role;
+		const role = userRole.userRole.name as Role;
 
 		return {
 			role,
@@ -96,7 +96,7 @@ export function createUserService(app: App) {
 	async function verifyUser(userId: number) {
 		await db
 			.update(users)
-			.set({ isVerified: true, updatedAt: new Date() })
+			.set({ is_verified: true, updated_at: new Date() })
 			.where(eq(users.id, userId));
 	}
 
@@ -109,16 +109,16 @@ export function createUserService(app: App) {
 		const [result] = await db
 			.select({
 				user: users,
-				token: verification_tokens,
+				token: verificationTokens,
 			})
-			.from(verification_tokens)
-			.innerJoin(users, eq(verification_tokens.userId, users.id))
+			.from(verificationTokens)
+			.innerJoin(users, eq(verificationTokens.user_id, users.id))
 			.where(
 				and(
-					eq(verification_tokens.token, hashedPayloadToken),
-					eq(verification_tokens.context, context),
-					eq(verification_tokens.used, false),
-					gt(verification_tokens.expiresAt, new Date()),
+					eq(verificationTokens.token, hashedPayloadToken),
+					eq(verificationTokens.context, context),
+					eq(verificationTokens.used, false),
+					gt(verificationTokens.expires_at, new Date()),
 				),
 			)
 			.limit(1);
@@ -131,7 +131,7 @@ export function createUserService(app: App) {
 	async function updateUserPassword(userId: number, hashedPassword: string) {
 		await db
 			.update(users)
-			.set({ password: hashedPassword, updatedAt: new Date() })
+			.set({ password: hashedPassword, updated_at: new Date() })
 			.where(eq(users.id, userId));
 	}
 

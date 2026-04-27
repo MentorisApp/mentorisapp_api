@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 
-import { offer_offer_level, offers, offers_categories } from "~/db/schema";
+import { offers, offersOfferCategories, offersOfferLevels } from "~/db/schema";
 import { ConflictError } from "~/shared/errors/generic/ConflictError";
 import { NotFoundError } from "~/shared/errors/generic/NotFoundError";
 import { App } from "~/types/app.types";
@@ -16,31 +16,34 @@ export function createOfferService(app: App) {
 
 		if (existingOffer) throw new ConflictError("Offer already exists for this user");
 
-		const { categoryIdList, levelIdList, formatIdList, ...offerData } = body;
+		const { categoryIdList, levelIdList, ...offerData } = body;
 
 		const newOffer = await db.transaction(async (tx) => {
 			const [offer] = await tx
 				.insert(offers)
 				.values({
-					...offerData,
-					userId,
+					title: offerData.title,
+					description: offerData.description,
+					price_from_cents: offerData.priceFromCents,
+					price_to_cents: offerData.priceToCents,
+					user_id: userId,
 				})
 				.returning();
 
 			if (categoryIdList.length) {
-				await tx.insert(offers_categories).values(
+				await tx.insert(offersOfferCategories).values(
 					categoryIdList.map((categoryId) => ({
-						offerId: offer.id,
-						categoryId,
+						offer_id: offer.id,
+						category_id: categoryId,
 					})),
 				);
 			}
 
 			if (levelIdList?.length) {
-				await tx.insert(offer_offer_level).values(
+				await tx.insert(offersOfferLevels).values(
 					levelIdList.map((levelId) => ({
-						offerId: offer.id,
-						offerLevelId: levelId,
+						offer_id: offer.id,
+						offer_level_id: levelId,
 					})),
 				);
 			}
@@ -64,16 +67,16 @@ export function createOfferService(app: App) {
 				.set({
 					...restBody,
 				})
-				.where(eq(offers.userId, userId))
+				.where(eq(offers.user_id, userId))
 				.returning();
 
 			if (categoryIds) {
-				await tx.delete(offers_categories).where(eq(offers_categories.offerId, offer.id));
+				await tx.delete(offersOfferCategories).where(eq(offersOfferCategories.offer_id, offer.id));
 
-				await tx.insert(offers_categories).values(
+				await tx.insert(offersOfferCategories).values(
 					categoryIds.map((categoryId) => ({
-						offerId: offer.id,
-						categoryId,
+						offer_id: offer.id,
+						category_id: categoryId,
 					})),
 				);
 			}
@@ -85,17 +88,17 @@ export function createOfferService(app: App) {
 	}
 
 	async function checkOfferExistsByUserId(userId: number) {
-		const record = await db.select().from(offers).where(eq(offers.userId, userId)).limit(1);
+		const record = await db.select().from(offers).where(eq(offers.user_id, userId)).limit(1);
 		return record.length > 0;
 	}
 
 	async function getOfferByUserId(userId: number) {
 		const offer = await db.query.offers.findFirst({
-			where: eq(offers.userId, userId),
+			where: eq(offers.user_id, userId),
 			with: {
-				offersCategories: {
+				offersOfferCategories: {
 					with: {
-						category: true,
+						offerCategory: true,
 					},
 				},
 			},
@@ -103,11 +106,11 @@ export function createOfferService(app: App) {
 
 		if (!offer) throw new NotFoundError("Offer does not exist");
 
-		const { offersCategories, ...restOffer } = offer;
+		const { offersOfferCategories, ...restOffer } = offer;
 
 		const transformedOffer = {
 			...restOffer,
-			categories: offersCategories.map((oc) => oc.category),
+			categories: offersOfferCategories.map((oc) => oc.offerCategory),
 		};
 
 		return transformedOffer;
@@ -117,9 +120,9 @@ export function createOfferService(app: App) {
 		const offer = await db.query.offers.findFirst({
 			where: eq(offers.id, offerId),
 			with: {
-				offersCategories: {
-					with: { category: { columns: { id: true, name: true } } },
-					columns: { offerId: false, categoryId: false },
+				offersOfferCategories: {
+					with: { offerCategory: { columns: { id: true, label: true } } },
+					columns: { offer_id: false, category_id: false },
 				},
 			},
 		});
